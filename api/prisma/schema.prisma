@@ -19,24 +19,23 @@ enum UserType {
 }
 
 model Patient {
-  id           String        @id @default(uuid())
-  name         String
-  email        String        @unique
-  password     String
-  created_at   DateTime      @default(now())
-  updated_at   DateTime      @updatedAt
+  id         String   @id @default(uuid())
+  name       String
+  email      String   @unique
+  password   String
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
 
   appointments Appointment[]
-  
 }
 
 model Psychologist {
-  id         String    @id @default(uuid())
+  id         String   @id @default(uuid())
   name       String
-  email      String    @unique
+  email      String   @unique
   password   String
-  created_at DateTime  @default(now())
-  updated_at DateTime  @updatedAt
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
 }
 
 model Appointment {
@@ -49,19 +48,19 @@ model Appointment {
   updated_at DateTime          @updatedAt
 
   patient_id String
-  patient    Patient           @relation(fields: [patient_id], references: [id])
+  patient    Patient @relation(fields: [patient_id], references: [id])
 }
 
 model Session {
-  id        String   @id @default(uuid())
-  token     String   @unique  //hash token
+  id         String   @id @default(uuid())
+  token      String   @unique //hash token
   expires_at DateTime
   created_at DateTime @default(now())
 
   // Polimorfismo controlado
-  user_id   String   // ID do Patient OU Psychologist
-  user_type UserType   // "PATIENT" | "PSYCHOLOGIST"
+  user_id   String // ID do Patient OU Psychologist
+  user_type UserType // "PATIENT" | "PSYCHOLOGIST"
 
-  @@index([user_id, user_type]) 
-  @@index([expires_at])          // Para limpeza de expirados (cron job)
+  @@index([user_id, user_type])
+  @@index([expires_at]) // Para limpeza de expirados (cron job)
 }
