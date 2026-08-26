@@ -5,9 +5,13 @@ export type SessionData = Pick<Session, 'user_id' | 'user_type' | 'token' | 'exp
 
 export interface IAuthRepository {
 
-    createPatientAccount(patientData: PatientData): Promise<Patient>
+    createPatientAccount(patientData: Pick<Patient, 'email' | 'password' | 'name'>): Promise<Patient>
 
-    createSession(sessionData: SessionData): Promise<Session>
+    createSession(sessionData: Pick<Session, 'token' | 'expires_at' | 'user_id' | 'user_type'>): Promise<Session>
 
-    findPatientByEmail(patientEmail: PatientData['email']): Promise<Patient | null>
+    findPatientByEmail(patientEmail: Patient['email']): Promise<Patient | null>
+
+    findSessionByToken(sessionToken: Session['token']): Promise<Session | null>
+
+    deleteSession(sessionToken: Session['token']): Promise<Session>
 }
