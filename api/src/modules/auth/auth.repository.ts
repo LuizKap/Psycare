@@ -23,6 +23,12 @@ export class AuthRepository implements IAuthRepository {
         })
     }
 
+    async findPatientById(patientId: Patient['id']): Promise<Patient | null> {
+        return this.prisma.patient.findUnique({
+            where: { id: patientId }
+        })
+    }
+
     async findSessionByToken(sessionToken: Session['token']): Promise<Session | null> {
         return this.prisma.session.findUnique({
             where: { token: sessionToken }

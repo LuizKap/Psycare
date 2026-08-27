@@ -4,8 +4,6 @@ import type { IAuthRepository } from "./auth.interface.js";
 import type { Patient, Session } from "../../generated/prisma/client.js";
 import { HttpError } from "../errors/HttpError.js";
 
-//type RegisterPatientData = z.infer<typeof registerPatientSchema>
-
 export class AuthService {
     constructor(private authRepository: IAuthRepository) { }
 

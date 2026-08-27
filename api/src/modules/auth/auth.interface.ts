@@ -11,6 +11,8 @@ export interface IAuthRepository {
 
     findPatientByEmail(patientEmail: Patient['email']): Promise<Patient | null>
 
+    findPatientById(patientId: Patient['id']): Promise<Patient | null>
+
     findSessionByToken(sessionToken: Session['token']): Promise<Session | null>
 
     deleteSession(sessionToken: Session['token']): Promise<Session>
