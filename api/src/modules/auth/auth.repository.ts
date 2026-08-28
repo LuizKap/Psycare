@@ -1,11 +1,17 @@
-import { PrismaClient } from '../../generated/prisma/client.js'
+import type { PrismaClient } from '../../generated/prisma/client.js'
 import type { IAuthRepository } from './auth.interface.js'
-import type { Patient, Session } from '../../generated/prisma/client.js'
+import type { Patient, Session, User, Psychologist } from '../../generated/prisma/client.js'
 
 export class AuthRepository implements IAuthRepository {
     constructor(private prisma: PrismaClient) { }
 
-    async createPatientAccount(patientData: Pick<Patient, 'name' | 'email' | 'password'>): Promise<Patient> {
+    async createUser(userData: Pick<User, 'email' | 'password' | 'role'>): Promise<User> {
+        return this.prisma.user.create({
+            data: userData
+        })
+    }
+
+    async createPatient(patientData: Pick<Patient, 'name' | 'user_id'>): Promise<Patient> {
         return this.prisma.patient.create({
             data: patientData
         })
@@ -17,9 +23,21 @@ export class AuthRepository implements IAuthRepository {
         })
     }
 
-    async findPatientByEmail(patientEmail: Patient['email']): Promise<Patient | null> {
+    async findUserById(id: User['id']): Promise<User | null> {
+        return this.prisma.user.findUnique({
+            where: { id }
+        })
+    }
+
+    async findUserByEmail(email: User['email']): Promise<User | null> {
+        return this.prisma.user.findUnique({
+            where: { email }
+        })
+    }
+
+    async findPatientByUserId(userId: User['id']): Promise<Patient | null> {
         return this.prisma.patient.findUnique({
-            where: { email: patientEmail }
+            where: { user_id: userId }
         })
     }
 
@@ -29,13 +47,19 @@ export class AuthRepository implements IAuthRepository {
         })
     }
 
+    async findPsychologistByUserId(id: User['id']): Promise<Psychologist | null> {
+        return this.prisma.psychologist.findUnique({
+            where: { id }
+        })
+    }
+
     async findSessionByToken(sessionToken: Session['token']): Promise<Session | null> {
         return this.prisma.session.findUnique({
             where: { token: sessionToken }
         })
     }
 
-    async deleteSession(sessionToken: Session['token']): Promise<Session> {
+    async deleteSessionByToken(sessionToken: Session['token']): Promise<Session> {
         return this.prisma.session.delete({
             where: { token: sessionToken }
         })
