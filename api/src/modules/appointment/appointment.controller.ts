@@ -12,4 +12,6 @@ export class AppointmentController {
 
         res.json(availableHours)
     }
+
+    createAppointment = async (req: Request, res: Response) => {}
 }

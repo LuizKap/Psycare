@@ -1,5 +1,6 @@
 
 
+import type { Appointment } from "../../generated/prisma/client.js";
 import { HttpError } from "../errors/HttpError.js";
 import type { AppointmentRepository } from "./appointment.repository.js";
 import dayjs from './appointment.util.dayjs.js'
@@ -43,7 +44,10 @@ export class AppointmentService {
         // para pegar apenas os horarios em que 
         // NAO tem consulta marcada
 
-
         return availableHours
+    }
+
+    async createAppointment(appointment: Pick<Appointment, 'starts_at' | 'patient_id'>): Promise<Appointment>{
+        
     }
 }

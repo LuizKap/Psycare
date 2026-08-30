@@ -9,7 +9,7 @@ export class AuthController {
     register = async (req: Request, res: Response) => {
         const userData = registerUserSchema.parse(req.body)
 
-        const { patient, user, token } = await this.authService.register({
+        const { user, patient, token } = await this.authService.register({
             name: userData.name,
             email: userData.email,
             password: userData.password
@@ -31,14 +31,15 @@ export class AuthController {
             patient: {
                 id: patient.id,
                 name: patient.name
-            }, message: 'Usuário criado'
+            },
+            message: 'Usuário criado'
         })
     };
 
     login = async (req: Request, res: Response) => {
         const userData = loginUserSchema.parse(req.body)
 
-        const { patient, user, token } = await this.authService.login(userData)
+        const { user, patient, token } = await this.authService.login(userData)
 
         res.cookie('session', token, {
             httpOnly: true,
@@ -56,7 +57,8 @@ export class AuthController {
             patient: {
                 id: patient.id,
                 name: patient.name
-            }, message: 'Usuário logado'
+            },
+            message: 'Usuário logado'
         });
     };
 

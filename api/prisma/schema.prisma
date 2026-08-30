@@ -51,9 +51,8 @@ model Psychologist {
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 
-  user_id            String              @unique
-  user               User                @relation(fields: [user_id], references: [id])
-  appointments       Appointment[]
+  user_id String @unique
+  user    User   @relation(fields: [user_id], references: [id])
 }
 
 model Appointment {
@@ -66,10 +65,8 @@ model Appointment {
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 
-  patient_id      String
-  patient         Patient      @relation(fields: [patient_id], references: [id])
-  psychologist_id String
-  psychologist    Psychologist @relation(fields: [psychologist_id], references: [id])
+  patient_id String
+  patient    Patient @relation(fields: [patient_id], references: [id])
 }
 
 model Session {

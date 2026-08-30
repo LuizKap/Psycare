@@ -1,19 +1,36 @@
 import type { PrismaClient } from '../../generated/prisma/client.js'
 import type { IAuthRepository } from './auth.interface.js'
-import type { Patient, Session, User, Psychologist } from '../../generated/prisma/client.js'
+import type { Patient, Session, User } from '../../generated/prisma/client.js'
 
 export class AuthRepository implements IAuthRepository {
     constructor(private prisma: PrismaClient) { }
 
-    async createUser(userData: Pick<User, 'email' | 'password' | 'role'>): Promise<User> {
-        return this.prisma.user.create({
-            data: userData
-        })
-    }
+    async createPatientAccount(
+        userData: Pick<User, 'email' | 'password' | 'role'>,
+        patientData: Pick<Patient, 'name'>,
+        sessionData: Pick<Session, 'token' | 'expires_at' | 'user_type'>
+    ): Promise<{ user: User, patient: Patient, session: Session }> {
 
-    async createPatient(patientData: Pick<Patient, 'name' | 'user_id'>): Promise<Patient> {
-        return this.prisma.patient.create({
-            data: patientData
+        return this.prisma.$transaction(async (tx) => {
+            const user = await tx.user.create({
+                data: userData
+            })
+
+            const patient = await tx.patient.create({
+                data: {
+                    ...patientData,
+                    user_id: user.id
+                }
+            })
+
+            const session = await tx.session.create({
+                data: {
+                    ...sessionData,
+                    user_id: user.id
+                }
+            })
+
+            return { user, patient, session }
         })
     }
 
@@ -44,12 +61,6 @@ export class AuthRepository implements IAuthRepository {
     async findPatientById(patientId: Patient['id']): Promise<Patient | null> {
         return this.prisma.patient.findUnique({
             where: { id: patientId }
-        })
-    }
-
-    async findPsychologistByUserId(id: User['id']): Promise<Psychologist | null> {
-        return this.prisma.psychologist.findUnique({
-            where: { id }
         })
     }
 

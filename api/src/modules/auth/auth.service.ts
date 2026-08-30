@@ -16,30 +16,18 @@ export class AuthService {
 
         const hashedPassword = await bcrypt.hash(password, 10)
 
-        const user = await this.authRepository.createUser({
-            email,
-            password: hashedPassword,
-            role: 'PATIENT'
-        })
-
-        const patient = await this.authRepository.createPatient({
-            name,
-            user_id: user.id
-        })
-
         const token = crypto.randomBytes(32).toString('hex')
         const TEN_DAYS_IN_MS = 1000 * 60 * 60 * 24 * 10
         const expires_at = new Date(Date.now() + TEN_DAYS_IN_MS)
 
-        const sessionData: Pick<Session, 'token' | 'expires_at' | 'user_id' | 'user_type'> = {
-            token,
-            expires_at,
-            user_id: user.id,
-            user_type: 'PATIENT'
-        }
+        const account = await this.authRepository.createPatientAccount(
+            { email, password: hashedPassword, role: 'PATIENT' },
+            { name },
+            { token, expires_at, user_type: 'PATIENT' }
+        )
 
-        await this.authRepository.createSession(sessionData)
-        return { patient, user, token }
+        const { user, patient, session } = account
+        return { user, patient, token: session.token }
     }
 
     async login(loginData: Pick<User, 'email' | 'password'>): Promise<{ patient: Patient, user: User, token: Session['token'] }> {
@@ -57,10 +45,8 @@ export class AuthService {
         }
 
         const patient = await this.authRepository.findPatientByUserId(user.id)
+        if (!patient) throw new HttpError(404, 'Paciente não encontrado para este usuário')
 
-        if (!patient) {
-            throw new HttpError(404, 'Paciente não encontrado para este usuário')
-        }
 
         const token = crypto.randomBytes(32).toString('hex')
         const TEN_DAYS_IN_MS = 1000 * 60 * 60 * 24 * 10
@@ -74,7 +60,7 @@ export class AuthService {
         }
 
         await this.authRepository.createSession(sessionData)
-        return { patient, user, token }
+        return { user, patient, token }
     }
 
     async logout(token: Session['token']): Promise<void> {
