@@ -1,4 +1,4 @@
-import type { PrismaClient } from '../../generated/prisma/client.js'
+import type { PrismaClient, Psychologist } from '../../generated/prisma/client.js'
 import type { IAuthRepository } from './auth.interface.js'
 import type { Patient, Session, User } from '../../generated/prisma/client.js'
 
@@ -43,6 +43,12 @@ export class AuthRepository implements IAuthRepository {
     async findUserById(id: User['id']): Promise<User | null> {
         return this.prisma.user.findUnique({
             where: { id }
+        })
+    }
+
+    async findPsychologistByUserId(id: User['id']): Promise<Psychologist | null> {
+        return this.prisma.psychologist.findUnique({
+            where: { user_id: id }
         })
     }
 

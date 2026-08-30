@@ -1,6 +1,6 @@
 
 
-import type { Appointment } from "../../generated/prisma/client.js";
+import type { Appointment, Patient } from "../../generated/prisma/client.js";
 import { HttpError } from "../errors/HttpError.js";
 import type { AppointmentRepository } from "./appointment.repository.js";
 import dayjs from './appointment.util.dayjs.js'
@@ -10,10 +10,10 @@ import dayjs from './appointment.util.dayjs.js'
 export class AppointmentService {
     constructor(private appointmentRepository: AppointmentRepository) { }
 
-    async getAvailability(date: string): Promise<number[]> {
+    async getAvailability(date: string): Promise<string[]> {
 
-        let operatingHours: number[] = []
-        let appointmentHours: number[] = []
+        const operatingHours: number[] = []
+        const appointmentHours: number[] = []
 
 
         for (let hour = 9; hour <= 22; hour++) {
@@ -21,12 +21,13 @@ export class AppointmentService {
             // para construir os horarios que o psicologo trabalha
         }
 
-        const isWeekend = [0, 6].includes(dayjs(date).day())
+        const day = dayjs.tz(date, 'YYYY-MM-DD', 'America/Sao_Paulo')
+
+        const isWeekend = [0, 6].includes(day.day())
         if (isWeekend) {
-           throw new HttpError(400, 'A data não deve ser um final de semana')
+            throw new HttpError(400, 'A data não deve ser um final de semana')
         }
 
-        const day = dayjs.tz(date, 'YYYY-MM-DD', 'America/Sao_Paulo')
         const startOfDay = day.startOf('day').toDate()
         const startOfNextDay = day.add(1, 'day').startOf('day').toDate()
 
@@ -40,14 +41,46 @@ export class AppointmentService {
         });
 
 
-        const availableHours = operatingHours.filter(hour => !appointmentHours.includes(hour))
-        // para pegar apenas os horarios em que 
+        const availableHours = operatingHours
+            .filter(hour => !appointmentHours.includes(hour))
+            .map(hour => `${hour}`.padStart(2, '0') + ':00')
+        // PARA pegar apenas os horarios em que 
         // NAO tem consulta marcada
+        // E transformar os numeros sozinhos. EX: (8 = 08, 9 = 09)
 
         return availableHours
     }
 
-    async createAppointment(appointment: Pick<Appointment, 'starts_at' | 'patient_id'>): Promise<Appointment>{
-        
+    async createAppointment(appointmentData: Pick<Appointment, 'starts_at' | 'patient_id'>): Promise<Appointment> {
+        const { starts_at, patient_id } = appointmentData
+
+        const isWeekend = [0, 6].includes(dayjs(starts_at).tz('America/Sao_Paulo').day())
+        if (isWeekend) {
+            throw new HttpError(400, 'A data não deve ser um final de semana')
+        }
+
+        const isSomeAppointmentScheduled = await this.appointmentRepository.findScheduledAppointmentByPatientId(patient_id)
+        if (isSomeAppointmentScheduled) throw new HttpError(400, 'Voce ja tem uma consulta agendada')
+
+        const isSomeAppointmentAtThisDateTime = await this.appointmentRepository.findAppointmentByDate(starts_at)
+        if (isSomeAppointmentAtThisDateTime) throw new HttpError(400, 'Voce ja tem uma consulta marcada nesse horário')
+
+        const ends_at = dayjs(starts_at).add(1, 'hour').toDate()
+
+        const appointment = await this.appointmentRepository.createAppointment({ starts_at, ends_at, patient_id })
+
+        return appointment
     }
+
+    async getPatientAppointments(patient_id: Patient['id']): Promise<Appointment[]> {
+
+        const patient = await this.appointmentRepository.findPatientById(patient_id)
+        if (!patient) throw new HttpError(404, 'Paciente não encontrado')
+
+        const appointments = await this.appointmentRepository.findAllAppointmentsByPatientId(patient_id)
+
+        return appointments
+    }
+
+
 }

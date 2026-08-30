@@ -1,15 +1,22 @@
-import type { Appointment } from "../../generated/prisma/client.js";
+import type { Appointment, Patient, User } from "../../generated/prisma/client.js";
 
 export interface IAppointmentRepository {
 
     findAllAppointments(): Promise<Appointment[]>
 
-    findAppointmentByDate(starts_at: string): Promise<Appointment | null>
+    findAllAppointmentsByDate(startOfDay: Date, startOfNextDay: Date): Promise<Appointment[]>
+
+    findAppointmentByDate(starts_at: Date): Promise<Appointment | null>
 
     createAppointment(appointment: Pick<Appointment, 'starts_at' | 'ends_at' | 'patient_id'>): Promise<Appointment>
 
     findAppointmentById(appointment: Appointment['id']): Promise<Appointment | null>
 
-    findAppointmentsByPatientId(appointment: Appointment['patient_id']): Promise<Appointment[]>
+    findPatientByUserId(user_id: User['id']): Promise<Patient | null>
 
+    findAllAppointmentsByPatientId(patient_id: Patient['id']): Promise<Appointment[]>
+
+    findPatientById(id: Patient['id']): Promise<Patient | null> 
+
+    findScheduledAppointmentByPatientId(patient_id: Patient['id']): Promise<Appointment | null>
 }

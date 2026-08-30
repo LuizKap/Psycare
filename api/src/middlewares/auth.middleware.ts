@@ -7,6 +7,7 @@ declare global {
         interface Request {
             user?: {
                 id: string
+                patient_id: string
                 name: string
                 email: string
                 role: string
@@ -51,7 +52,8 @@ export const authMiddleware = (authRepository: AuthRepository) => {
                 }
 
                 req.user = {
-                    id: patient.id,
+                    id: user.id,
+                    patient_id: patient.id,
                     name: patient.name,
                     email: user.email,
                     role: user.role
@@ -67,6 +69,7 @@ export const authMiddleware = (authRepository: AuthRepository) => {
 
                 req.user = {
                     id: psychologist.id,
+                    patient_id: '',
                     name: psychologist.name,
                     email: user.email,
                     role: user.role

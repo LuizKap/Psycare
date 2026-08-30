@@ -1,4 +1,4 @@
-import type { Patient, Session, User } from '../../generated/prisma/client.js'
+import type { Patient, Session, User, Psychologist } from '../../generated/prisma/client.js'
 
 export interface IAuthRepository {
 
@@ -11,6 +11,8 @@ export interface IAuthRepository {
     createSession(sessionData: Pick<Session, 'token' | 'expires_at' | 'user_id' | 'user_type'>): Promise<Session>
 
     findUserById(id: User['id']): Promise<User | null>
+
+    findPsychologistByUserId(id: User['id']): Promise<Psychologist | null>
 
     findUserByEmail(email: User['email']): Promise<User | null>
 
