@@ -10,17 +10,12 @@ datasource db {
 enum AppointmentStatus {
   SCHEDULED
   COMPLETED
-  CANCELLED
+  IN_PROGRESS
 }
 
 enum UserType {
   PATIENT
   PSYCHOLOGIST
-}
-
-enum AppointmentSource {
-  WEBSITE
-  MANUAL
 }
 
 model User {
@@ -37,16 +32,14 @@ model User {
 }
 
 model Patient {
-  id    String  @id @default(uuid())
-  name  String
-  email String?
-  phone String?
+  id   String @id @default(uuid())
+  name String
 
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 
-  user_id      String?       @unique
-  user         User?         @relation(fields: [user_id], references: [id])
+  user_id      String        @unique
+  user         User          @relation(fields: [user_id], references: [id])
   appointments Appointment[]
 }
 
@@ -58,23 +51,25 @@ model Psychologist {
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 
-  user_id String @unique
-  user    User   @relation(fields: [user_id], references: [id])
+  user_id            String              @unique
+  user               User                @relation(fields: [user_id], references: [id])
+  appointments       Appointment[]
 }
 
 model Appointment {
   id        String            @id @default(uuid())
   status    AppointmentStatus @default(SCHEDULED)
-  starts_at DateTime
+  starts_at DateTime          @unique
   ends_at   DateTime
   notes     String?
-  source    AppointmentSource @default(WEBSITE)
 
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 
-  patient_id String
-  patient    Patient @relation(fields: [patient_id], references: [id])
+  patient_id      String
+  patient         Patient      @relation(fields: [patient_id], references: [id])
+  psychologist_id String
+  psychologist    Psychologist @relation(fields: [psychologist_id], references: [id])
 }
 
 model Session {
