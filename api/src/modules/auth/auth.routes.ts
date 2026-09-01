@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { authController } from "./auth.dependencies.js";
+import { authController, authMiddlewareInstance } from "./auth.dependencies.js";
 import { requireAuthMiddleware } from "../../middlewares/requireAuth.middleware.js";
 
 

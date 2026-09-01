@@ -5,6 +5,7 @@ import { errorHandlerMiddleware } from './middlewares/errorHandler.middleware.js
 import { authMiddlewareInstance } from './modules/auth/auth.dependencies.js';
 import { appointmentRouter } from './modules/appointment/appointment.routes.js';
 
+
 const app = express()
 app.use(cookieParser())
 app.use(express.json())

@@ -5,16 +5,30 @@ import { HttpError } from "../modules/errors/HttpError.js";
 declare global {
     namespace Express {
         interface Request {
-            user?: {
-                id: string
-                patient_id: string
-                name: string
-                email: string
-                role: string
-            }
+            user?: AuthUser
         }
     }
 }
+
+type AuthUser = PatientUser | PsychologistUser
+
+export type PatientUser = {
+    id: string
+    patient_id: string
+    name: string
+    email: string
+    role: 'PATIENT'
+}
+
+export type PsychologistUser = {
+    id: string
+    psychologist_id: string
+    name: string
+    email: string
+    role: 'PSYCHOLOGIST'
+}
+
+
 
 export { }
 
@@ -31,11 +45,11 @@ export const authMiddleware = (authRepository: AuthRepository) => {
             const session = await authRepository.findSessionByToken(token)
 
             if (!session) {
-                return next(new HttpError(401, 'Sessão inválida'))
+                return next()
             }
 
             if (session.expires_at < new Date()) {
-                return next(new HttpError(401, 'Sessão expirada'))
+                return next()
             }
 
             const user = await authRepository.findUserById(session.user_id)
@@ -48,7 +62,7 @@ export const authMiddleware = (authRepository: AuthRepository) => {
                 const patient = await authRepository.findPatientByUserId(user.id)
 
                 if (!patient) {
-                    return next(new HttpError(404, 'Paciente não encontrado'))
+                    return next(new HttpError(403, 'Paciente não encontrado'))
                 }
 
                 req.user = {
@@ -64,12 +78,12 @@ export const authMiddleware = (authRepository: AuthRepository) => {
                 const psychologist = await authRepository.findPsychologistByUserId(user.id)
 
                 if (!psychologist) {
-                    return next(new HttpError(404, 'Psicólogo não encontrado'))
+                    return next(new HttpError(403, 'Psicólogo não encontrado'))
                 }
 
                 req.user = {
                     id: psychologist.id,
-                    patient_id: '',
+                    psychologist_id: psychologist.id,
                     name: psychologist.name,
                     email: user.email,
                     role: user.role
