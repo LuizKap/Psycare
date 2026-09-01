@@ -2,6 +2,7 @@
 
 import type { Appointment, Patient } from "../../generated/prisma/client.js";
 import { HttpError } from "../errors/HttpError.js";
+import type { PatientRepository } from "../patient/patient.repository.js";
 import { isValidAppointmentDate } from "./appointment.auxiliar.func/isValidAppointmentDate.js";
 import type { AppointmentRepository } from "./appointment.repository.js";
 import dayjs from './appointment.util.dayjs.js'
@@ -9,7 +10,10 @@ import dayjs from './appointment.util.dayjs.js'
 // Aqui eu construo tudo passando o timezone do brasil para evitar alguns bugs de fuso horário
 
 export class AppointmentService {
-    constructor(private appointmentRepository: AppointmentRepository) { }
+    constructor(
+        private appointmentRepository: AppointmentRepository,
+        private patientRepository: PatientRepository
+    ) { }
 
     async getAvailability(date: string): Promise<string[]> {
 
@@ -57,7 +61,7 @@ export class AppointmentService {
         const { starts_at, patient_id } = appointmentData
 
         if (!isValidAppointmentDate(starts_at)) throw new HttpError(400, 'Horário Inválido para consulta')
-        
+
         const isWeekend = [0, 6].includes(dayjs(starts_at).tz('America/Sao_Paulo').day())
         if (isWeekend) {
             throw new HttpError(400, 'A data não deve ser um final de semana')
@@ -69,7 +73,7 @@ export class AppointmentService {
         const isSomeAppointmentAtThisDateTime = await this.appointmentRepository.findAppointmentByDate(starts_at)
         if (isSomeAppointmentAtThisDateTime) throw new HttpError(400, 'Voce ja tem uma consulta marcada nesse horário')
 
-            
+
         const ends_at = dayjs(starts_at).add(1, 'hour').toDate()
 
         const appointment = await this.appointmentRepository.createAppointment({ starts_at, ends_at, patient_id })
@@ -79,7 +83,7 @@ export class AppointmentService {
 
     async getPatientAppointments(patient_id: Patient['id']): Promise<Appointment[]> {
 
-        const patient = await this.appointmentRepository.findPatientById(patient_id)
+        const patient = await this.patientRepository.findPatientById(patient_id)
         if (!patient) throw new HttpError(404, 'Paciente não encontrado')
 
         const appointments = await this.appointmentRepository.findAllAppointmentsByPatientId(patient_id)

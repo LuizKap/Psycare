@@ -10,7 +10,7 @@ datasource db {
 enum AppointmentStatus {
   SCHEDULED
   COMPLETED
-  IN_PROGRESS
+  CANCELLED
 }
 
 enum UserType {

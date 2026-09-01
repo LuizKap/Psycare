@@ -12,11 +12,7 @@ export interface IAppointmentRepository {
 
     findAppointmentById(appointment: Appointment['id']): Promise<Appointment | null>
 
-    findPatientByUserId(user_id: User['id']): Promise<Patient | null>
-
-    findAllAppointmentsByPatientId(patient_id: Patient['id']): Promise<Appointment[]>
-
-    findPatientById(id: Patient['id']): Promise<Patient | null> 
+    findAllAppointmentsByPatientId(patient_id: Patient['id']): Promise<Appointment[]> 
 
     findScheduledAppointmentByPatientId(patient_id: Patient['id']): Promise<Appointment | null>
 }

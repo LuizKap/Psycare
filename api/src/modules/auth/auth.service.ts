@@ -1,13 +1,20 @@
 import bcrypt from 'bcrypt'
-import crypto from 'node:crypto'
 import type { IAuthRepository } from "./auth.interface.js";
-import type { Patient, Session, User } from "../../generated/prisma/client.js";
+import type { Patient, Psychologist, Session, User } from "../../generated/prisma/client.js";
 import { HttpError } from "../errors/HttpError.js";
+import type { PatientRepository } from '../patient/patient.repository.js';
+import { generateSessionData } from './auth.auxiliar.func.js';
+import type { PsychologistRepository } from '../psychologist/psychologist.repository.js';
+
 
 export class AuthService {
-    constructor(private authRepository: IAuthRepository) { }
+    constructor(
+        private authRepository: IAuthRepository,
+        private patientRepository: PatientRepository,
+        private psychologistRepository: PsychologistRepository
+    ) { }
 
-    async register(registerData: Pick<Patient, 'name'> & Pick<User, 'email' | 'password'>): Promise<{ patient: Patient, user: User, token: Session['token'] }> {
+    async registerPatient(registerData: Pick<Patient, 'name'> & Pick<User, 'email' | 'password'>): Promise<{ patient: Patient, user: User, token: Session['token'] }> {
 
         const { name, email, password } = registerData
 
@@ -16,21 +23,18 @@ export class AuthService {
 
         const hashedPassword = await bcrypt.hash(password, 10)
 
-        const token = crypto.randomBytes(32).toString('hex')
-        const TEN_DAYS_IN_MS = 1000 * 60 * 60 * 24 * 10
-        const expires_at = new Date(Date.now() + TEN_DAYS_IN_MS)
+        const { token, expires_at, user_type } = generateSessionData('PATIENT')
 
-        const account = await this.authRepository.createPatientAccount(
-            { email, password: hashedPassword, role: 'PATIENT' },
+        const { patient, user, session } = await this.authRepository.createPatientAccount(
+            { email, password: hashedPassword, role: user_type },
             { name },
-            { token, expires_at, user_type: 'PATIENT' }
+            { token, expires_at, user_type }
         )
 
-        const { user, patient, session } = account
         return { user, patient, token: session.token }
     }
 
-    async login(loginData: Pick<User, 'email' | 'password'>): Promise<{ patient: Patient, user: User, token: Session['token'] }> {
+    async loginPatient(loginData: Pick<User, 'email' | 'password'>): Promise<{ patient: Patient, user: User, token: Session['token'] }> {
 
         const { email, password } = loginData
 
@@ -44,22 +48,12 @@ export class AuthService {
             throw new HttpError(403, 'Acesso não permitido')
         }
 
-        const patient = await this.authRepository.findPatientByUserId(user.id)
+        const patient = await this.patientRepository.findPatientByUserId(user.id)
         if (!patient) throw new HttpError(404, 'Paciente não encontrado para este usuário')
 
+        const { token, expires_at, user_type } = generateSessionData('PATIENT')
 
-        const token = crypto.randomBytes(32).toString('hex')
-        const TEN_DAYS_IN_MS = 1000 * 60 * 60 * 24 * 10
-        const expires_at = new Date(Date.now() + TEN_DAYS_IN_MS)
-
-        const sessionData: Pick<Session, 'token' | 'expires_at' | 'user_id' | 'user_type'> = {
-            token,
-            expires_at,
-            user_id: user.id,
-            user_type: 'PATIENT'
-        }
-
-        await this.authRepository.createSession(sessionData)
+        await this.authRepository.createSession({ token, expires_at, user_type, user_id: user.id })
         return { user, patient, token }
     }
 
@@ -68,5 +62,54 @@ export class AuthService {
         if (!session) throw new HttpError(404, 'Sessão não encontrada')
 
         await this.authRepository.deleteSessionByToken(token)
+    }
+
+
+
+    async registerPsychologist(registerData: Pick<Psychologist, 'name' | 'phone'> & Pick<User, 'email' | 'password'> & { entryCode: string }): Promise<{ user: User, psychologist: Psychologist, token: Session['token'] }> {
+
+        const { name, email, entryCode, password, phone } = registerData
+
+        const alreadyHavePsychologist = await this.psychologistRepository.findPsychologist()
+        if (alreadyHavePsychologist) throw new HttpError(409, 'Só pode haver um psicólogo cadastrado')
+
+        if (entryCode !== process.env.PSYCHOLOGIST_REGISTRATION_CODE) throw new HttpError(400, 'Código incorreto')
+
+        const hashedPassword = await bcrypt.hash(password, 10)
+
+        const { token, expires_at, user_type } = generateSessionData('PSYCHOLOGIST')
+
+        const { psychologist, session, user } = await this.authRepository.createPsychologistAccount(
+            { email, password: hashedPassword, role: user_type },
+            { name, phone },
+            { token, expires_at, user_type }
+        )
+
+        return { user, psychologist, token: session.token }
+    }
+
+    async loginPsychologist(loginData: Pick<User, 'email' | 'password'> & { entryCode: string }): Promise<{ psychologist: Psychologist, user: User, token: Session['token'] }> {
+
+        const { email, password, entryCode } = loginData
+
+        if (entryCode !== process.env.PSYCHOLOGIST_REGISTRATION_CODE) throw new HttpError(400, 'Código incorreto')
+
+        const user = await this.authRepository.findUserByEmail(email)
+        if (!user) throw new HttpError(401, 'Email ou senha inválidos')
+
+        const isValidPassword = await bcrypt.compare(password, user.password)
+        if (!isValidPassword) throw new HttpError(401, 'Email ou senha inválidos')
+
+        if (user.role !== 'PSYCHOLOGIST') {
+            throw new HttpError(403, 'Acesso não permitido')
+        }
+
+        const psychologist = await this.psychologistRepository.findPsychologistByUserId(user.id)
+        if (!psychologist) throw new HttpError(404, 'Psicólogo não encontrado para este usuário')
+
+        const { token, expires_at, user_type } = generateSessionData('PSYCHOLOGIST')
+
+        await this.authRepository.createSession({ token, expires_at, user_type, user_id: user.id })
+        return { user, psychologist, token }
     }
 }

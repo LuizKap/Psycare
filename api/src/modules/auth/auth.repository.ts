@@ -34,6 +34,35 @@ export class AuthRepository implements IAuthRepository {
         })
     }
 
+    async createPsychologistAccount(
+        userData: Pick<User, 'email' | 'password' | 'role'>,
+        psychologistData: Pick<Psychologist, 'name' | 'phone'>,
+        sessionData: Pick<Session, 'token' | 'expires_at' | 'user_type'>
+    ): Promise<{ user: User, psychologist: Psychologist, session: Session }> {
+        return this.prisma.$transaction(async (tx) => {
+
+            const user = await tx.user.create({
+                data: userData
+            })
+
+            const psychologist = await tx.psychologist.create({
+                data: {
+                    ...psychologistData,
+                    user_id: user.id
+                }
+            })
+
+            const session = await tx.session.create({
+                data: {
+                    ...sessionData,
+                    user_id: user.id
+                }
+            })
+
+            return {user, psychologist, session}
+        })
+    }
+
     async createSession(sessionData: Pick<Session, 'token' | 'expires_at' | 'user_id' | 'user_type'>): Promise<Session> {
         return this.prisma.session.create({
             data: sessionData
@@ -46,27 +75,9 @@ export class AuthRepository implements IAuthRepository {
         })
     }
 
-    async findPsychologistByUserId(id: User['id']): Promise<Psychologist | null> {
-        return this.prisma.psychologist.findUnique({
-            where: { user_id: id }
-        })
-    }
-
     async findUserByEmail(email: User['email']): Promise<User | null> {
         return this.prisma.user.findUnique({
             where: { email }
-        })
-    }
-
-    async findPatientByUserId(userId: User['id']): Promise<Patient | null> {
-        return this.prisma.patient.findUnique({
-            where: { user_id: userId }
-        })
-    }
-
-    async findPatientById(patientId: Patient['id']): Promise<Patient | null> {
-        return this.prisma.patient.findUnique({
-            where: { id: patientId }
         })
     }
 
