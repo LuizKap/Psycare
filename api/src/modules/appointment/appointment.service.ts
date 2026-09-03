@@ -137,4 +137,18 @@ export class AppointmentService {
         return updatedAppointment
     }
 
+    async cancelAppointment(id: Appointment['id']): Promise<Appointment> {
+
+        const appointment = await this.appointmentRepository.findAppointmentById(id)
+        if (!appointment) throw new HttpError(404, 'Consulta não encontrada')
+
+        if (appointment.status === 'COMPLETED' ||
+            appointment.status === 'CANCELLED')
+            throw new HttpError(400, 'Consulta completa ou já cancelada')
+
+       const cancelledAppointment =  await this.appointmentRepository.cancelAppointment(id)
+
+       return cancelledAppointment
+    }
+
 }

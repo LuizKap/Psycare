@@ -52,8 +52,16 @@ export class AppointmentController {
         const { notes, starts_at } = updateAppointmentSchema.parse(req.body)
         const { id } = idSchema.parse(req.params)
 
-        const updatedAppointment = await this.appointmentService.updateAppointment(id, {notes, starts_at})
+        const updatedAppointment = await this.appointmentService.updateAppointment(id, { notes, starts_at })
 
         res.json(updatedAppointment)
+    }
+
+    cancelAppointment = async (req: Request, res: Response) => {
+        const { id } = idSchema.parse(req.params)
+
+        const cancelledAppointment = await this.appointmentService.cancelAppointment(id)
+
+        res.json(cancelledAppointment)
     }
 }

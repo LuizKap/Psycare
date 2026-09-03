@@ -111,4 +111,11 @@ export class AppointmentRepository implements IAppointmentRepository {
         })
     }
 
+    async cancelAppointment(id: Appointment['id']): Promise<Appointment> {
+        return await this.prisma.appointment.update({
+            where: { id },
+            data: { status: 'CANCELLED' }
+        })
+    }
+
 }

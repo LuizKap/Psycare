@@ -25,5 +25,11 @@ export interface IAppointmentRepository {
 
     findScheduledAppointmentByPatientId(patient_id: Patient['id']): Promise<Appointment | null>
 
-    updateAppointment(id: Appointment['id'], updateData: UpdateAppointmentData, ends_at: Appointment['ends_at']): Promise<Appointment>
+    updateAppointment(
+        id: Appointment['id'],
+        updateData: UpdateAppointmentData,
+        ends_at: Appointment['ends_at']
+    ): Promise<Appointment>
+
+    cancelAppointment(id: Appointment['id']): Promise<Appointment>
 }
