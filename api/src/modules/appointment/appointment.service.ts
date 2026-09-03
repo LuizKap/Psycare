@@ -1,8 +1,9 @@
 import type { Appointment, Patient } from "../../generated/prisma/client.js";
 import { HttpError } from "../errors/HttpError.js";
 import type { IPatientRepository } from "../patient/patient.interface.js";
+import type { AppointmentFilters, AppointmentPagination, AppointmentSorting, PaginationProperties, UpdateAppointmentData } from "./appointment.auxiliar.func/buildAppointmentFilters.js";
 import { isValidAppointmentDate } from "./appointment.auxiliar.func/isValidAppointmentDate.js";
-import type { AppointmentFilters, AppointmentPagination, AppointmentSorting, IAppointmentRepository, PaginationProperties } from "./appointment.interface.js";
+import type { IAppointmentRepository } from "./appointment.interface.js";
 import dayjs from './appointment.util.dayjs.js'
 
 // Aqui eu construo tudo passando o timezone do brasil para evitar alguns bugs de fuso horário
@@ -81,9 +82,6 @@ export class AppointmentService {
 
     async getPatientAppointments(patient_id: Patient['id']): Promise<Appointment[]> {
 
-        const patient = await this.patientRepository.findPatientById(patient_id)
-        if (!patient) throw new HttpError(404, 'Paciente não encontrado')
-
         const appointments = await this.appointmentRepository.findAllAppointmentsByPatientId(patient_id)
 
         return appointments
@@ -92,12 +90,51 @@ export class AppointmentService {
     async getFilteredAppointments(
         filters: AppointmentFilters,
         sorting: AppointmentSorting,
-        pagination: AppointmentPagination): Promise<{appointments: Appointment[],pagination: PaginationProperties}> 
-        {
+        pagination: AppointmentPagination): Promise<{ appointments: Appointment[], pagination: PaginationProperties }> {
 
         const appointments = await this.appointmentRepository.findAppointments(filters, sorting, pagination)
 
         return appointments
+    }
+
+    async updateAppointment(id: Appointment['id'], updateData: UpdateAppointmentData): Promise<Appointment> {
+        const { notes, starts_at } = updateData
+
+        const appointment = await this.appointmentRepository.findAppointmentById(id)
+        if (!appointment) throw new HttpError(404, 'consulta não encontrada')
+
+
+        if ((appointment.status === 'CANCELLED' ||
+            appointment.status === 'COMPLETED') &&
+            starts_at !== undefined) {
+
+            throw new HttpError(400, 'Você não pode atualizar o horário de uma consulta cancelada ou concluída')
+
+        }
+
+        // Se starts_at não foi alterado, mantém o ends_at atual
+        let ends_at = appointment.ends_at
+
+        if (starts_at !== undefined) {
+
+            if (starts_at < new Date()) throw new HttpError(409,
+                'Você não pode atualizar o horário antecedendo o horário/dia de hoje')
+
+
+            const isSomeAppointmentAtThisDateTime = await this.appointmentRepository.findAppointmentByDate(starts_at)
+            if (isSomeAppointmentAtThisDateTime) throw new HttpError(409,
+                'Já existe uma consulta nesse horário')
+
+            if (!isValidAppointmentDate(starts_at)) throw new HttpError(400,
+                'Essa data violaria a regra do seu horário de trabalho')
+
+            ends_at = dayjs(starts_at).add(1, 'hour').toDate()
+        }
+
+
+        const updatedAppointment = await this.appointmentRepository.updateAppointment(id, { notes, starts_at }, ends_at)
+
+        return updatedAppointment
     }
 
 }

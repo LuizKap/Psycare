@@ -1,7 +1,7 @@
 import type { PrismaClient } from '../../generated/prisma/client.js';
-import type { AppointmentFilters, AppointmentPagination, AppointmentSorting, IAppointmentRepository, PaginationProperties } from './appointment.interface.js';
+import type { IAppointmentRepository } from './appointment.interface.js';
 import type { Appointment, Patient } from '../../generated/prisma/client.js';
-import { buildAppointmentWhere } from './appointment.auxiliar.func/buildAppointmentFilters.js';
+import { build_find_appointments_filters, build_update_appointment_data, type AppointmentFilters, type AppointmentPagination, type AppointmentSorting, type PaginationProperties, type UpdateAppointmentData } from './appointment.auxiliar.func/buildAppointmentFilters.js';
 
 
 
@@ -12,9 +12,9 @@ export class AppointmentRepository implements IAppointmentRepository {
         filters: AppointmentFilters,
         sorting: AppointmentSorting,
         pagination: AppointmentPagination)
-        : Promise<{ appointments: Appointment[], pagination: PaginationProperties}> {
+        : Promise<{ appointments: Appointment[], pagination: PaginationProperties }> {
 
-        const where = buildAppointmentWhere(filters)
+        const where = build_find_appointments_filters(filters)
 
         const totalItems = await this.prisma.appointment.count({
             where
@@ -91,6 +91,22 @@ export class AppointmentRepository implements IAppointmentRepository {
             where: {
                 patient_id,
                 status: 'SCHEDULED'
+            }
+        })
+    }
+
+    async updateAppointment(
+        id: Appointment['id'],
+        updateData: UpdateAppointmentData,
+        ends_at: Appointment['ends_at']): Promise<Appointment> {
+
+        const data = build_update_appointment_data(updateData)
+
+        return await this.prisma.appointment.update({
+            where: { id },
+            data: {
+                ...data,
+                ends_at
             }
         })
     }

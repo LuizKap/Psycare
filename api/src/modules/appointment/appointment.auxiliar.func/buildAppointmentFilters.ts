@@ -1,10 +1,49 @@
 
 import { Prisma } from "../../../generated/prisma/client.js";
-import type { AppointmentFilters } from "../appointment.interface.js";
+import type { Appointment } from "../../../generated/prisma/client.js";
+
+export type UpdateAppointmentData = {
+    starts_at?: Date | undefined,
+    notes?: string | null | undefined
+}
 
 
+export type AppointmentFilters = {
+    patient_name?: string | undefined
 
-export function buildAppointmentWhere(filters: AppointmentFilters): Prisma.AppointmentWhereInput {
+    status?: Appointment['status'] | undefined
+
+    notes?: boolean | undefined
+
+    starts_at?: {
+        gte: Date;
+        lt: Date;
+    } | undefined
+
+    created_at?: {
+        gte: Date;
+        lt: Date;
+    } | undefined
+}
+
+export type AppointmentSorting = {
+    sortBy: 'starts_at' | 'created_at'
+    sortOrder: 'asc' | 'desc'
+}
+
+export type AppointmentPagination = {
+    page: number
+    limit: number
+}
+
+export type PaginationProperties = {
+    totalPages: number
+    totalItems: number
+    page: number
+    limit: number
+}
+
+export function build_find_appointments_filters(filters: AppointmentFilters): Prisma.AppointmentWhereInput {
 
     const where: Prisma.AppointmentWhereInput = {}
 
@@ -30,4 +69,15 @@ export function buildAppointmentWhere(filters: AppointmentFilters): Prisma.Appoi
     if (filters.notes === false) where.notes = null
 
     return where
+}
+
+export function build_update_appointment_data(updateData: UpdateAppointmentData): Prisma.AppointmentUpdateInput {
+
+    const data: Prisma.AppointmentUpdateInput = {}
+
+    if (updateData.notes !== undefined) data.notes = updateData.notes
+
+    if (updateData.starts_at !== undefined) data.starts_at = updateData.starts_at
+
+    return data
 }

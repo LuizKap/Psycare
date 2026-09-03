@@ -14,4 +14,5 @@ appointmentRouter.get('/availability', requirePatientMiddleware, appointmentCont
 appointmentRouter.post('/', requirePatientMiddleware, appointmentController.createAppointment)
 
 appointmentRouter.get('/filter', requirePsychologistMiddleware, appointmentController.getFilteredAppointments)
+appointmentRouter.patch('/update/:id', appointmentController.updateAppointment)
 
