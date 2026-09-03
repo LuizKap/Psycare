@@ -1,11 +1,23 @@
-import type z from "zod";
+
 import { Prisma } from "../../../generated/prisma/client.js";
-import type { appointmentFilterSchema } from "../appointment.schema.js";
+import type { AppointmentFilters } from "../appointment.interface.js";
 
 
-export function buildAppointmentWhere(filters: z.infer<typeof appointmentFilterSchema>): Prisma.AppointmentWhereInput {
+
+export function buildAppointmentWhere(filters: AppointmentFilters): Prisma.AppointmentWhereInput {
 
     const where: Prisma.AppointmentWhereInput = {}
+
+
+    if (filters.patient_name) {
+        where.patient = {
+            name:
+            {
+                startsWith: filters.patient_name,
+                mode: 'insensitive'
+            }
+        }
+    }
 
     if (filters.status) where.status = filters.status
 

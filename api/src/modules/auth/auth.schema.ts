@@ -2,7 +2,7 @@ import { z } from 'zod'
 
 export const registerPatientSchema = z.object({
 
-    name: z.string().min(5).max(200).trim().refine((value) => value.length > 0,
+    name: z.string().min(5).max(200).refine((value) => value.trim().length > 0,
         { error: 'O nome nao pode conter apenas espaços' }),
 
 
@@ -31,7 +31,7 @@ export const loginPatientSchema = z.object({
 
 export const registerPsychologistSchema = z.object({
 
-    name: z.string().min(5).max(200).trim().refine((value) => value.length > 0,
+    name: z.string().min(5).max(200).refine((value) => value.trim().length > 0,
         { error: 'O nome nao pode conter apenas espaços' }),
 
 

@@ -3,7 +3,6 @@ import { appointmentController } from "./appointment.dependencies.js";
 import { requireAuthMiddleware } from '../../middlewares/requireAuth.middleware.js';
 import { requirePatientMiddleware } from "../../middlewares/requirePatient.middleware.js";
 import { requirePsychologistMiddleware } from "../../middlewares/requirePsychologist.middleware.js";
-import { authMiddlewareInstance } from "../auth/auth.dependencies.js";
 
 
 
@@ -15,5 +14,4 @@ appointmentRouter.get('/availability', requirePatientMiddleware, appointmentCont
 appointmentRouter.post('/', requirePatientMiddleware, appointmentController.createAppointment)
 
 appointmentRouter.get('/filter', requirePsychologistMiddleware, appointmentController.getFilteredAppointments)
-appointmentRouter.patch
-appointmentRouter.patch
+

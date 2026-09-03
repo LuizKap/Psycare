@@ -25,15 +25,15 @@ export const checkAvailabilitySchema = z.object({
 }).strict()
 
 export const appointmentFilterSchema = z.object({
+    patient_name: z.string().optional(),
 
     status: z.enum(['SCHEDULED', 'COMPLETED', 'CANCELLED']).optional(),
 
-    notes: z.boolean().optional(),
+    notes: z.enum(['true', 'false']).optional().transform((value) => value === 'true'),
 
     created_at: dateRangeSchema.optional(),
 
     starts_at: dateRangeSchema.optional()
-
 })
 
 export const appointmentPaginationSchema = z.object({
@@ -51,9 +51,9 @@ export const appointmentSortingSchema = z.object({
 
 })
 
-const updateAppointmentSchema = z.object({
+export const updateAppointmentSchema = z.object({
 
     starts_at: z.iso.datetime().transform((value) => new Date(value)).optional(),
 
-    notes: z.string().nullable().optional(),
+    notes: z.string().nullable().optional()
 })

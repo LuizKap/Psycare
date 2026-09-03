@@ -1,5 +1,5 @@
 import type { PrismaClient } from '../../generated/prisma/client.js';
-import type { AppointmentFilters, AppointmentPagination, AppointmentSorting, IAppointmentRepository } from './appointment.interface.js';
+import type { AppointmentFilters, AppointmentPagination, AppointmentSorting, IAppointmentRepository, PaginationProperties } from './appointment.interface.js';
 import type { Appointment, Patient } from '../../generated/prisma/client.js';
 import { buildAppointmentWhere } from './appointment.auxiliar.func/buildAppointmentFilters.js';
 
@@ -11,24 +11,41 @@ export class AppointmentRepository implements IAppointmentRepository {
     async findAppointments(
         filters: AppointmentFilters,
         sorting: AppointmentSorting,
-        pagination: AppointmentPagination): Promise<Appointment[]> {
+        pagination: AppointmentPagination)
+        : Promise<{ appointments: Appointment[], pagination: PaginationProperties}> {
 
         const where = buildAppointmentWhere(filters)
 
-        const orderBy = {
-            [sorting.sortBy]: sorting.sortOrder
-        }
-
-        const skip = (pagination.page - 1) * pagination.limit
-        const take = pagination.limit
-
-
-        return await this.prisma.appointment.findMany({
-            where,
-            orderBy,
-            skip,
-            take
+        const totalItems = await this.prisma.appointment.count({
+            where
         })
+
+        const totalPages = Math.ceil(totalItems / pagination.limit)
+
+        const appointments = await this.prisma.appointment.findMany({
+            where,
+            include: {
+                patient:
+                {
+                    select: {
+                        name: true
+                    }
+                }
+            },
+            orderBy: { [sorting.sortBy]: sorting.sortOrder },
+            skip: (pagination.page - 1) * pagination.limit,
+            take: pagination.limit
+        })
+
+        return {
+            appointments,
+            pagination: {
+                totalPages,
+                totalItems,
+                page: pagination.page,
+                limit: pagination.limit
+            }
+        }
     }
 
     async findAppointmentByDate(starts_at: Date): Promise<Appointment | null> {

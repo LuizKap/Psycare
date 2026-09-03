@@ -2,6 +2,7 @@ import type { Appointment, Patient } from "../../generated/prisma/client.js";
 
 
 export type AppointmentFilters = {
+    patient_name?: string | undefined
 
     status?: Appointment['status'] | undefined
 
@@ -28,13 +29,23 @@ export type AppointmentPagination = {
     limit: number
 }
 
+export type PaginationProperties = {
+    totalPages: number
+    totalItems: number
+    page: number
+    limit: number
+}
+
 export interface IAppointmentRepository {
 
     findAppointments(
         filters: AppointmentFilters,
         sorting: AppointmentSorting,
-        pagination: AppointmentPagination)
-        : Promise<Appointment[]>
+        pagination: AppointmentPagination): Promise<
+            {
+                appointments: Appointment[],
+                pagination: PaginationProperties
+            }>
 
     findAllAppointmentsByDate(startOfDay: Date, startOfNextDay: Date): Promise<Appointment[]>
 
