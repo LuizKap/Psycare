@@ -1,18 +1,16 @@
-
-
 import type { Appointment, Patient } from "../../generated/prisma/client.js";
 import { HttpError } from "../errors/HttpError.js";
-import type { PatientRepository } from "../patient/patient.repository.js";
+import type { IPatientRepository } from "../patient/patient.interface.js";
 import { isValidAppointmentDate } from "./appointment.auxiliar.func/isValidAppointmentDate.js";
-import type { AppointmentRepository } from "./appointment.repository.js";
+import type { AppointmentFilters, AppointmentPagination, AppointmentSorting, IAppointmentRepository } from "./appointment.interface.js";
 import dayjs from './appointment.util.dayjs.js'
 
 // Aqui eu construo tudo passando o timezone do brasil para evitar alguns bugs de fuso horário
 
 export class AppointmentService {
     constructor(
-        private appointmentRepository: AppointmentRepository,
-        private patientRepository: PatientRepository
+        private appointmentRepository: IAppointmentRepository,
+        private patientRepository: IPatientRepository
     ) { }
 
     async getAvailability(date: string): Promise<string[]> {
@@ -91,5 +89,14 @@ export class AppointmentService {
         return appointments
     }
 
+    async getFilteredAppointments(
+        filters: AppointmentFilters,
+        sorting: AppointmentSorting,
+        pagination: AppointmentPagination): Promise<Appointment[]> {
+
+        const appointments = await this.appointmentRepository.findAppointments(filters, sorting, pagination)
+
+        return appointments
+    }
 
 }

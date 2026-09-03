@@ -10,3 +10,4 @@ authRouter.post('/login/patient', authController.loginPatient)
 authRouter.post('/logout', requireAuthMiddleware, authController.logout)
 authRouter.post('/register/psychologist', authController.registerPsychologist)
 authRouter.post('/login/psychologist', authController.loginPsychologist)
+

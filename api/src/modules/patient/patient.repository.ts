@@ -1,9 +1,9 @@
 
 import type { Patient, PrismaClient, User } from "../../generated/prisma/client.js";
-import type { IPatientInterface } from "./patient.interface.js";
+import type { IPatientRepository } from "./patient.interface.js";
 
 
-export class PatientRepository implements IPatientInterface {
+export class PatientRepository implements IPatientRepository {
     constructor(private prisma: PrismaClient) { }
 
     async findPatientById(id: Patient["id"]): Promise<Patient | null> {

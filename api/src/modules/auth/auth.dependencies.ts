@@ -10,4 +10,4 @@ import { psychologistRepository } from "../psychologist/psychologist.dependencie
 export const authRepository = new AuthRepository(prisma)
 export const authService = new AuthService(authRepository, patientRepository, psychologistRepository)
 export const authController = new AuthController(authService)
-export const authMiddlewareInstance = authMiddleware(authRepository)
+export const authMiddlewareInstance = authMiddleware(authRepository, psychologistRepository, patientRepository)

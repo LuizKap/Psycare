@@ -2,16 +2,16 @@ import bcrypt from 'bcrypt'
 import type { IAuthRepository } from "./auth.interface.js";
 import type { Patient, Psychologist, Session, User } from "../../generated/prisma/client.js";
 import { HttpError } from "../errors/HttpError.js";
-import type { PatientRepository } from '../patient/patient.repository.js';
+import type { IPatientRepository } from '../patient/patient.interface.js';
 import { generateSessionData } from './auth.auxiliar.func.js';
-import type { PsychologistRepository } from '../psychologist/psychologist.repository.js';
+import type { IPsychologistRepository } from '../psychologist/psychologist.interface.js';
 
 
 export class AuthService {
     constructor(
         private authRepository: IAuthRepository,
-        private patientRepository: PatientRepository,
-        private psychologistRepository: PsychologistRepository
+        private patientRepository: IPatientRepository,
+        private psychologistRepository: IPsychologistRepository
     ) { }
 
     async registerPatient(registerData: Pick<Patient, 'name'> & Pick<User, 'email' | 'password'>): Promise<{ patient: Patient, user: User, token: Session['token'] }> {
@@ -71,7 +71,7 @@ export class AuthService {
         const { name, email, entryCode, password, phone } = registerData
 
         const alreadyHavePsychologist = await this.psychologistRepository.findPsychologist()
-        if (alreadyHavePsychologist) throw new HttpError(409, 'Só pode haver um psicólogo cadastrado')
+        if (alreadyHavePsychologist.length > 0) throw new HttpError(409, 'Só pode haver um psicólogo cadastrado')
 
         if (entryCode !== process.env.PSYCHOLOGIST_REGISTRATION_CODE) throw new HttpError(400, 'Código incorreto')
 

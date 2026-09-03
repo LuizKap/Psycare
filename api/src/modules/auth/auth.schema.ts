@@ -44,8 +44,7 @@ export const registerPsychologistSchema = z.object({
 
     confirmPassword: z.string(),
 
-    phone: z.string()
-    .regex(/^\d{11}$/, 'Telefone inválido'),
+    phone: z.string().regex(/^\d{11}$/, 'Telefone inválido'),
 
     entryCode: z.string().trim().min(1, 'O código é obrigatório')
 

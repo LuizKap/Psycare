@@ -1,12 +1,34 @@
 import type { PrismaClient } from '../../generated/prisma/client.js';
-import type { IAppointmentRepository } from './appointment.interface.js';
-import type { Appointment, Patient, User } from '../../generated/prisma/client.js';
+import type { AppointmentFilters, AppointmentPagination, AppointmentSorting, IAppointmentRepository } from './appointment.interface.js';
+import type { Appointment, Patient } from '../../generated/prisma/client.js';
+import { buildAppointmentWhere } from './appointment.auxiliar.func/buildAppointmentFilters.js';
+
+
 
 export class AppointmentRepository implements IAppointmentRepository {
     constructor(private prisma: PrismaClient) { }
 
-    async findAllAppointments(): Promise<Appointment[]> {
-        return await this.prisma.appointment.findMany()
+    async findAppointments(
+        filters: AppointmentFilters,
+        sorting: AppointmentSorting,
+        pagination: AppointmentPagination): Promise<Appointment[]> {
+
+        const where = buildAppointmentWhere(filters)
+
+        const orderBy = {
+            [sorting.sortBy]: sorting.sortOrder
+        }
+
+        const skip = (pagination.page - 1) * pagination.limit
+        const take = pagination.limit
+
+
+        return await this.prisma.appointment.findMany({
+            where,
+            orderBy,
+            skip,
+            take
+        })
     }
 
     async findAppointmentByDate(starts_at: Date): Promise<Appointment | null> {

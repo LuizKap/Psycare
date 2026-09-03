@@ -1,6 +1,8 @@
 import type { NextFunction, Request, Response } from "express";
-import { AuthRepository } from "../modules/auth/auth.repository.js";
+import type { IAuthRepository } from "../modules/auth/auth.interface.js";
 import { HttpError } from "../modules/errors/HttpError.js";
+import type { IPsychologistRepository } from "../modules/psychologist/psychologist.interface.js";
+import type { IPatientRepository } from "../modules/patient/patient.interface.js";
 
 declare global {
     namespace Express {
@@ -32,7 +34,10 @@ export type PsychologistUser = {
 
 export { }
 
-export const authMiddleware = (authRepository: AuthRepository) => {
+export const authMiddleware = (
+    authRepository: IAuthRepository,
+    psychologistRepository: IPsychologistRepository,
+    patientRepository: IPatientRepository) => {
     return async (req: Request, res: Response, next: NextFunction) => {
         try {
             const token = req.cookies.session
@@ -59,7 +64,7 @@ export const authMiddleware = (authRepository: AuthRepository) => {
             }
 
             if (user.role === 'PATIENT') {
-                const patient = await authRepository.findPatientByUserId(user.id)
+                const patient = await patientRepository.findPatientByUserId(user.id)
 
                 if (!patient) {
                     return next(new HttpError(403, 'Paciente não encontrado'))
@@ -75,7 +80,7 @@ export const authMiddleware = (authRepository: AuthRepository) => {
             }
 
             if (user.role === 'PSYCHOLOGIST') {
-                const psychologist = await authRepository.findPsychologistByUserId(user.id)
+                const psychologist = await psychologistRepository.findPsychologistByUserId(user.id)
 
                 if (!psychologist) {
                     return next(new HttpError(403, 'Psicólogo não encontrado'))

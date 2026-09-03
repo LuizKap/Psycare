@@ -1,6 +1,6 @@
 import type { Request, Response } from "express";
 import type { AppointmentService } from "./appointment.service.js";
-import { checkAvailabilitySchema, createAppointmentSchema } from "./appointment.schema.js";
+import { appointmentFilterSchema, appointmentPaginationSchema, appointmentSortingSchema, checkAvailabilitySchema, createAppointmentSchema } from "./appointment.schema.js";
 import type { PatientUser } from "../../middlewares/auth.middleware.js";
 
 export class AppointmentController {
@@ -29,6 +29,21 @@ export class AppointmentController {
         const { patient_id } = req.user as PatientUser
 
         const appointments = await this.appointmentService.getPatientAppointments(patient_id)
+
+        res.json(appointments)
+    }
+
+    getFilteredAppointments = async (req: Request, res: Response) => {
+
+        const { created_at, notes, starts_at, status } = appointmentFilterSchema.parse(req.query)
+        const { sortBy = 'created_at', sortOrder = 'asc' } = appointmentSortingSchema.parse(req.query)
+        const { limit = 20, page = 1 } = appointmentPaginationSchema.parse(req.query)
+
+        const appointments = await this.appointmentService.getFilteredAppointments(
+                { created_at, notes, starts_at, status },
+                { sortBy, sortOrder },
+                { limit, page }
+            )
 
         res.json(appointments)
     }
