@@ -6,3 +6,4 @@ import { requireAuthMiddleware } from "../../middlewares/requireAuth.middleware.
 export const patientRouter = Router()
 
 patientRouter.get('/me', requireAuthMiddleware, patientController.getPatientProfile)
+patientRouter.patch('/', requireAuthMiddleware, patientController.updatePatient)

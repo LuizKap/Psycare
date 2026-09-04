@@ -16,11 +16,11 @@ export class PatientController {
     }
 
     updatePatient = async (req: Request, res: Response) => {
-        const { id } = req.user as PatientUser
+        const { patient_id } = req.user as PatientUser
         const updatedData = updatePatientSchema.parse(req.body)
 
         const updatedPatient =
-            await this.patientService.updatePatient(id, updatedData)
+            await this.patientService.updatePatient(patient_id, updatedData)
 
         res.json(updatedPatient)
     }

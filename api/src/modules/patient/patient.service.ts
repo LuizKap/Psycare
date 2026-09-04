@@ -19,8 +19,6 @@ export class PatientService {
     async updatePatient(id: Patient['id'], updateData: UpdatePatientData
     ): Promise<Patient> {
 
-        const { name, phone } = updateData
-
         const patient = await this.patientRepository.findPatientById(id)
 
         if (!patient) {
