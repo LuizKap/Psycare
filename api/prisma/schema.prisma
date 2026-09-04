@@ -34,6 +34,8 @@ model User {
 model Patient {
   id   String @id @default(uuid())
   name String
+  phone String?
+  profile_image_url String?
 
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt

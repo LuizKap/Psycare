@@ -14,9 +14,9 @@ export class AuthService {
         private psychologistRepository: IPsychologistRepository
     ) { }
 
-    async registerPatient(registerData: Pick<Patient, 'name'> & Pick<User, 'email' | 'password'>): Promise<{ patient: Patient, user: User, token: Session['token'] }> {
+    async registerPatient(registerData: Pick<Patient, 'name' | 'phone'> & Pick<User, 'email' | 'password'>): Promise<{ patient: Patient, user: User, token: Session['token'] }> {
 
-        const { name, email, password } = registerData
+        const { name, email, password, phone } = registerData
 
         const foundUser = await this.authRepository.findUserByEmail(email)
         if (foundUser) throw new HttpError(409, 'Esse email ja está cadastrado')
@@ -27,7 +27,7 @@ export class AuthService {
 
         const { patient, user, session } = await this.authRepository.createPatientAccount(
             { email, password: hashedPassword, role: user_type },
-            { name },
+            { name, phone },
             { token, expires_at, user_type }
         )
 

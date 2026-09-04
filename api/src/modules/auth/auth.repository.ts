@@ -7,7 +7,7 @@ export class AuthRepository implements IAuthRepository {
 
     async createPatientAccount(
         userData: Pick<User, 'email' | 'password' | 'role'>,
-        patientData: Pick<Patient, 'name'>,
+        patientData: Pick<Patient, 'name' | 'phone'>,
         sessionData: Pick<Session, 'token' | 'expires_at' | 'user_type'>
     ): Promise<{ user: User, patient: Patient, session: Session }> {
 

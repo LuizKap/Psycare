@@ -4,6 +4,7 @@ import { authRouter } from './modules/auth/auth.routes.js';
 import { errorHandlerMiddleware } from './middlewares/errorHandler.middleware.js';
 import { authMiddlewareInstance } from './modules/auth/auth.dependencies.js';
 import { appointmentRouter } from './modules/appointment/appointment.routes.js';
+import { patientRouter } from './modules/patient/patient.routes.js';
 
 
 const app = express()
@@ -12,6 +13,7 @@ app.use(express.json())
 
 app.use(authMiddlewareInstance)
 app.use('/auth', authRouter)
+app.use('/patient', patientRouter)
 app.use('/appointments', appointmentRouter)
 app.use(errorHandlerMiddleware)
 

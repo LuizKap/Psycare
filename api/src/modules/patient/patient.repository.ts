@@ -8,7 +8,14 @@ export class PatientRepository implements IPatientRepository {
 
     async findPatientById(id: Patient["id"]): Promise<Patient | null> {
         return await this.prisma.patient.findUnique({
-            where: { id }
+            where: { id },
+            include: {
+                user: {
+                    select: {
+                        email: true
+                    }
+                }
+            }
         })
     }
 

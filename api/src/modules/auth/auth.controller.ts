@@ -12,7 +12,8 @@ export class AuthController {
         const { user, patient, token } = await this.authService.registerPatient({
             name: userData.name,
             email: userData.email,
-            password: userData.password
+            password: userData.password,
+            phone: userData.phone ?? null
         })
 
         res.cookie('session', token, {
@@ -30,7 +31,8 @@ export class AuthController {
             },
             patient: {
                 id: patient.id,
-                name: patient.name
+                name: patient.name,
+                phone: patient.phone
             },
             message: 'Usuário criado'
         })

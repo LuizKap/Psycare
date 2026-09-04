@@ -19,6 +19,7 @@ export type PatientUser = {
     patient_id: string
     name: string
     email: string
+    phone: string | null
     role: 'PATIENT'
 }
 
@@ -27,6 +28,7 @@ export type PsychologistUser = {
     psychologist_id: string
     name: string
     email: string
+    phone: string
     role: 'PSYCHOLOGIST'
 }
 
@@ -74,6 +76,7 @@ export const authMiddleware = (
                     id: user.id,
                     patient_id: patient.id,
                     name: patient.name,
+                    phone: patient.phone,
                     email: user.email,
                     role: user.role
                 }
@@ -90,6 +93,7 @@ export const authMiddleware = (
                     id: psychologist.id,
                     psychologist_id: psychologist.id,
                     name: psychologist.name,
+                    phone: psychologist.phone,
                     email: user.email,
                     role: user.role
                 }

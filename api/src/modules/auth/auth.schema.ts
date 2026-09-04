@@ -8,6 +8,7 @@ export const registerPatientSchema = z.object({
 
     email: z.email().trim().toLowerCase(),
 
+    phone: z.string().regex(/^\d{11}$/, 'Telefone inválido').optional(),
 
     password: z.string().min(12).max(100).refine((value) => value.trim().length > 0,
         { error: 'A senha não pode conter apenas espaços' }),
