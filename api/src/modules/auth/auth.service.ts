@@ -112,4 +112,10 @@ export class AuthService {
         await this.authRepository.createSession({ token, expires_at, user_type, user_id: user.id })
         return { user, psychologist, token }
     }
+
+    async deleteExpiredSessions(): Promise<number> {
+        const deleted = await this.authRepository.deleteExpiredSessions()
+
+        return deleted
+    }
 }

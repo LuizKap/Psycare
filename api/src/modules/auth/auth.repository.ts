@@ -38,7 +38,13 @@ export class AuthRepository implements IAuthRepository {
         userData: Pick<User, 'email' | 'password' | 'role'>,
         psychologistData: Pick<Psychologist, 'name' | 'phone'>,
         sessionData: Pick<Session, 'token' | 'expires_at' | 'user_type'>
-    ): Promise<{ user: User, psychologist: Psychologist, session: Session }> {
+
+    ): Promise<{
+        user: User,
+        psychologist: Psychologist,
+        session: Session
+    }> {
+
         return this.prisma.$transaction(async (tx) => {
 
             const user = await tx.user.create({
@@ -59,7 +65,7 @@ export class AuthRepository implements IAuthRepository {
                 }
             })
 
-            return {user, psychologist, session}
+            return { user, psychologist, session }
         })
     }
 
@@ -92,5 +98,17 @@ export class AuthRepository implements IAuthRepository {
             where: { token: sessionToken }
         })
     }
+
+    async deleteExpiredSessions(): Promise<number> {
+    const result = await this.prisma.session.deleteMany({
+        where: {
+            expires_at: {
+                lte: new Date()
+            }
+        }
+    })
+
+    return result.count
+}
 
 }

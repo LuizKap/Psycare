@@ -48,9 +48,15 @@ export class AppointmentRepository implements IAppointmentRepository {
         }
     }
 
-    async findAppointmentByDate(starts_at: Date): Promise<Appointment | null> {
-        return await this.prisma.appointment.findUnique({
-            where: { starts_at }
+    async findAppointmentByDate(starts_at: Date, excludeId?: Appointment['id']): Promise<Appointment | null> {
+
+        return await this.prisma.appointment.findFirst({
+            where: {
+                starts_at,
+                ...(excludeId && {
+                    id: { not: excludeId }
+                })
+            }
         })
     }
 
@@ -94,6 +100,22 @@ export class AppointmentRepository implements IAppointmentRepository {
             }
         })
     }
+
+    async updateFinishedAppointments(): Promise<number> {
+    const result = await this.prisma.appointment.updateMany({
+        where: {
+            status: 'SCHEDULED',
+            ends_at: {
+                lte: new Date()
+            }
+        },
+        data: {
+            status: 'COMPLETED'
+        }
+    })
+
+    return result.count
+}
 
     async updateAppointment(
         id: Appointment['id'],

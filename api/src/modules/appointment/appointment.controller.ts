@@ -54,7 +54,7 @@ export class AppointmentController {
 
         const updatedAppointment = await this.appointmentService.updateAppointment(id, { notes, starts_at })
 
-        res.json(updatedAppointment)
+        res.json({ updatedAppointment, message: 'consulta atualizada com sucesso!' })
     }
 
     cancelAppointment = async (req: Request, res: Response) => {
@@ -62,6 +62,6 @@ export class AppointmentController {
 
         const cancelledAppointment = await this.appointmentService.cancelAppointment(id)
 
-        res.json(cancelledAppointment)
+        res.json({cancelledAppointment, message: 'consulta cancelada com sucesso!'})
     }
 }

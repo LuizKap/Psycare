@@ -104,29 +104,30 @@ export class AppointmentService {
         if (!appointment) throw new HttpError(404, 'consulta não encontrada')
 
 
-        if ((appointment.status === 'CANCELLED' ||
-            appointment.status === 'COMPLETED') &&
-            starts_at !== undefined) {
 
-            throw new HttpError(400, 'Você não pode atualizar o horário de uma consulta cancelada ou concluída')
-
-        }
 
         // Se starts_at não foi alterado, mantém o ends_at atual
         let ends_at = appointment.ends_at
 
         if (starts_at !== undefined) {
 
+            if (appointment.status === 'CANCELLED' ||
+                appointment.status === 'COMPLETED') {
+
+                throw new HttpError(400, 'Você não pode atualizar o horário de uma consulta cancelada ou concluída')
+            }
+
             if (starts_at < new Date()) throw new HttpError(409,
                 'Você não pode atualizar o horário antecedendo o horário/dia de hoje')
 
 
-            const isSomeAppointmentAtThisDateTime = await this.appointmentRepository.findAppointmentByDate(starts_at)
+            const isSomeAppointmentAtThisDateTime = await this.appointmentRepository.findAppointmentByDate(starts_at, id)
             if (isSomeAppointmentAtThisDateTime) throw new HttpError(409,
                 'Já existe uma consulta nesse horário')
 
+
             if (!isValidAppointmentDate(starts_at)) throw new HttpError(400,
-                'Essa data violaria a regra do seu horário de trabalho')
+                'Esse horário viola a regra do seu horário de trabalho')
 
             ends_at = dayjs(starts_at).add(1, 'hour').toDate()
         }
@@ -146,9 +147,15 @@ export class AppointmentService {
             appointment.status === 'CANCELLED')
             throw new HttpError(400, 'Consulta completa ou já cancelada')
 
-       const cancelledAppointment =  await this.appointmentRepository.cancelAppointment(id)
+        const cancelledAppointment = await this.appointmentRepository.cancelAppointment(id)
 
-       return cancelledAppointment
+        return cancelledAppointment
+    }
+
+    async completeFinishedAppointments(): Promise<number> {
+        const completedAppointments = await this.appointmentRepository.updateFinishedAppointments()
+
+        return completedAppointments
     }
 
 }

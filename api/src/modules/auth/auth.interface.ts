@@ -23,4 +23,6 @@ export interface IAuthRepository {
     findSessionByToken(sessionToken: Session['token']): Promise<Session | null>
 
     deleteSessionByToken(sessionToken: Session['token']): Promise<Session>
+
+    deleteExpiredSessions(): Promise<number>
 }
