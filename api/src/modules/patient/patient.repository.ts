@@ -1,8 +1,9 @@
 
 import type { Patient, PrismaClient, User } from "../../generated/prisma/client.js";
-import { build_update_patient_data} from "./patient.auxiliar.func/build.data.js";
+import { build_update_patient_data } from "./patient.auxiliar.func/build.data.js";
 import type { IPatientRepository } from "./patient.interface.js";
 import type { UpdatePatientData } from "./patient.schema.js";
+
 
 
 export class PatientRepository implements IPatientRepository {
@@ -33,6 +34,22 @@ export class PatientRepository implements IPatientRepository {
         return await this.prisma.patient.update({
             where: { id },
             data
+        })
+    }
+
+    async saveProfilePicture(id: Patient['id'], profile_image_url: Patient['profile_image_url']): Promise<Patient> {
+
+        return await this.prisma.patient.update({
+            where: { id },
+            data: { profile_image_url }
+        })
+    }
+
+    async removeProfilePicture(id: Patient['id']): Promise<Patient> {
+
+        return await this.prisma.patient.update({
+            where: { id },
+            data: { profile_image_url: null }
         })
     }
 }

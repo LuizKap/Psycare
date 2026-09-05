@@ -2,8 +2,7 @@ import { appointmentService } from './../modules/appointment/appointment.depende
 
 async function runAppointmentJob() {
     try {
-        const completed =
-            await appointmentService.completeFinishedAppointments()
+        const completed = await appointmentService.completeFinishedAppointments()
 
         console.log(`${completed} consultas foram completadas`)
     } catch (error) {

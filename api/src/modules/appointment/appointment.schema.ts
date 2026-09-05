@@ -65,3 +65,4 @@ export const updateAppointmentSchema = z.object({
     {
         message: 'Informe pelo menos um campo para atualizar'
     })
+

@@ -90,7 +90,11 @@ export class AppointmentService {
     async getFilteredAppointments(
         filters: AppointmentFilters,
         sorting: AppointmentSorting,
-        pagination: AppointmentPagination): Promise<{ appointments: Appointment[], pagination: PaginationProperties }> {
+        pagination: AppointmentPagination): Promise<{
+
+            appointments: Appointment[],
+            pagination: PaginationProperties
+        }> {
 
         const appointments = await this.appointmentRepository.findAppointments(filters, sorting, pagination)
 

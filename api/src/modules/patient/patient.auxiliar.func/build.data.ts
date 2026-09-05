@@ -1,6 +1,7 @@
 import type { Prisma } from "../../../generated/prisma/client.js";
 import type { UpdatePatientData } from "../patient.schema.js";
 
+
 export function build_update_patient_data(updateData: UpdatePatientData
 ): Prisma.PatientUpdateInput {
 

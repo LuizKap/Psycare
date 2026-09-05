@@ -20,6 +20,7 @@ export type PatientUser = {
     name: string
     email: string
     phone: string | null
+    profile_image_url: string | null
     role: 'PATIENT'
 }
 
@@ -66,6 +67,7 @@ export const authMiddleware = (
             }
 
             if (user.role === 'PATIENT') {
+
                 const patient = await patientRepository.findPatientByUserId(user.id)
 
                 if (!patient) {
@@ -77,6 +79,7 @@ export const authMiddleware = (
                     patient_id: patient.id,
                     name: patient.name,
                     phone: patient.phone,
+                    profile_image_url: patient.profile_image_url,
                     email: user.email,
                     role: user.role
                 }
