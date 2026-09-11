@@ -8,4 +8,4 @@ export const cloudinaryService = new CloudinaryService()
 
 export const patientRepository = new PatientRepository(prisma)
 export const patientService = new PatientService(patientRepository, cloudinaryService)
-export const patientController = new PatientController(patientService, cloudinaryService)
+export const patientController = new PatientController(patientService)

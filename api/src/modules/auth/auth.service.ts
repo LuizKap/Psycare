@@ -70,7 +70,7 @@ export class AuthService {
 
         const { name, email, entryCode, password, phone } = registerData
 
-        const alreadyHavePsychologist = await this.psychologistRepository.findPsychologist()
+        const alreadyHavePsychologist = await this.psychologistRepository.findPsychologists()
         if (alreadyHavePsychologist.length > 0) throw new HttpError(409, 'Só pode haver um psicólogo cadastrado')
 
         if (entryCode !== process.env.PSYCHOLOGIST_REGISTRATION_CODE) throw new HttpError(400, 'Código incorreto')

@@ -3,13 +3,12 @@ import type { PatientService } from "./patient.service.js";
 import type { PatientUser } from "../../middlewares/auth.middleware.js";
 import { updatePatientSchema } from "./patient.schema.js";
 import { HttpError } from "../errors/HttpError.js";
-import type { CloudinaryService } from "../../cloudinary/cloudinary.service.js";
+
 
 
 export class PatientController {
     constructor(
         private patientService: PatientService,
-        private cloudinaryService: CloudinaryService
     ) { }
 
     getPatientProfile = async (req: Request, res: Response) => {
