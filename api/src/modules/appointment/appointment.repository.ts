@@ -133,6 +133,14 @@ export class AppointmentRepository implements IAppointmentRepository {
         })
     }
 
+    async reschedule(id: Appointment['id'], starts_at: Appointment['starts_at'], ends_at: Appointment['ends_at']
+    ): Promise<Appointment> {
+        return await this.prisma.appointment.update({
+            where: { id },
+            data: { starts_at, ends_at, rescheduled_at: new Date() }
+        })
+    }
+
     async cancelAppointment(id: Appointment['id']): Promise<Appointment> {
         return await this.prisma.appointment.update({
             where: { id },

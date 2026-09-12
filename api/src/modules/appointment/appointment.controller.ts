@@ -1,8 +1,7 @@
 import type { Request, Response } from "express";
 import type { AppointmentService } from "./appointment.service.js";
-import { appointmentFilterSchema, appointmentPaginationSchema, appointmentSortingSchema, checkAvailabilitySchema, createAppointmentSchema, idSchema, updateNotesSchema } from "./appointment.schema.js";
+import { appointmentFilterSchema, appointmentPaginationSchema, appointmentSortingSchema, checkAvailabilitySchema, createAppointmentSchema, idSchema, rescheduleSchema, updateNotesSchema } from "./appointment.schema.js";
 import type { PatientUser } from "../../middlewares/auth.middleware.js";
-import type { Appointment } from "../../generated/prisma/client.js";
 
 export class AppointmentController {
     constructor(private appointmentService: AppointmentService) { }
@@ -58,11 +57,40 @@ export class AppointmentController {
         res.json({ updatedAppointment, message: 'observações atualizadas com sucesso!' })
     }
 
-    cancelAppointment = async (req: Request, res: Response) => {
+    reschedule = async (req: Request, res: Response) => {
+
+        const { starts_at } = rescheduleSchema.parse(req.body)
+        const { id } = idSchema.parse(req.params)
+        const { patient_id } = req.user as PatientUser
+
+        const updatedAppointment = await this.appointmentService.reschedule(id, starts_at, patient_id)
+
+        res.json({
+            updatedAppointment,
+            message: 'data atualizada com sucesso!'
+        })
+    }
+
+    psychologistCancel = async (req: Request, res: Response) => {
         const { id } = idSchema.parse(req.params)
 
-        const cancelledAppointment = await this.appointmentService.cancelAppointment(id)
+        const cancelledAppointment = await this.appointmentService.psychologistCancel(id)
 
-        res.json({ cancelledAppointment, message: 'consulta cancelada com sucesso!' })
+        res.json({
+            cancelledAppointment,
+            message: 'consulta cancelada com sucesso!'
+        })
+    }
+
+    patientCancel = async (req: Request, res: Response) => {
+        const { id } = idSchema.parse(req.params)
+        const { patient_id } = req.user as PatientUser
+
+        const cancelledAppointment = await this.appointmentService.patientCancel(id, patient_id)
+
+        res.json({
+            cancelledAppointment,
+            message: 'consulta cancelada com sucesso!'
+        })
     }
 }

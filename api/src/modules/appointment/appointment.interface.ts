@@ -38,5 +38,11 @@ export interface IAppointmentRepository {
         notes: Appointment['notes']
     ): Promise<Appointment>
 
+    reschedule(
+        id: Appointment['id'],
+        starts_at: Appointment['starts_at'],
+        ends_at: Appointment['ends_at']
+    ): Promise<Appointment>
+
     cancelAppointment(id: Appointment['id']): Promise<Appointment>
 }

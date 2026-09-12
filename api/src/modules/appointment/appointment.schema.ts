@@ -13,11 +13,11 @@ const dateRangeSchema = z.object({
 
 
 
-
 export const createAppointmentSchema = z.object({
 
     starts_at: z.iso.datetime().transform((value) => new Date(value))
-})
+    
+}).strict()
 
 export const checkAvailabilitySchema = z.object({
 
@@ -53,11 +53,17 @@ export const appointmentSortingSchema = z.object({
 
 export const idSchema = z.object({
     id: z.string()
-})
+}).strict()
 
 export const updateNotesSchema = z.object({
 
     notes: z.string().nullable()
 
-})
+}).strict()
+
+export const rescheduleSchema = z.object({
+
+    starts_at: z.iso.datetime().transform((value) => new Date(value))
+
+}).strict()
 

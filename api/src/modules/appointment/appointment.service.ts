@@ -2,6 +2,7 @@ import type { Appointment, Patient } from "../../generated/prisma/client.js";
 import { HttpError } from "../errors/HttpError.js";
 import type { IPatientRepository } from "../patient/patient.interface.js";
 import type { AppointmentFilters, AppointmentPagination, AppointmentSorting, PaginationProperties } from "./appointment.auxiliar.func/buildAppointmentFilters.js";
+import { isAtLeast24HoursBefore } from "./appointment.auxiliar.func/isAtLeast24HoursBefore.js";
 import { isValidAppointmentDate } from "./appointment.auxiliar.func/isValidAppointmentDate.js";
 import type { IAppointmentRepository } from "./appointment.interface.js";
 import dayjs from './appointment.util.dayjs.js'
@@ -59,18 +60,13 @@ export class AppointmentService {
     async createAppointment(appointmentData: Pick<Appointment, 'starts_at' | 'patient_id'>): Promise<Appointment> {
         const { starts_at, patient_id } = appointmentData
 
-        if (!isValidAppointmentDate(starts_at)) throw new HttpError(400, 'Horário Inválido para consulta')
-
-        const isWeekend = [0, 6].includes(dayjs(starts_at).tz('America/Sao_Paulo').day())
-        if (isWeekend) {
-            throw new HttpError(400, 'A data não deve ser um final de semana')
-        }
+        if (!isValidAppointmentDate(starts_at)) throw new HttpError(400, 'Horário / dia Inválido para consulta')
 
         const isSomeAppointmentScheduled = await this.appointmentRepository.findScheduledAppointmentByPatientId(patient_id)
         if (isSomeAppointmentScheduled) throw new HttpError(400, 'Voce ja tem uma consulta agendada')
 
         const isSomeAppointmentAtThisDateTime = await this.appointmentRepository.findAppointmentByDate(starts_at)
-        if (isSomeAppointmentAtThisDateTime) throw new HttpError(400, 'Voce ja tem uma consulta marcada nesse horário')
+        if (isSomeAppointmentAtThisDateTime) throw new HttpError(400, 'Já tem uma consulta marcada nesse horário')
 
 
         const ends_at = dayjs(starts_at).add(1, 'hour').toDate()
@@ -111,19 +107,79 @@ export class AppointmentService {
         return updatedAppointment
     }
 
-    async cancelAppointment(id: Appointment['id']): Promise<Appointment> {
+    async reschedule(id: Appointment['id'], starts_at: Appointment['starts_at'], patient_id: Patient['id']): Promise<Appointment> {
+
+        const appointment = await this.appointmentRepository.findAppointmentById(id)
+
+        if (!appointment)
+            throw new HttpError(404, 'consulta não encontrada')
+
+        const isAppointmentOwner = appointment.patient_id === patient_id
+
+        if (!isAppointmentOwner)
+            throw new HttpError(403, 'Consulta não pertence ao usuário autenticado')
+
+        if (appointment.status === 'CANCELLED' || appointment.status === 'COMPLETED')
+            throw new HttpError(400, 'Consulta cancelada ou já completa')
+
+        if (appointment.rescheduled_at)
+            throw new HttpError(400, 'Voce só pode remarcar a mesma consulta 1 vez')
+
+        if (!isAtLeast24HoursBefore(appointment.starts_at))
+            throw new HttpError(400, 'Voce deve remarcar com pelo menos 24 horas de antecedência da consulta atual')
+
+        if (!isValidAppointmentDate(starts_at))
+            throw new HttpError(400, 'Horário / dia Inválido para consulta')
+
+
+        const isSomeAppointmentAtThisDateTime = await this.appointmentRepository.findAppointmentByDate(starts_at)
+        if (isSomeAppointmentAtThisDateTime) throw new HttpError(400, 'Já tem uma consulta marcada nesse horário')
+
+
+        const ends_at = dayjs(starts_at).add(1, 'hour').toDate()
+
+        const updatedAppointment = await this.appointmentRepository.reschedule(id, starts_at, ends_at)
+
+        return updatedAppointment
+    }
+
+    async psychologistCancel(id: Appointment['id']): Promise<Appointment> {
 
         const appointment = await this.appointmentRepository.findAppointmentById(id)
         if (!appointment) throw new HttpError(404, 'Consulta não encontrada')
 
         if (appointment.status === 'COMPLETED' ||
             appointment.status === 'CANCELLED')
-            throw new HttpError(400, 'Consulta completa ou já cancelada')
+            throw new HttpError(400, 'Consulta já concluída ou cancelada')
 
         const cancelledAppointment = await this.appointmentRepository.cancelAppointment(id)
 
         return cancelledAppointment
     }
+
+    async patientCancel(id: Appointment['id'], patient_id: Patient['id']): Promise<Appointment> {
+
+        const appointment = await this.appointmentRepository.findAppointmentById(id)
+        if (!appointment) throw new HttpError(404, 'consulta não encontrada')
+
+        const isAppointmentOwner = appointment.patient_id === patient_id
+        if (!isAppointmentOwner)
+            throw new HttpError(403, 'consulta não pertence ao usuário autenticado')
+
+        if (appointment.status === 'CANCELLED' || appointment.status === 'COMPLETED')
+            throw new HttpError(400, 'consulta já cancelada ou concluída')
+
+        if (!isAtLeast24HoursBefore(appointment.starts_at))
+            throw new HttpError(400, 'Você só pode cancelar a consulta com pelo menos 24 horas de antecedência')
+
+        const cancelledAppointment = await this.appointmentRepository.cancelAppointment(id)
+
+        return cancelledAppointment
+    }
+
+
+
+    // CRON JOB
 
     async completeFinishedAppointments(): Promise<number> {
         const completedAppointments = await this.appointmentRepository.updateFinishedAppointments()
