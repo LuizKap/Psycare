@@ -1,7 +1,8 @@
 import type { Request, Response } from "express";
 import type { AppointmentService } from "./appointment.service.js";
-import { appointmentFilterSchema, appointmentPaginationSchema, appointmentSortingSchema, checkAvailabilitySchema, createAppointmentSchema, idSchema, updateAppointmentSchema } from "./appointment.schema.js";
+import { appointmentFilterSchema, appointmentPaginationSchema, appointmentSortingSchema, checkAvailabilitySchema, createAppointmentSchema, idSchema, updateNotesSchema } from "./appointment.schema.js";
 import type { PatientUser } from "../../middlewares/auth.middleware.js";
+import type { Appointment } from "../../generated/prisma/client.js";
 
 export class AppointmentController {
     constructor(private appointmentService: AppointmentService) { }
@@ -48,13 +49,13 @@ export class AppointmentController {
         res.json(appointments)
     }
 
-    updateAppointment = async (req: Request, res: Response) => {
-        const { notes, starts_at } = updateAppointmentSchema.parse(req.body)
+    updateNotes = async (req: Request, res: Response) => {
+        const { notes } = updateNotesSchema.parse(req.body)
         const { id } = idSchema.parse(req.params)
 
-        const updatedAppointment = await this.appointmentService.updateAppointment(id, { notes, starts_at })
+        const updatedAppointment = await this.appointmentService.updateNotes(id, notes)
 
-        res.json({ updatedAppointment, message: 'consulta atualizada com sucesso!' })
+        res.json({ updatedAppointment, message: 'observações atualizadas com sucesso!' })
     }
 
     cancelAppointment = async (req: Request, res: Response) => {
@@ -62,6 +63,6 @@ export class AppointmentController {
 
         const cancelledAppointment = await this.appointmentService.cancelAppointment(id)
 
-        res.json({cancelledAppointment, message: 'consulta cancelada com sucesso!'})
+        res.json({ cancelledAppointment, message: 'consulta cancelada com sucesso!' })
     }
 }

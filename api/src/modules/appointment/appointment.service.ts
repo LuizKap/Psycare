@@ -1,7 +1,7 @@
 import type { Appointment, Patient } from "../../generated/prisma/client.js";
 import { HttpError } from "../errors/HttpError.js";
 import type { IPatientRepository } from "../patient/patient.interface.js";
-import type { AppointmentFilters, AppointmentPagination, AppointmentSorting, PaginationProperties, UpdateAppointmentData } from "./appointment.auxiliar.func/buildAppointmentFilters.js";
+import type { AppointmentFilters, AppointmentPagination, AppointmentSorting, PaginationProperties } from "./appointment.auxiliar.func/buildAppointmentFilters.js";
 import { isValidAppointmentDate } from "./appointment.auxiliar.func/isValidAppointmentDate.js";
 import type { IAppointmentRepository } from "./appointment.interface.js";
 import dayjs from './appointment.util.dayjs.js'
@@ -101,43 +101,12 @@ export class AppointmentService {
         return appointments
     }
 
-    async updateAppointment(id: Appointment['id'], updateData: UpdateAppointmentData): Promise<Appointment> {
-        const { notes, starts_at } = updateData
+    async updateNotes(id: Appointment['id'], notes: Appointment['notes'] | null): Promise<Appointment> {
 
         const appointment = await this.appointmentRepository.findAppointmentById(id)
         if (!appointment) throw new HttpError(404, 'consulta não encontrada')
 
-
-
-
-        // Se starts_at não foi alterado, mantém o ends_at atual
-        let ends_at = appointment.ends_at
-
-        if (starts_at !== undefined) {
-
-            if (appointment.status === 'CANCELLED' ||
-                appointment.status === 'COMPLETED') {
-
-                throw new HttpError(400, 'Você não pode atualizar o horário de uma consulta cancelada ou concluída')
-            }
-
-            if (starts_at < new Date()) throw new HttpError(409,
-                'Você não pode atualizar o horário antecedendo o horário/dia de hoje')
-
-
-            const isSomeAppointmentAtThisDateTime = await this.appointmentRepository.findAppointmentByDate(starts_at, id)
-            if (isSomeAppointmentAtThisDateTime) throw new HttpError(409,
-                'Já existe uma consulta nesse horário')
-
-
-            if (!isValidAppointmentDate(starts_at)) throw new HttpError(400,
-                'Esse horário viola a regra do seu horário de trabalho')
-
-            ends_at = dayjs(starts_at).add(1, 'hour').toDate()
-        }
-
-
-        const updatedAppointment = await this.appointmentRepository.updateAppointment(id, { notes, starts_at }, ends_at)
+        const updatedAppointment = await this.appointmentRepository.updateNotes(id, notes)
 
         return updatedAppointment
     }

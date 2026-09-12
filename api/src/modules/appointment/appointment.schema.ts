@@ -55,14 +55,9 @@ export const idSchema = z.object({
     id: z.string()
 })
 
-export const updateAppointmentSchema = z.object({
+export const updateNotesSchema = z.object({
 
-    starts_at: z.iso.datetime().transform((value) => new Date(value)).optional(),
+    notes: z.string().nullable()
 
-    notes: z.string().nullable().optional()
-}).refine(
-    data => data.notes !== undefined || data.starts_at !== undefined,
-    {
-        message: 'Informe pelo menos um campo para atualizar'
-    })
+})
 

@@ -1,7 +1,13 @@
 import type { PrismaClient } from '../../generated/prisma/client.js';
 import type { IAppointmentRepository } from './appointment.interface.js';
 import type { Appointment, Patient } from '../../generated/prisma/client.js';
-import { build_find_appointments_filters, build_update_appointment_data, type AppointmentFilters, type AppointmentPagination, type AppointmentSorting, type PaginationProperties, type UpdateAppointmentData } from './appointment.auxiliar.func/buildAppointmentFilters.js';
+import {
+    build_find_appointments_filters,
+    type AppointmentFilters,
+    type AppointmentPagination,
+    type AppointmentSorting,
+    type PaginationProperties
+} from './appointment.auxiliar.func/buildAppointmentFilters.js';
 
 
 
@@ -102,34 +108,28 @@ export class AppointmentRepository implements IAppointmentRepository {
     }
 
     async updateFinishedAppointments(): Promise<number> {
-    const result = await this.prisma.appointment.updateMany({
-        where: {
-            status: 'SCHEDULED',
-            ends_at: {
-                lte: new Date()
+        const result = await this.prisma.appointment.updateMany({
+            where: {
+                status: 'SCHEDULED',
+                ends_at: {
+                    lte: new Date()
+                }
+            },
+            data: {
+                status: 'COMPLETED'
             }
-        },
-        data: {
-            status: 'COMPLETED'
-        }
-    })
+        })
 
-    return result.count
-}
+        return result.count
+    }
 
-    async updateAppointment(
+    async updateNotes(
         id: Appointment['id'],
-        updateData: UpdateAppointmentData,
-        ends_at: Appointment['ends_at']): Promise<Appointment> {
-
-        const data = build_update_appointment_data(updateData)
+        notes: Appointment['notes'] | null): Promise<Appointment> {
 
         return await this.prisma.appointment.update({
             where: { id },
-            data: {
-                ...data,
-                ends_at
-            }
+            data: { notes }
         })
     }
 

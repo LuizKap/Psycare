@@ -1,5 +1,11 @@
 import type { Appointment, Patient } from "../../generated/prisma/client.js";
-import type { AppointmentFilters, AppointmentPagination, AppointmentSorting, PaginationProperties, UpdateAppointmentData } from "./appointment.auxiliar.func/buildAppointmentFilters.js";
+import type
+{
+    AppointmentFilters,
+    AppointmentPagination,
+    AppointmentSorting,
+    PaginationProperties
+} from "./appointment.auxiliar.func/buildAppointmentFilters.js";
 
 
 export interface IAppointmentRepository {
@@ -27,10 +33,9 @@ export interface IAppointmentRepository {
 
     updateFinishedAppointments(): Promise<number>
 
-    updateAppointment(
+    updateNotes(
         id: Appointment['id'],
-        updateData: UpdateAppointmentData,
-        ends_at: Appointment['ends_at']
+        notes: Appointment['notes']
     ): Promise<Appointment>
 
     cancelAppointment(id: Appointment['id']): Promise<Appointment>

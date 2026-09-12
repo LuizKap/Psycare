@@ -2,10 +2,7 @@
 import { Prisma } from "../../../generated/prisma/client.js";
 import type { Appointment } from "../../../generated/prisma/client.js";
 
-export type UpdateAppointmentData = {
-    starts_at?: Date | undefined,
-    notes?: string | null | undefined
-}
+
 
 
 export type AppointmentFilters = {
@@ -71,13 +68,3 @@ export function build_find_appointments_filters(filters: AppointmentFilters): Pr
     return where
 }
 
-export function build_update_appointment_data(updateData: UpdateAppointmentData): Prisma.AppointmentUpdateInput {
-
-    const data: Prisma.AppointmentUpdateInput = {}
-
-    if (updateData.notes !== undefined) data.notes = updateData.notes
-
-    if (updateData.starts_at !== undefined) data.starts_at = updateData.starts_at
-
-    return data
-}
