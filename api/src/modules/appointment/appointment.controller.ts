@@ -54,7 +54,10 @@ export class AppointmentController {
 
         const updatedAppointment = await this.appointmentService.updateNotes(id, notes)
 
-        res.json({ updatedAppointment, message: 'observações atualizadas com sucesso!' })
+        res.json({
+            updatedAppointment,
+            message: 'observações atualizadas com sucesso!'
+        })
     }
 
     reschedule = async (req: Request, res: Response) => {
