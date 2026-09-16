@@ -1,18 +1,33 @@
 import { BrowserRouter, Routes, Route } from "react-router"
-import Navbar from "./components/Header/Navbar/Navbar"
-import Home from "../Home/Home"
+import Navbar from "./components/Navbar/Navbar"
+import Home from "./Routes/Home/Home"
+import { useState } from "react"
+import Sidebar from "./components/Sidebar/Sidebar"
 
 
 function App() {
+
+  const [isOpen, setIsOpen] = useState<boolean>(false)
+
+  const toggleSidebar = () => { setIsOpen(isOpen => !isOpen) }
+
+  const closeSidebar = () => { setIsOpen(false) }
+
   return (
+
     <BrowserRouter>
-      <Navbar />
+
+      <Navbar toggleSidebar={toggleSidebar} />
+
+      <Sidebar isOpen={isOpen} />
 
       <Routes>
-        <Route path="/" element={<Home />} />
+
+        <Route path="/" element={<Home closeSidebar={closeSidebar} />} />
 
       </Routes>
     </BrowserRouter>
+
   )
 }
 

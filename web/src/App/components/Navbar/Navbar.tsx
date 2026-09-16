@@ -1,9 +1,13 @@
 import { NavLink } from "react-router"
 import "./Navbar.css"
+import type { NavbarProps } from "../../types"
 
-function Navbar() {
+
+function Navbar({ toggleSidebar }: NavbarProps) {
+
     return (
         <header>
+
             <nav>
                 <div className="logo">Psycare</div>
 
@@ -15,11 +19,14 @@ function Navbar() {
                     <NavLink to="/about" className="nav-link">Sobre o Psicólogo</NavLink>
                 </div>
 
-                <div className="profile">
-                    <img src="/profile/user.png" alt="profile-image" className="profile-img"/>
-                    <img src="/profile/down-arrow.svg" alt="" />
-                </div>
+
+                <img src="/profile/user.svg" alt="profile-image"
+                    className="profile-img"
+                    onClick={toggleSidebar}
+                />
+
             </nav>
+
         </header>
     )
 }

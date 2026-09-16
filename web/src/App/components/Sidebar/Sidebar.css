@@ -1,0 +1,131 @@
+.side {
+    display: flex;
+    flex-direction: column;
+
+    width: 30%;
+    padding: 30px;
+    gap: 20px;
+
+    position: fixed;
+    top: 70px;
+    right: 10px;
+    bottom: 10px;
+    z-index: 99;
+
+    background: #ffffff73;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+
+    overflow-y: auto;
+
+    border: 1px solid #ffffff99;
+    border-radius: 30px;
+
+    transform: translateX(110%);
+    transition: transform 0.3s ease;
+}
+
+.side.open {
+
+    transform: translateX(0);
+}
+
+.side::-webkit-scrollbar {
+    width: 8px;
+}
+
+.side::-webkit-scrollbar-track {
+    background: transparent;
+    margin-block: 13px;
+}
+
+.side::-webkit-scrollbar-thumb {
+    background: #b8b8b8;
+    border-radius: 999px;
+    border: 2px solid transparent;
+    background-clip: content-box;
+}
+
+.side::-webkit-scrollbar-thumb:hover {
+    background: #888;
+    background-clip: content-box;
+}
+
+.side-introduction {
+    display: flex;
+    flex-direction: column;
+
+    align-items: center;
+    gap: 20px;
+}
+
+.side-introduction img {
+    width: 32px;
+    background: #0fb8717a;
+    border-radius: 20px;
+}
+
+.profile-link {
+    text-decoration: none;
+    padding: 5px 15px;
+
+    background-color: #ffffffa9;
+    border: 1px solid #e9e6e6;
+    border-radius: 10px;
+    font-weight: 500;
+
+    color: #000000;
+    transition: .4s;
+}
+
+.profile-link:hover{
+    background: #139e5857;
+}
+
+.side-appointment {
+    display: flex;
+    flex-direction: column;
+
+    background: #ffffffc7;
+    border-radius: 15px;
+    padding: 20px;
+
+    align-items: center;
+    gap: 10px;
+}
+
+.reschedule-link {
+    text-decoration: none;
+    background: #10dd8875;
+    padding: 4px 15px;
+    border-radius: 10px;
+    border: solid 1px #fffefef1;
+
+    color: black;
+
+    transition: .4s;
+}
+
+.reschedule-link:hover{
+    background: #0fb871b5;
+}
+
+.side-menu {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.side-menu-link {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+
+    text-decoration: none;
+    color: black;
+    font-weight: 500;
+}
+
+.side-menu-link:hover {
+    color: #10dd8875;
+}

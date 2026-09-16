@@ -4,12 +4,12 @@ header {
 
     display: flex;
     justify-content: center;
-
 }
 
 nav {
     width: 90%;
-    padding: 10px 20px;
+    padding: 0 20px;
+    height: 50px;
 
     display: flex;
     align-items: center;
@@ -72,13 +72,14 @@ nav {
     transform: scaleX(1);
 }
 
-
-.profile {
-    display: flex;
-    margin-left: auto;
-    gap: 5px;
-}
-
 .profile-img {
     width: 32px;
+    background: #0fb8717a;
+    border-radius: 20px;
+    margin-left: auto;
+}
+
+.profile-img:hover {
+  transform: scale(1.08);
+  background: #0fb871b5;
 }
