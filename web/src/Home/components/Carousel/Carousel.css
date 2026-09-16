@@ -1,0 +1,70 @@
+.swiper {
+    width: 100%;
+}
+
+.swiper-slide {
+    width: 100%;
+    height: 100%;
+}
+
+.carousel-btn-group {
+    margin-bottom: 70px;
+
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.emotion-btn{
+    padding: 10px 30px;
+    background: #3534346e;
+    
+    border-radius: 20px;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.joy,
+.calmness,
+.confidence {
+    display: grid;
+    justify-items: center;
+}
+
+.emotion-content {
+    display: grid;
+    justify-items: center;
+    gap: 15px;
+}
+
+.emotion-link {
+    text-decoration: none;
+    color: #000000cc;
+    font-weight: 600;
+
+    padding: 10px;
+    border-radius: 15px;
+    border: solid 1px #31353544;
+
+    transition: .5s;
+}
+
+.calmness-link, .calmness-btn.active {
+    background: #10dd8875;
+}
+
+.joy-link, .joy-btn.active {
+    background: #aaaa0d91;
+}
+
+.confidence-link, .confidence-btn.active {
+    background: #a7d4c2
+}
+
+.emotion-link:hover {
+    background: azure;
+}
+
+.emotion-img {
+    width: 50%;
+}
