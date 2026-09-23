@@ -9,6 +9,7 @@ function Navbar({ toggleSidebar }: NavbarProps) {
         <header>
 
             <nav>
+
                 <div className="logo">Psycare</div>
 
                 <div className="nav-links-container">
@@ -18,7 +19,6 @@ function Navbar({ toggleSidebar }: NavbarProps) {
                     <NavLink to="/journey" className="nav-link">Jornada do campeão</NavLink>
                     <NavLink to="/about" className="nav-link">Sobre o Psicólogo</NavLink>
                 </div>
-
 
                 <img src="/profile/user.svg" alt="profile-image"
                     className="profile-img"

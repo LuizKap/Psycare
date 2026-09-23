@@ -1,8 +1,12 @@
-import { BrowserRouter, Routes, Route } from "react-router"
+import { Routes, Route, Outlet } from "react-router"
 import Navbar from "./components/Navbar/Navbar"
 import Home from "./Routes/Home/Home"
 import { useState } from "react"
-import Sidebar from "./components/Sidebar/Sidebar"
+import LoggedSidebar from "./components/Sidebar/LoggedSidebar/LoggedSidebar"
+import GuestSidebar from "./components/Sidebar/GuestSidebar/GuestSidebar"
+import Register from "./Routes/Auth/Register/Register"
+import RegisterPatient from "./Routes/Auth/Register/Components/Patient/Patient"
+import RegisterPsychologist from "./Routes/Auth/Register/Components/Psychologist/Psychologist"
 
 
 function App() {
@@ -14,19 +18,36 @@ function App() {
   const closeSidebar = () => { setIsOpen(false) }
 
   return (
-
-    <BrowserRouter>
-
-      <Navbar toggleSidebar={toggleSidebar} />
-
-      <Sidebar isOpen={isOpen} />
+    <>
 
       <Routes>
 
-        <Route path="/" element={<Home closeSidebar={closeSidebar} />} />
+        <Route
+          element={
+            <>
+              <Navbar toggleSidebar={toggleSidebar} />
+              <GuestSidebar isOpen={isOpen} />
+              <Outlet />
+            </>
+          }>
+
+          <Route path="/" element={<Home closeSidebar={closeSidebar} />} />
+        </Route>
+
+        <Route
+          path="/register"
+          element={<Register />}
+        >
+
+          <Route path="patient" element={<RegisterPatient />}></Route>
+
+          <Route path="psychologist" element={<RegisterPsychologist />}></Route>
+
+        </Route>
 
       </Routes>
-    </BrowserRouter>
+
+    </>
 
   )
 }

@@ -1,8 +1,8 @@
 import { Link } from "react-router";
-import './Sidebar.css'
-import type { SidebarProps } from "../../types";
+import './LoggedSidebar.css'
+import type { SidebarProps } from "../../../types";
 
-function Sidebar({ isOpen }: SidebarProps) {
+function LoggedSidebar({ isOpen }: SidebarProps) {
 
     return (
 
@@ -59,4 +59,4 @@ function Sidebar({ isOpen }: SidebarProps) {
     )
 }
 
-export default Sidebar
+export default LoggedSidebar
