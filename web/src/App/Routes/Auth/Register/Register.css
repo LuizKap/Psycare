@@ -2,7 +2,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    
+    overflow: auto;
 
     width: 45%;
     height: 670px;
@@ -17,6 +17,12 @@
     border: 1px solid #ffffff99;
     border-radius: 30px;
 
+}
+
+.register-content {
+    position: relative;
+    display: flex;
+    
 }
 
 .introduction {
@@ -45,4 +51,101 @@
 .switch-role a.active {
     background: #0fb871;
     color: white;
+
+    transition: .3s;
 }
+
+label img {
+    width: 30px;
+}
+
+label input {
+    width: 100%;
+    border: none;
+    outline: none;
+    background: none;
+}
+
+label {
+    display: flex;
+
+    align-items: center;
+    gap: 10px;
+
+    padding: 5px;
+
+    border: 1px solid #ddd;
+    border-radius: 10px;
+}
+
+.input-error {
+    border: 1px solid #e57373;
+}
+
+.input-error input::placeholder {
+    color: #e57373;
+}
+
+
+
+.pass-container {
+    display: flex;
+    gap: 10px;
+}
+
+button {
+    background: #0fb871;
+    border: none;
+    border-radius: 20px;
+    padding: 12px;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+button:hover {
+    background: #0af090;
+}
+
+.log-in {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+.log-in span {
+    color: gray;
+}
+
+.log-in a {
+    color: black;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+
+    z-index: 1;
+}
+
+.form-error {
+    color: red;
+    font-size: 1rem;
+    align-self: center;
+}
+
+.error-message{
+    color: red;
+    font-weight: 600;
+}
+
+
+
+/* .calmness-login {
+    position: absolute;
+    right: -230px;
+    bottom: 0;
+    z-index: 2;
+    width: 300px;
+
+} */

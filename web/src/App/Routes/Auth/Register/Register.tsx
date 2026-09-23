@@ -23,7 +23,9 @@ function Register() {
 
             </div>
 
-            <Outlet />
+            <div className="register-content">
+                <Outlet />
+            </div>
 
         </section>
     )

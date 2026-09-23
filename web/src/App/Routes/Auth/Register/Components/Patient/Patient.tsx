@@ -1,7 +1,6 @@
 import { useState } from "react"
 import { Link, useNavigate } from "react-router"
 import type { SubmitEvent } from "react"
-import './Patient.css'
 import type { ApiError, FormError } from "../types"
 
 
@@ -15,8 +14,8 @@ function RegisterPatient() {
 
     const [loading, setLoading] = useState<boolean>(false)
 
-    function hasError(field: string) {
-        return formErrors?.some(error => error.path.includes(field))
+    function getError(field: string) {
+        return formErrors?.find(error => error.path.includes(field))?.message
     }
 
 
@@ -38,7 +37,7 @@ function RegisterPatient() {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                    name: formData.get('username'),
+                    name: formData.get('name'),
                     email: formData.get('email'),
                     password: formData.get('password'),
                     confirmPassword: formData.get('confirmPassword'),
@@ -60,38 +59,46 @@ function RegisterPatient() {
     }
 
     return (
-
-        <div className="register-content">
+        <>
             <form onSubmit={handleSubmit}>
 
-                <label htmlFor="username" className={hasError("name") ? "input-error" : ""}>
+                {getError('name') && <span className="error-message">{getError('name')}</span>}
+
+                <label htmlFor="name" className={getError("name") ? "input-error" : ""}>
                     <img src="/profile/user.svg" alt="" />
-                    <input type="text" name="username" id="username" placeholder="Nome Completo" />
+                    <input type="text" name="name" id="name" placeholder="Nome Completo" />
                 </label>
 
-                <label htmlFor="email" className={hasError("email") ? "input-error" : ""}>
+                {getError('email') && <span className="error-message">{getError('email')}</span>}
+
+                <label htmlFor="email" className={getError("email") ? "input-error" : ""}>
                     <img src="/profile/email.svg" alt="" />
                     <input type="email" name="email" id="email" placeholder="email: exemplo@gmail.com" />
                 </label>
 
+                {getError('password') && <span className="error-message">{getError('password')}</span>}
+                {getError('confirmPassword') && <span className="error-message">{getError('confirmPassword')}</span>}
+
                 <div className="pass-container">
-                    <label htmlFor="password" className={hasError("password") ? "input-error" : ""}>
+                    <label htmlFor="password" className={getError("password") ? "input-error" : ""}>
                         <img src="/profile/password.svg" alt="" />
                         <input type="password" name="password" id="password" placeholder="Digite sua senha" />
                     </label>
 
-                    <label htmlFor="confirmPassword" className={hasError("password") ? "input-error" : ""}>
+                    <label htmlFor="confirmPassword" className={getError("confirmPassword") ? "input-error" : ""}>
                         <img src="/profile/password.svg" alt="" />
                         <input type="password" name="confirmPassword" id="confirmPassword" placeholder="Confirme a senha" />
                     </label>
                 </div>
 
-                <label htmlFor="phone" className={hasError("phone") ? "input-error" : ""}>
+                {getError('phone') && <span className="error-message">{getError('phone')}</span>}
+
+                <label htmlFor="phone" className={getError("phone") ? "input-error" : ""}>
                     <img src="/profile/phone.svg" alt="" />
                     <input type="tel" name="phone" id="phone" placeholder="telefone exemplo: 21987654321" />
                 </label>
 
-                {error && <p className="form-error">{error}</p>}
+                {error && <p className="form-error">Erro: {error}</p>}
 
                 <button type="submit" disabled={loading}>{loading ? "Criando conta..." : "Criar Conta"}</button>
 
@@ -101,9 +108,7 @@ function RegisterPatient() {
                 </div>
 
             </form>
-
-            <img src="/emotions/calmness-login.png" alt="" className="calmness-login" />
-        </div>
+        </>
     )
 
 }
