@@ -1,12 +1,14 @@
 import { Routes, Route, Outlet } from "react-router"
+import { AuthContext } from "../contexts/Auth.context"
+import { useContext, useState } from "react"
 import Navbar from "./components/Navbar/Navbar"
 import Home from "./Routes/Home/Home"
-import { useState } from "react"
-import LoggedSidebar from "./components/Sidebar/LoggedSidebar/LoggedSidebar"
+import PatientSidebar from "./components/Sidebar/PatientSidebar/PatientSidebar"
 import GuestSidebar from "./components/Sidebar/GuestSidebar/GuestSidebar"
 import Register from "./Routes/Auth/Register/Register"
-import RegisterPatient from "./Routes/Auth/Register/Components/Patient/Patient"
-import RegisterPsychologist from "./Routes/Auth/Register/Components/Psychologist/Psychologist"
+import RegisterPatient from "./Routes/Auth/Register/Components/Patient"
+import RegisterPsychologist from "./Routes/Auth/Register/Components/Psychologist"
+
 
 
 function App() {
@@ -17,28 +19,36 @@ function App() {
 
   const closeSidebar = () => { setIsOpen(false) }
 
+  const auth = useContext(AuthContext)
+
   return (
-    <>
+
+    
 
       <Routes>
 
         <Route
-          element={
+          element=
+          {
             <>
               <Navbar toggleSidebar={toggleSidebar} />
-              <GuestSidebar isOpen={isOpen} />
+
+              {auth?.user ?
+                <PatientSidebar isOpen={isOpen} />
+                : <GuestSidebar isOpen={isOpen} />}
+
               <Outlet />
             </>
           }>
 
           <Route path="/" element={<Home closeSidebar={closeSidebar} />} />
+
         </Route>
 
         <Route
           path="/register"
           element={<Register />}
         >
-
           <Route path="patient" element={<RegisterPatient />}></Route>
 
           <Route path="psychologist" element={<RegisterPsychologist />}></Route>
@@ -46,8 +56,6 @@ function App() {
         </Route>
 
       </Routes>
-
-    </>
 
   )
 }

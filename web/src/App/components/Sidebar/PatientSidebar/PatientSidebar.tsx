@@ -1,12 +1,12 @@
 import { Link } from "react-router";
-import './LoggedSidebar.css'
+import styles from './PatientSidebar.module.css'
 import type { SidebarProps } from "../../../types";
 
-function LoggedSidebar({ isOpen }: SidebarProps) {
+function PatientSidebar({ isOpen }: SidebarProps) {
 
     return (
 
-        <div className={`side ${isOpen ? 'open' : ''}`}>
+        <div className={`${styles.side} ${isOpen ? styles.open : ''}`}>
 
             <section className="side-introduction">
 
@@ -59,4 +59,4 @@ function LoggedSidebar({ isOpen }: SidebarProps) {
     )
 }
 
-export default LoggedSidebar
+export default PatientSidebar

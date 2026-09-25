@@ -1,16 +1,16 @@
 import { Link } from "react-router";
-import './GuestSidebar.css'
+import styles from './GuestSidebar.module.css'
 import type { SidebarProps } from "../../../types";
 
 function GuestSidebar({ isOpen }: SidebarProps) {
 
     return (
 
-        <div className={`side ${isOpen ? 'open' : ''}`}>
+        <div className={`${styles.side} ${isOpen ? styles.open : ''}`}>
 
-            <Link to='/register' className="register">Registrar-se</Link>
-            <Link to='/login' className="login">Login</Link>
-    
+            <Link to='/register' className={styles.register}>Registrar-se</Link>
+            <Link to='/login' className={styles.login}>Login</Link>
+
         </div>
     )
 }

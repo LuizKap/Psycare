@@ -1,13 +1,13 @@
 import { NavLink, Outlet } from "react-router";
-import "./Register.css"
+import styles from "./Register.module.css"
 
 function Register() {
 
     return (
 
-        <section className="register-container">
+        <section className={styles['register-container']}>
 
-            <div className="introduction">
+            <div className={styles.introduction}>
 
                 <h1>Psycare</h1>
                 <p>Bem-vindo ao Psycare</p>
@@ -15,15 +15,25 @@ function Register() {
 
             </div>
 
-            <div className="switch-role">
+            <div className={styles['switch-role']}>
 
-                <NavLink to='patient'>Sou paciente</NavLink>
+                <NavLink
+                    to='patient'
+                    className={({ isActive }) => `${styles['switch-link']} ${isActive ? styles.active : ''}`}
+                >
+                    Sou paciente
+                </NavLink>
 
-                <NavLink to='psychologist'>Sou psicólogo</NavLink>
+                <NavLink
+                    to='psychologist'
+                    className={({ isActive }) => `${styles['switch-link']} ${isActive ? styles.active : ''}`}
+                >
+                    Sou psicólogo
+                </NavLink>
 
             </div>
 
-            <div className="register-content">
+            <div className={styles['register-content']}>
                 <Outlet />
             </div>
 
