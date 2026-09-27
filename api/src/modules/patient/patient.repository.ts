@@ -15,7 +15,9 @@ export class PatientRepository implements IPatientRepository {
             include: {
                 user: {
                     select: {
-                        email: true
+                        email: true,
+                        id: true,
+                        role: true
                     }
                 }
             }

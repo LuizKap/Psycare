@@ -19,7 +19,14 @@ export class PsychologistRepository implements IPsychologistRepository {
 
     async findPsychologist(id: Psychologist['id']): Promise<Psychologist | null> {
         return this.prisma.psychologist.findUnique({
-            where: { id }
+            where: { id },
+            include: {user: {
+                select: {
+                    id: true,
+                    email: true,
+                    role: true
+                }
+            }}
         })
     }
 

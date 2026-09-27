@@ -63,7 +63,6 @@ export class AppointmentService {
         return availableHours
     }
 
-
     async createAppointment(appointmentData: Pick<Appointment, 'starts_at' | 'patient_id'>): Promise<Appointment> {
         const { starts_at, patient_id } = appointmentData
 
@@ -72,11 +71,9 @@ export class AppointmentService {
         if (validationError)
             throw new HttpError(400, validationError)
 
-        const isSomeAppointmentScheduled = await this.appointmentRepository.findScheduledAppointmentByPatientId(patient_id)
-        if (isSomeAppointmentScheduled) throw new HttpError(400, 'Voce ja tem uma consulta agendada')
 
-        const isSomeAppointmentAtThisDateTime = await this.appointmentRepository.findAppointmentByDate(starts_at)
-        if (isSomeAppointmentAtThisDateTime) throw new HttpError(400, 'Já tem uma consulta marcada nesse horário')
+        const appointmentAtThisTime = await this.appointmentRepository.findAppointmentByDate(starts_at)
+        if (appointmentAtThisTime) throw new HttpError(400, 'Já tem uma consulta marcada nesse horário')
 
 
         const ends_at = dayjs(starts_at).add(1, 'hour').toDate()
@@ -89,6 +86,13 @@ export class AppointmentService {
     async getPatientAppointments(patient_id: Patient['id']): Promise<Appointment[]> {
 
         const appointments = await this.appointmentRepository.findAllAppointmentsByPatientId(patient_id)
+
+        return appointments
+    }
+
+    async getPatientScheduledAppointments(patient_id: Patient['id']): Promise<Appointment[]> {
+
+        const appointments = await this.appointmentRepository.findScheduledAppointmentsByPatientId(patient_id)
 
         return appointments
     }

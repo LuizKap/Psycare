@@ -33,6 +33,15 @@ export class AppointmentController {
         res.json(appointments)
     }
 
+    getPatientScheduledAppointments = async (req: Request, res: Response) => {
+
+        const { patient_id } = req.user as PatientUser
+
+        const appointments = await this.appointmentService.getPatientScheduledAppointments(patient_id)
+
+        res.json(appointments)
+    }
+
     getFilteredAppointments = async (req: Request, res: Response) => {
 
         const { created_at, notes, starts_at, status, patient_name } = appointmentFilterSchema.parse(req.query)
