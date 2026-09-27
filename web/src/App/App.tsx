@@ -1,62 +1,67 @@
 import { Routes, Route, Outlet } from "react-router"
-import { AuthContext } from "../contexts/Auth.context"
-import { useContext, useState } from "react"
+import { useState } from "react"
+
 import Navbar from "./components/Navbar/Navbar"
+import { Sidebar } from "./components/Sidebar/Sidebar.render"
+
 import Home from "./Routes/Home/Home"
-import PatientSidebar from "./components/Sidebar/PatientSidebar/PatientSidebar"
-import GuestSidebar from "./components/Sidebar/GuestSidebar/GuestSidebar"
+
 import Register from "./Routes/Auth/Register/Register"
 import RegisterPatient from "./Routes/Auth/Register/Components/Patient"
 import RegisterPsychologist from "./Routes/Auth/Register/Components/Psychologist"
-
 
 
 function App() {
 
   const [isOpen, setIsOpen] = useState<boolean>(false)
 
-  const toggleSidebar = () => { setIsOpen(isOpen => !isOpen) }
+  const toggleSidebar = () => {
+    setIsOpen(isOpen => !isOpen)
+  }
 
-  const closeSidebar = () => { setIsOpen(false) }
-
-  const auth = useContext(AuthContext)
+  const closeSidebar = () => {
+    setIsOpen(false)
+  }
 
   return (
+    <Routes>
 
-    
+      {/* Layout principal */}
+      <Route
+        element={
+          <>
+            <Navbar toggleSidebar={toggleSidebar} />
+            <Sidebar isOpen={isOpen} />
 
-      <Routes>
+            <Outlet />
+          </>
+        }
+      >
+        {/* Páginas dentro do Layout */}
+        <Route
+          path="/"
+          element={<Home closeSidebar={closeSidebar} />}
+        />
+      </Route>
+
+
+      {/* Cadastro */}
+      <Route
+        path="/register"
+        element={<Register />}
+      >
+        <Route
+          path="patient"
+          element={<RegisterPatient />}
+        />
 
         <Route
-          element=
-          {
-            <>
-              <Navbar toggleSidebar={toggleSidebar} />
+          path="psychologist"
+          element={<RegisterPsychologist />}
+        />
+      </Route>
 
-              {auth?.user ?
-                <PatientSidebar isOpen={isOpen} />
-                : <GuestSidebar isOpen={isOpen} />}
-
-              <Outlet />
-            </>
-          }>
-
-          <Route path="/" element={<Home closeSidebar={closeSidebar} />} />
-
-        </Route>
-
-        <Route
-          path="/register"
-          element={<Register />}
-        >
-          <Route path="patient" element={<RegisterPatient />}></Route>
-
-          <Route path="psychologist" element={<RegisterPsychologist />}></Route>
-
-        </Route>
-
-      </Routes>
-
+    </Routes>
   )
 }
 

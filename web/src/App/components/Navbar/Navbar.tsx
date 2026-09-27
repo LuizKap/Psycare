@@ -1,6 +1,6 @@
 import { NavLink } from "react-router"
 import styles from "./Navbar.module.css"
-import type { NavbarProps } from "../../types"
+import type { NavbarProps } from "../../../types"
 
 function Navbar({ toggleSidebar }: NavbarProps) {
 

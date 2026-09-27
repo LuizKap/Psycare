@@ -1,54 +1,118 @@
-import { Link } from "react-router";
-import styles from './PatientSidebar.module.css'
-import type { SidebarProps } from "../../../types";
+import { Link } from "react-router"
+
+import { useAuth } from "../../../../hooks/useAuth"
+import type { SidebarProps } from "../../../../types"
+
+import styles from "./PatientSidebar.module.css"
+
+import type { Patient } from "../../../../types"
+import { useAppointment } from "../../../../hooks/useAppointment"
+import { formatAppointmentDate } from "../../../../utils/formatAppointmentDate"
+
+
 
 function PatientSidebar({ isOpen }: SidebarProps) {
 
+    const auth = useAuth()
+    const appointments_data = useAppointment()
+
+    const appointments = appointments_data.appointments
+    const profile = auth.profile as Patient
+
+
+
     return (
+        <div className={`${styles.side} ${isOpen ? styles.open : ""}`}>
 
-        <div className={`${styles.side} ${isOpen ? styles.open : ''}`}>
+            <section className={styles["side-introduction"]}>
 
-            <section className="side-introduction">
+                <h2 className={styles["side-username"]}>
+                    Olá {profile?.name}
+                </h2>
 
-                <h2 className="side-username">Olá usuário</h2>
-                <img src="/profile/user.svg" alt="usuario-imagem" />
-                <p>Paciente desde Abr/2023</p>
-                <Link to='/patient/me' className="profile-link">Editar Perfil</Link>
+                <img
+                    src="/profile/user.svg"
+                    alt="usuario-imagem"
+                />
+
+                <p>
+                    Paciente desde{" "}
+                    {new Date(profile.created_at).toLocaleDateString("pt-BR", {
+                        month: "short",
+                        year: "numeric"
+                    })}
+                </p>
+
+                <Link
+                    to="/patient/me"
+                    className={styles["profile-link"]}
+                >
+                    Editar Perfil
+                </Link>
 
             </section>
 
-            <section className="side-appointment">
 
-                <img src="/profile/appointments.svg" alt="Calendário-imagem" />
+            <section className={styles["side-appointment"]}>
+
+                <img
+                    src="/profile/appointments.svg"
+                    alt="Calendário-imagem"
+                />
+
                 <h3>Próxima Consulta</h3>
-                <p>Quinta-feira, 15:00h</p>
-                <Link to='/appointments/reschedule' className="reschedule-link">Reagendar</Link>
+
+                <p>{appointments[0] ?
+                    formatAppointmentDate(appointments[0].starts_at) : 'Nenhuma consulta agendada'}</p>
+
+                <Link
+                    to={appointments[0] ? '/appointments/reschedule' : '/appointments/create'}
+                    className={styles["reschedule-link"]}
+                >
+                    {appointments[0] ? 'Reagendar' : 'Agendar uma consulta'}
+                </Link>
 
             </section>
 
-            <section className="side-menu">
 
-                <Link to='/' className="side-menu-link" >
+            <section className={styles["side-menu"]}>
+
+                <Link
+                    to="/"
+                    className={styles["side-menu-link"]}
+                >
                     <img src="/profile/home.svg" alt="" />
                     <span>Home</span>
                 </Link>
 
-                <Link to='/appointments' className="side-menu-link">
+                <Link
+                    to="/appointments"
+                    className={styles["side-menu-link"]}
+                >
                     <img src="/profile/appointments.svg" alt="" />
                     <span>Minhas consultas</span>
                 </Link>
 
-                <Link to='/appointments/create' className="side-menu-link">
+                <Link
+                    to="/appointments/create"
+                    className={styles["side-menu-link"]}
+                >
                     <img src="/profile/new-appointment.svg" alt="" />
                     <span>Agendar nova consulta</span>
                 </Link>
 
-                <Link to='/mood' className="side-menu-link">
+                <Link
+                    to="/mood"
+                    className={styles["side-menu-link"]}
+                >
                     <img src="/profile/mood.svg" alt="" />
                     <span>Diário do humor</span>
                 </Link>
 
-                <Link to='/logout' className="side-menu-link">
+                <Link
+                    to="/logout"
+                    className={styles["side-menu-link"]}
+                >
                     <img src="/profile/logout.svg" alt="" />
                     <span>Sair</span>
                 </Link>

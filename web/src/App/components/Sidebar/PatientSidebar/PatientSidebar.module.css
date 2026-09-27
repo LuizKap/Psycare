@@ -11,7 +11,6 @@
     right: 10px;
     bottom: 10px;
     z-index: 99;
-    
 
     background: #ffffff73;
     backdrop-filter: blur(20px);
@@ -26,8 +25,7 @@
     transition: transform 0.3s ease;
 }
 
-.side.open {
-
+.open {
     transform: translateX(0);
 }
 
@@ -55,7 +53,6 @@
 .side-introduction {
     display: flex;
     flex-direction: column;
-
     align-items: center;
     gap: 20px;
 }
@@ -67,47 +64,49 @@
 }
 
 .profile-link {
-    text-decoration: none;
     padding: 5px 15px;
 
     background-color: #ffffffa9;
     border: 1px solid #e9e6e6;
     border-radius: 10px;
-    font-weight: 500;
 
     color: #000000;
-    transition: .4s;
+    font-weight: 500;
+    text-decoration: none;
+
+    transition: 0.4s;
 }
 
-.profile-link:hover{
+.profile-link:hover {
     background: #139e5857;
 }
 
 .side-appointment {
     display: flex;
     flex-direction: column;
+    align-items: center;
+    gap: 10px;
+
+    padding: 20px;
 
     background: #ffffffc7;
     border-radius: 15px;
-    padding: 20px;
-
-    align-items: center;
-    gap: 10px;
 }
 
 .reschedule-link {
-    text-decoration: none;
-    background: #10dd8875;
     padding: 4px 15px;
+
+    background: #10dd8875;
+    border: 1px solid #fffefef1;
     border-radius: 10px;
-    border: solid 1px #fffefef1;
 
     color: black;
+    text-decoration: none;
 
-    transition: .4s;
+    transition: 0.4s;
 }
 
-.reschedule-link:hover{
+.reschedule-link:hover {
     background: #0fb871b5;
 }
 
@@ -122,9 +121,9 @@
     align-items: center;
     gap: 20px;
 
-    text-decoration: none;
     color: black;
     font-weight: 500;
+    text-decoration: none;
 }
 
 .side-menu-link:hover {

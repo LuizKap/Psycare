@@ -1,52 +1,52 @@
 import { createContext, useEffect, useState } from "react"
+import type { AuthContextType, Patient, ProviderProps, Psychologist } from "../types"
+
+
+
 
 export const AuthContext = createContext<AuthContextType | null>(null)
 
-export type User = {
-    id: string,
-    email: string,
-    role: 'PATIENT'
-}
 
-type Patient = {
-    name: string;
-    id: string;
-    phone: string | null;
-    profile_image_url: string | null;
-    created_at: Date;
-    updated_at: Date;
-    user: User
-}
+export function AuthProvider({ children }: ProviderProps) {
 
-type AuthContextType = {
-    user: User | null
-    setUser: React.Dispatch<React.SetStateAction<User | null>>
-}
+    const [profile, setProfile] = useState<Patient | Psychologist | null>(null)
 
-export function AuthProvider({ children }: { children: React.ReactNode }) {
-
-    const [user, setUser] = useState<User | null>(null)
+    const [loading, setLoading] = useState<boolean>(false)
 
     useEffect(() => {
-        async function getUser() {
-            const response = await fetch("/patient/me")
 
-            if (!response.ok) {
+        async function getProfile() {
+
+            setLoading(true)
+
+            const patientResponse = await fetch("/patient/me")
+
+            if (patientResponse.ok) {
+                const patient: Patient = await patientResponse.json()
+                setProfile(patient)
+                setLoading(false)
                 return
             }
 
-            const patient = await response.json()
+            const psychologistResponse = await fetch("/psychologist/me")
 
-            setUser(patient.user)
+            if (psychologistResponse.ok) {
+                const psychologist: Psychologist = await psychologistResponse.json()
+                setProfile(psychologist)
+                setLoading(false)
+                return
+            }
+
+            setLoading(false)
         }
 
-        getUser()
+        getProfile()
 
     }, [])
 
     return (
 
-        <AuthContext.Provider value={{ user, setUser }}>
+        <AuthContext.Provider value={{ profile, setProfile, loading }}>
             {children}
         </AuthContext.Provider>
 

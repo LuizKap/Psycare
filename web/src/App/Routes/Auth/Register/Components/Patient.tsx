@@ -1,14 +1,14 @@
-import { useContext, useState } from "react"
+import { useState } from "react"
 import { Link, useNavigate } from "react-router"
 import type { SubmitEvent } from "react"
 import type { ApiError, FormError } from "./types"
-import { AuthContext } from "../../../../../contexts/Auth.context"
 import styles from '../Register.module.css'
+import { useAuth } from "../../../../../hooks/useAuth"
 
 
 function RegisterPatient() {
 
-    const auth = useContext(AuthContext)
+    const auth = useAuth()
 
     const navigate = useNavigate()
 
@@ -57,7 +57,7 @@ function RegisterPatient() {
             }
 
             const data = await response.json()
-            auth?.setUser(data.user)
+            auth.setProfile(data.user)
             navigate('/')
 
         } finally { setLoading(false) }

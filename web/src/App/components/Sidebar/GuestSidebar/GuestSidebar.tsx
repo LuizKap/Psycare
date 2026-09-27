@@ -1,6 +1,6 @@
 import { Link } from "react-router";
 import styles from './GuestSidebar.module.css'
-import type { SidebarProps } from "../../../types";
+import type { SidebarProps } from "../../../../types";
 
 function GuestSidebar({ isOpen }: SidebarProps) {
 
