@@ -20,7 +20,7 @@ export const registerPatientSchema = z.object({
     password: z.string()
         .min(12, 'A senha deve ter no minimo 12 caracteres')
         .max(100, 'A senha não deve ter mais que 100 caracteres').refine((value) => value.trim().length > 0,
-            { error: 'A senha não pode conter apenas espaços' }),
+            { error: 'O campo não deve ser vazio' }),
 
 
     confirmPassword: z.string().min(1, 'O campo não deve ser vazio')
@@ -41,7 +41,7 @@ export const loginPatientSchema = z.object({
         .toLowerCase(),
 
     password: z.string().refine((value) => value.trim().length > 0, {
-        error: 'A senha não pode conter apenas espaços'
+        error: 'O campo não deve ser vazio'
     })
 
 }).strict()
@@ -63,7 +63,7 @@ export const registerPsychologistSchema = z.object({
     password: z.string()
         .min(12, 'A senha deve ter no minimo 12 caracteres')
         .max(100, 'A senha não deve ter mais que 100 caracteres').refine((value) => value.trim().length > 0,
-            { error: 'A senha não pode conter apenas espaços' }),
+            { error: 'O campo não deve ser vazio' }),
 
     confirmPassword: z.string().min(1, 'O campo não deve ser vazio'),
 
@@ -84,7 +84,7 @@ export const loginPsychologistSchema = z.object({
     email: z.email({ error: 'Digite um email válido' }).trim().toLowerCase(),
 
     password: z.string().refine((value) => value.trim().length > 0, {
-        error: 'A senha não pode conter apenas espaços'
+        error: 'O campo não deve ser vazio'
     }),
 
     entryCode: z.string().trim().min(1, 'O código é obrigatório')
