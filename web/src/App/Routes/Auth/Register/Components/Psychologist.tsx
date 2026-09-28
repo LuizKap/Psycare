@@ -1,14 +1,16 @@
 import { useState, type SubmitEvent } from "react"
 import { Link, useNavigate } from "react-router"
-import type { ApiError, FormError } from "./types"
+import type { ApiError, FormError } from "../../../../../types"
 import styles from '../Register.module.css'
+import { useAuth } from "../../../../../hooks/useAuth"
+import { toast } from "sonner"
 
 
 function RegisterPsychologist() {
 
-    const navigate = useNavigate()
+    const auth = useAuth()
 
-    const [error, setError] = useState<string | null>(null)
+    const navigate = useNavigate()
 
     const [formErrors, setFormErrors] = useState<FormError[] | null>(null)
 
@@ -22,7 +24,6 @@ function RegisterPsychologist() {
     async function handleSubmit(event: SubmitEvent<HTMLFormElement>) {
         event.preventDefault()
 
-        setError(null)
         setFormErrors(null)
 
         const formData = new FormData(event.currentTarget)
@@ -47,11 +48,12 @@ function RegisterPsychologist() {
 
             if (!response.ok) {
                 const data: ApiError = await response.json()
-                setError(data.message)
+                toast.error(data.message)
                 setFormErrors(data.errors)
                 return
             }
 
+            await auth.refreshProfile()
             navigate('/')
 
         } finally { setLoading(false) }
@@ -105,8 +107,6 @@ function RegisterPsychologist() {
                 <img src="/profile/phone.svg" alt="" />
                 <input type="tel" name="phone" id="phone" placeholder="telefone exemplo: 21987654321" />
             </label>
-
-            {error && <p className={styles['form-error']}>Erro: {error}</p>}
 
             <button type="submit" disabled={loading} className={styles['submit-button']}>{loading ? "Criando conta..." : "Criar Conta"}</button>
 

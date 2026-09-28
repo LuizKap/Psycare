@@ -1,52 +1,111 @@
+
 import { NavLink } from "react-router"
 import styles from "./Navbar.module.css"
 import type { NavbarProps } from "../../../types"
+import { useAuth } from "../../../hooks/useAuth"
 
 function Navbar({ toggleSidebar }: NavbarProps) {
+    const auth = useAuth()
+
+    const isPsychologist = auth.profile?.user.role === 'PSYCHOLOGIST'
 
     return (
         <header className={styles.header}>
 
             <nav className={styles.nav}>
 
-                <div className={styles.logo}>Psycare</div>
+                <div className={styles.logo}>
+                    Psycare
+                </div>
 
                 <div className={styles['nav-links-container']}>
 
                     <NavLink
                         to="/"
-                        className={({ isActive }) => `${styles['nav-link']} ${isActive ? styles.active : ''}`}
+                        className={({ isActive }) =>
+                            `${styles['nav-link']} ${isActive ? styles.active : ''}`
+                        }
                     >
                         Home
                     </NavLink>
 
-                    <NavLink
-                        to="/appointments"
-                        className={({ isActive }) => `${styles['nav-link']} ${isActive ? styles.active : ''}`}
-                    >
-                        Minhas consultas
-                    </NavLink>
+                    {isPsychologist ? (
+                        <>
+                            <NavLink
+                                to="/appointments"
+                                className={({ isActive }) =>
+                                    `${styles['nav-link']} ${isActive ? styles.active : ''}`
+                                }
+                            >
+                                Consultas
+                            </NavLink>
 
-                    <NavLink
-                        to="/mood"
-                        className={({ isActive }) => `${styles['nav-link']} ${isActive ? styles.active : ''}`}
-                    >
-                        Diário do humor
-                    </NavLink>
+                            <NavLink
+                                to="/patients"
+                                className={({ isActive }) =>
+                                    `${styles['nav-link']} ${isActive ? styles.active : ''}`
+                                }
+                            >
+                                Pacientes
+                            </NavLink>
 
-                    <NavLink
-                        to="/journey"
-                        className={({ isActive }) => `${styles['nav-link']} ${isActive ? styles.active : ''}`}
-                    >
-                        Jornada do campeão
-                    </NavLink>
+                            <NavLink
+                                to="/agenda"
+                                className={({ isActive }) =>
+                                    `${styles['nav-link']} ${isActive ? styles.active : ''}`
+                                }
+                            >
+                                Minha agenda
+                            </NavLink>
 
-                    <NavLink
-                        to="/about"
-                        className={({ isActive }) => `${styles['nav-link']} ${isActive ? styles.active : ''}`}
-                    >
-                        Sobre o Psicólogo
-                    </NavLink>
+                            <NavLink
+                                to="/psychologist/me"
+                                className={({ isActive }) =>
+                                    `${styles['nav-link']} ${isActive ? styles.active : ''}`
+                                }
+                            >
+                                Meu perfil
+                            </NavLink>
+                        </>
+                    ) : (
+                        <>
+                            <NavLink
+                                to="/appointments"
+                                className={({ isActive }) =>
+                                    `${styles['nav-link']} ${isActive ? styles.active : ''}`
+                                }
+                            >
+                                Minhas consultas
+                            </NavLink>
+
+                            <NavLink
+                                to="/mood"
+                                className={({ isActive }) =>
+                                    `${styles['nav-link']} ${isActive ? styles.active : ''}`
+                                }
+                            >
+                                Diário do humor
+                            </NavLink>
+
+                            <NavLink
+                                to="/journey"
+                                className={({ isActive }) =>
+                                    `${styles['nav-link']} ${isActive ? styles.active : ''}`
+                                }
+                            >
+                                Jornada do campeão
+                            </NavLink>
+
+                            <NavLink
+                                to="/about"
+                                className={({ isActive }) =>
+                                    `${styles['nav-link']} ${isActive ? styles.active : ''}`
+                                }
+                            >
+                                Sobre o Psicólogo
+                            </NavLink>
+                        </>
+                    )}
 
                 </div>
 
@@ -64,3 +123,4 @@ function Navbar({ toggleSidebar }: NavbarProps) {
 }
 
 export default Navbar
+

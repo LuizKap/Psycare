@@ -77,13 +77,28 @@ export type Appointment = {
 // ====================
 
 export type AuthContextType = {
-  profile: Patient | Psychologist | null
-  setProfile: React.Dispatch<React.SetStateAction<Patient | Psychologist | null>>
-  loading: boolean
+    profile: Patient | Psychologist | null
+    setProfile: React.Dispatch<React.SetStateAction<Patient | Psychologist | null>>
+    loading: boolean
+    refreshProfile: () => Promise<void>
 }
 
 export type AppointmentsContextType = {
   appointments: Appointment[]
   setAppointments: React.Dispatch<React.SetStateAction<Appointment[]>>
   loading: boolean
+}
+
+// ====================
+// Errors
+// ====================
+
+export type ApiError = {
+  message: string
+  errors: FormError[]
+}
+
+export type FormError = {
+  path: (string | number)[]
+  message: string
 }

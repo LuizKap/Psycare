@@ -2,6 +2,7 @@ import { useAuth } from "../../../hooks/useAuth"
 import type { SidebarProps } from "../../../types"
 import GuestSidebar from "./GuestSidebar/GuestSidebar"
 import PatientSidebar from "./PatientSidebar/PatientSidebar"
+import PsychologistSidebar from "./PsychologistSidebar/PsychologistSidebar"
 
 
 export function Sidebar({ isOpen }: SidebarProps) {
@@ -14,6 +15,10 @@ export function Sidebar({ isOpen }: SidebarProps) {
 
     if (auth.profile.user.role === 'PATIENT') {
         return <PatientSidebar isOpen={isOpen} />
+    }
+
+    if (auth.profile.user.role === 'PSYCHOLOGIST') {
+        return <PsychologistSidebar isOpen={isOpen} />
     }
 
 }

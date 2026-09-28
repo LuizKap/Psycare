@@ -1,9 +1,10 @@
 import { useState } from "react"
 import { Link, useNavigate } from "react-router"
 import type { SubmitEvent } from "react"
-import type { ApiError, FormError } from "./types"
+import type { ApiError, FormError } from "../../../../../types"
 import styles from '../Register.module.css'
 import { useAuth } from "../../../../../hooks/useAuth"
+import { toast } from "sonner"
 
 
 function RegisterPatient() {
@@ -11,8 +12,6 @@ function RegisterPatient() {
     const auth = useAuth()
 
     const navigate = useNavigate()
-
-    const [error, setError] = useState<string | null>(null)
 
     const [formErrors, setFormErrors] = useState<FormError[] | null>(null)
 
@@ -26,7 +25,6 @@ function RegisterPatient() {
     async function handleSubmit(event: SubmitEvent<HTMLFormElement>) {
         event.preventDefault()
 
-        setError(null)
         setFormErrors(null)
 
         const formData = new FormData(event.currentTarget)
@@ -51,13 +49,12 @@ function RegisterPatient() {
 
             if (!response.ok) {
                 const data: ApiError = await response.json()
-                setError(data.message)
+                toast.error(data.message)
                 setFormErrors(data.errors)
                 return
             }
 
-            const data = await response.json()
-            auth.setProfile(data.user)
+            await auth.refreshProfile()
             navigate('/')
 
         } finally { setLoading(false) }
@@ -65,131 +62,123 @@ function RegisterPatient() {
     }
 
     return (
-        <>
-            <form className={styles.form} onSubmit={handleSubmit}>
+        <form className={styles.form} onSubmit={handleSubmit}>
 
-                {getError('name') && (
-                    <span className={styles['error-message']}>
-                        {getError('name')}
-                    </span>
-                )}
+            {getError('name') && (
+                <span className={styles['error-message']}>
+                    {getError('name')}
+                </span>
+            )}
+
+            <label
+                htmlFor="name"
+                className={`${styles['input-container']} ${getError("name") ? styles['input-error'] : ""}`}
+            >
+                <img src="/profile/user.svg" alt="" />
+                <input
+                    type="text"
+                    name="name"
+                    id="name"
+                    placeholder="Nome Completo"
+                />
+            </label>
+
+            {getError('email') && (
+                <span className={styles['error-message']}>
+                    {getError('email')}
+                </span>
+            )}
+
+            <label
+                htmlFor="email"
+                className={`${styles['input-container']} ${getError("email") ? styles['input-error'] : ""}`}
+            >
+                <img src="/profile/email.svg" alt="" />
+                <input
+                    type="email"
+                    name="email"
+                    id="email"
+                    placeholder="email: exemplo@gmail.com"
+                />
+            </label>
+
+            {getError('password') && (
+                <span className={styles['error-message']}>
+                    {getError('password')}
+                </span>
+            )}
+
+            {getError('confirmPassword') && (
+                <span className={styles['error-message']}>
+                    {getError('confirmPassword')}
+                </span>
+            )}
+
+            <div className={styles['pass-container']}>
 
                 <label
-                    htmlFor="name"
-                    className={`${styles['input-container']} ${getError("name") ? styles['input-error'] : ""}`}
+                    htmlFor="password"
+                    className={`${styles['input-container']} ${getError("password") ? styles['input-error'] : ""}`}
                 >
-                    <img src="/profile/user.svg" alt="" />
+                    <img src="/profile/password.svg" alt="" />
                     <input
-                        type="text"
-                        name="name"
-                        id="name"
-                        placeholder="Nome Completo"
+                        type="password"
+                        name="password"
+                        id="password"
+                        placeholder="Digite sua senha"
                     />
                 </label>
 
-                {getError('email') && (
-                    <span className={styles['error-message']}>
-                        {getError('email')}
-                    </span>
-                )}
-
                 <label
-                    htmlFor="email"
-                    className={`${styles['input-container']} ${getError("email") ? styles['input-error'] : ""}`}
+                    htmlFor="confirmPassword"
+                    className={`${styles['input-container']} ${getError("confirmPassword") ? styles['input-error'] : ""}`}
                 >
-                    <img src="/profile/email.svg" alt="" />
+                    <img src="/profile/password.svg" alt="" />
                     <input
-                        type="email"
-                        name="email"
-                        id="email"
-                        placeholder="email: exemplo@gmail.com"
+                        type="password"
+                        name="confirmPassword"
+                        id="confirmPassword"
+                        placeholder="Confirme a senha"
                     />
                 </label>
 
-                {getError('password') && (
-                    <span className={styles['error-message']}>
-                        {getError('password')}
-                    </span>
-                )}
+            </div>
 
-                {getError('confirmPassword') && (
-                    <span className={styles['error-message']}>
-                        {getError('confirmPassword')}
-                    </span>
-                )}
+            {getError('phone') && (
+                <span className={styles['error-message']}>
+                    {getError('phone')}
+                </span>
+            )}
 
-                <div className={styles['pass-container']}>
+            <label
+                htmlFor="phone"
+                className={`${styles['input-container']} ${getError("phone") ? styles['input-error'] : ""}`}
+            >
+                <img src="/profile/phone.svg" alt="" />
+                <input
+                    type="tel"
+                    name="phone"
+                    id="phone"
+                    placeholder="telefone exemplo: 21987654321"
+                />
+            </label>
 
-                    <label
-                        htmlFor="password"
-                        className={`${styles['input-container']} ${getError("password") ? styles['input-error'] : ""}`}
-                    >
-                        <img src="/profile/password.svg" alt="" />
-                        <input
-                            type="password"
-                            name="password"
-                            id="password"
-                            placeholder="Digite sua senha"
-                        />
-                    </label>
+            <button
+                className={styles['submit-button']}
+                type="submit"
+                disabled={loading}
+            >
+                {loading ? "Criando conta..." : "Criar Conta"}
+            </button>
 
-                    <label
-                        htmlFor="confirmPassword"
-                        className={`${styles['input-container']} ${getError("confirmPassword") ? styles['input-error'] : ""}`}
-                    >
-                        <img src="/profile/password.svg" alt="" />
-                        <input
-                            type="password"
-                            name="confirmPassword"
-                            id="confirmPassword"
-                            placeholder="Confirme a senha"
-                        />
-                    </label>
+            <div className={styles['log-in']}>
+                <span>Já tem uma conta?</span>
+                <Link to="/login/patient">
+                    Fazer Login
+                </Link>
+            </div>
 
-                </div>
-
-                {getError('phone') && (
-                    <span className={styles['error-message']}>
-                        {getError('phone')}
-                    </span>
-                )}
-
-                <label
-                    htmlFor="phone"
-                    className={`${styles['input-container']} ${getError("phone") ? styles['input-error'] : ""}`}
-                >
-                    <img src="/profile/phone.svg" alt="" />
-                    <input
-                        type="tel"
-                        name="phone"
-                        id="phone"
-                        placeholder="telefone exemplo: 21987654321"
-                    />
-                </label>
-
-                {error && (
-                    <p className={styles['form-error']}>
-                        Erro: {error}
-                    </p>
-                )}
-
-                <button
-                    className={styles['submit-button']}
-                    type="submit"
-                    disabled={loading}
-                >
-                    {loading ? "Criando conta..." : "Criar Conta"}
-                </button>
-
-                <div className={styles['log-in']}>
-                    <span>Já tem uma conta?</span>
-                    <Link to="/login/patient">
-                        Fazer Login
-                    </Link>
-                </div>
-
-            </form>
-        </>
+        </form>
     )
 
 }

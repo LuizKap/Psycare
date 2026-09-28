@@ -10,6 +10,12 @@ import Register from "./Routes/Auth/Register/Register"
 import RegisterPatient from "./Routes/Auth/Register/Components/Patient"
 import RegisterPsychologist from "./Routes/Auth/Register/Components/Psychologist"
 
+import { Login } from "./Routes/Auth/Login/Login"
+import { LoginPatient } from "./Routes/Auth/Login/components/patient"
+import { LoginPsychologist } from "./Routes/Auth/Login/components/psychologist"
+
+import { Toaster } from "sonner"
+
 
 function App() {
 
@@ -24,44 +30,69 @@ function App() {
   }
 
   return (
-    <Routes>
 
-      {/* Layout principal */}
-      <Route
-        element={
-          <>
-            <Navbar toggleSidebar={toggleSidebar} />
-            <Sidebar isOpen={isOpen} />
+    <>
+      <Toaster 
+      position="top-right" 
+      richColors
+      closeButton
+      duration={4000}/>
 
-            <Outlet />
-          </>
-        }
-      >
-        {/* Páginas dentro do Layout */}
+      <Routes>
+
+        {/* Layout principal */}
         <Route
-          path="/"
-          element={<Home closeSidebar={closeSidebar} />}
-        />
-      </Route>
+          element={
+            <>
+              <Navbar toggleSidebar={toggleSidebar} />
+              <Sidebar isOpen={isOpen} />
+
+              <Outlet />
+            </>
+          }
+        >
+          {/* Páginas dentro do Layout */}
+          <Route
+            path="/"
+            element={<Home closeSidebar={closeSidebar} />}
+          />
+        </Route>
 
 
-      {/* Cadastro */}
-      <Route
-        path="/register"
-        element={<Register />}
-      >
+        {/* Cadastro */}
         <Route
-          path="patient"
-          element={<RegisterPatient />}
-        />
+          path="/register"
+          element={<Register />}
+        >
+          <Route
+            path="patient"
+            element={<RegisterPatient />}
+          />
+
+          <Route
+            path="psychologist"
+            element={<RegisterPsychologist />}
+          />
+        </Route>
 
         <Route
-          path="psychologist"
-          element={<RegisterPsychologist />}
-        />
-      </Route>
+          path="/login"
+          element={<Login />}
+        >
+          <Route
+            path="patient"
+            element={<LoginPatient />}
+          />
 
-    </Routes>
+          <Route
+            path="psychologist"
+            element={<LoginPsychologist />}
+          />
+
+        </Route>
+
+      </Routes>
+    </>
   )
 }
 

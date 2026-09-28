@@ -8,23 +8,18 @@ export const AuthContext = createContext<AuthContextType | null>(null)
 
 
 export function AuthProvider({ children }: ProviderProps) {
-
     const [profile, setProfile] = useState<Patient | Psychologist | null>(null)
-
     const [loading, setLoading] = useState<boolean>(false)
 
-    useEffect(() => {
+    async function refreshProfile() {
+        setLoading(true)
 
-        async function getProfile() {
-
-            setLoading(true)
-
+        try {
             const patientResponse = await fetch("/patient/me")
 
             if (patientResponse.ok) {
                 const patient: Patient = await patientResponse.json()
                 setProfile(patient)
-                setLoading(false)
                 return
             }
 
@@ -33,22 +28,30 @@ export function AuthProvider({ children }: ProviderProps) {
             if (psychologistResponse.ok) {
                 const psychologist: Psychologist = await psychologistResponse.json()
                 setProfile(psychologist)
-                setLoading(false)
                 return
             }
 
+            setProfile(null)
+
+        } finally {
             setLoading(false)
         }
+    }
 
-        getProfile()
-
+    useEffect(() => {
+        refreshProfile()
     }, [])
 
     return (
-
-        <AuthContext.Provider value={{ profile, setProfile, loading }}>
+        <AuthContext.Provider
+            value={{
+                profile,
+                setProfile,
+                loading,
+                refreshProfile
+            }}
+        >
             {children}
         </AuthContext.Provider>
-
     )
 }
