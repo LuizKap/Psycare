@@ -122,7 +122,7 @@ export class AppointmentController {
 
         const count = await this.appointmentService.countTodayAppointments()
 
-        return count
+        res.json(count)
     }
 
 }
