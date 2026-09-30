@@ -6,7 +6,7 @@ import { useEffect, useState } from 'react'
 import { appointment_api } from '../../../../../fetch/appointment.api'
 import type { NextAppointment } from '../../../../../types'
 import { toast } from 'sonner'
-import dayjs from '../..//../../../utils/dayjs'
+import dayjs from '../../../../../utils/dayjs'
 
 
 export function PsychologistHome() {
@@ -107,9 +107,7 @@ export function PsychologistHome() {
                             key={appointment.id}
                         >
                             <span>
-                                {dayjs(appointment.starts_at)
-                                    .tz('America/Sao_Paulo')
-                                    .format('HH:mm')}
+                                {dayjs(appointment.starts_at).tz('America/Sao_Paulo').format('HH:mm')}
                             </span>
 
                             <span>
@@ -117,7 +115,7 @@ export function PsychologistHome() {
                             </span>
 
                             <span>
-                                {appointment.status}
+                                {appointment.status === 'SCHEDULED' && 'AGENDADO'}
                             </span>
                         </div>
                     ))}
