@@ -1,14 +1,14 @@
 import { Link } from "react-router"
 
 import { useAuth } from "../../../../hooks/useAuth"
-import type { SidebarProps } from "../../../../types"
-
-import styles from "./PatientSidebar.module.css"
-
-import type { Patient } from "../../../../types"
 import { useAppointment } from "../../../../hooks/useAppointment"
+
+import type { Patient, SidebarProps } from "../../../../types"
+
+import dayjs from "../../../../utils/dayjs"
 import { formatAppointmentDate } from "../../../../utils/formatAppointmentDate"
 
+import styles from "./PatientSidebar.module.css"
 
 
 function PatientSidebar({ isOpen }: SidebarProps) {
@@ -18,7 +18,6 @@ function PatientSidebar({ isOpen }: SidebarProps) {
 
     const appointments = appointments_data.appointments
     const profile = auth.profile as Patient
-
 
 
     return (
@@ -37,10 +36,7 @@ function PatientSidebar({ isOpen }: SidebarProps) {
 
                 <p>
                     Paciente desde{" "}
-                    {new Date(profile.created_at).toLocaleDateString("pt-BR", {
-                        month: "short",
-                        year: "numeric"
-                    })}
+                    {dayjs(profile.created_at).format("MMM [de] YYYY")}
                 </p>
 
                 <Link
@@ -62,14 +58,23 @@ function PatientSidebar({ isOpen }: SidebarProps) {
 
                 <h3>Próxima Consulta</h3>
 
-                <p>{appointments[0] ?
-                    formatAppointmentDate(appointments[0].starts_at) : 'Nenhuma consulta agendada'}</p>
+                <p>
+                    {appointments[0]
+                        ? formatAppointmentDate(appointments[0].starts_at)
+                        : "Nenhuma consulta agendada"}
+                </p>
 
                 <Link
-                    to={appointments[0] ? '/appointments/reschedule' : '/appointments/create'}
+                    to={
+                        appointments[0]
+                            ? "/appointments/reschedule"
+                            : "/appointments/create"
+                    }
                     className={styles["reschedule-link"]}
                 >
-                    {appointments[0] ? 'Reagendar' : 'Agendar uma consulta'}
+                    {appointments[0]
+                        ? "Reagendar"
+                        : "Agendar uma consulta"}
                 </Link>
 
             </section>

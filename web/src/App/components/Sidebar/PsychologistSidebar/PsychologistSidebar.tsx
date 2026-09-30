@@ -1,8 +1,10 @@
-
 import { Link } from "react-router"
 
 import { useAuth } from "../../../../hooks/useAuth"
+
 import type { Psychologist, SidebarProps } from "../../../../types"
+
+import dayjs from "../../../../utils/dayjs"
 
 import styles from "./PsychologistSidebar.module.css"
 
@@ -12,13 +14,14 @@ function PsychologistSidebar({ isOpen }: SidebarProps) {
     const auth = useAuth()
     const profile = auth.profile as Psychologist
 
+
     return (
         <div className={`${styles.side} ${isOpen ? styles.open : ""}`}>
 
             <section className={styles["side-introduction"]}>
 
                 <h2 className={styles["side-username"]}>
-                    Olá Dr. {profile?.name}
+                    Olá Dr. {profile.name}
                 </h2>
 
                 <img
@@ -29,10 +32,7 @@ function PsychologistSidebar({ isOpen }: SidebarProps) {
                 <p>
                     Psicólogo desde{" "}
                     {profile &&
-                        new Date(profile.created_at).toLocaleDateString("pt-BR", {
-                            month: "short",
-                            year: "numeric"
-                        })
+                        dayjs(profile.created_at).format("MMM [de] YYYY")
                     }
                 </p>
 
@@ -118,4 +118,3 @@ function PsychologistSidebar({ isOpen }: SidebarProps) {
 }
 
 export default PsychologistSidebar
-

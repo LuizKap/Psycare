@@ -14,18 +14,21 @@ export function PsychologistHome() {
     const auth = useAuth()
     const [count, setCount] = useState<number>(0)
     const [nextAppointment, setNextAppointment] = useState<NextAppointment | null>(null)
+    const [upcomingAppointments, setUpcomingAppointments] = useState<NextAppointment[]>([])
 
     useEffect(() => {
         async function loadDashboard() {
 
             try {
-                const [todayCountAppointments, nextAppointment] = await Promise.all([
+                const [todayCountAppointments, nextAppointment, upcomingAppointments] = await Promise.all([
                     appointment_api.countTodayAppointments(),
-                    appointment_api.getNextAppointment()
+                    appointment_api.getNextAppointment(),
+                    appointment_api.getUpcomingAppointments()
                 ])
 
                 setCount(todayCountAppointments)
                 setNextAppointment(nextAppointment)
+                setUpcomingAppointments(upcomingAppointments)
             } catch (error) {
                 toast.error(error instanceof Error ? error.message : 'Erro ao carregar algumas informações')
             }
@@ -98,23 +101,26 @@ export function PsychologistHome() {
                         <h3>Status</h3>
                     </div>
 
-                    <div className={styles['table-row']}>
-                        <span>14:00</span>
-                        <span>João Silva</span>
-                        <span>Agendada</span>
-                    </div>
+                    {upcomingAppointments.map((appointment) => (
+                        <div
+                            className={styles['table-row']}
+                            key={appointment.id}
+                        >
+                            <span>
+                                {dayjs(appointment.starts_at)
+                                    .tz('America/Sao_Paulo')
+                                    .format('HH:mm')}
+                            </span>
 
-                    <div className={styles['table-row']}>
-                        <span>15:00</span>
-                        <span>Maria Santos</span>
-                        <span>Agendada</span>
-                    </div>
+                            <span>
+                                {appointment.patient.name}
+                            </span>
 
-                    <div className={styles['table-row']}>
-                        <span>16:00</span>
-                        <span>Pedro Oliveira</span>
-                        <span>Agendada</span>
-                    </div>
+                            <span>
+                                {appointment.status}
+                            </span>
+                        </div>
+                    ))}
 
                 </div>
             </section>
