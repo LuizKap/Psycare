@@ -111,6 +111,14 @@ export class AppointmentService {
         return appointments
     }
 
+    async getNextAppointment(): Promise<Appointment | null> {
+        return await this.appointmentRepository.findNextAppointment()
+    }
+
+    async getUpcomingAppointments(): Promise<Appointment[]> {
+        return await this.appointmentRepository.findUpcomingAppointments()
+    }
+
     async updateNotes(id: Appointment['id'], notes: Appointment['notes'] | null): Promise<Appointment> {
 
         const appointment = await this.appointmentRepository.findAppointmentById(id)
@@ -191,6 +199,18 @@ export class AppointmentService {
         const cancelledAppointment = await this.appointmentRepository.cancelAppointment(id)
 
         return cancelledAppointment
+    }
+
+    async countTodayAppointments(): Promise<number> {
+
+        const day = dayjs.tz(new Date(), 'America/Sao_Paulo')
+
+        const startOfDay = day.startOf('day').toDate()
+        const startOfNextDay = day.add(1, 'day').startOf('day').toDate()
+
+        const count = await this.appointmentRepository.countAppointmentsByDate(startOfDay, startOfNextDay)
+
+        return count
     }
 
 

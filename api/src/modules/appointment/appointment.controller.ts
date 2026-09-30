@@ -42,6 +42,18 @@ export class AppointmentController {
         res.json(appointments)
     }
 
+    getNextAppointment = async (req: Request, res: Response) => {
+        const appointment = await this.appointmentService.getNextAppointment()
+
+        res.json(appointment)
+    }
+
+    getUpcomingAppointments = async (req: Request, res: Response) => {
+        const upcomingAppointments = await this.appointmentService.getUpcomingAppointments()
+
+        res.json(upcomingAppointments)
+    }
+
     getFilteredAppointments = async (req: Request, res: Response) => {
 
         const { created_at, notes, starts_at, status, patient_name } = appointmentFilterSchema.parse(req.query)
@@ -105,4 +117,12 @@ export class AppointmentController {
             message: 'consulta cancelada com sucesso!'
         })
     }
+
+    countTodayAppointments = async (req: Request, res: Response) => {
+
+        const count = await this.appointmentService.countTodayAppointments()
+
+        return count
+    }
+
 }

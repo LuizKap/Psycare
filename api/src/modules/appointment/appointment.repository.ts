@@ -78,6 +78,54 @@ export class AppointmentRepository implements IAppointmentRepository {
         })
     }
 
+    async findNextAppointment(): Promise<Appointment | null> {
+        return await this.prisma.appointment.findFirst({
+            where: {
+                starts_at: {
+                    gt: new Date()
+                },
+                status: 'SCHEDULED'
+            },
+            orderBy: {
+                starts_at: 'asc'
+            },
+            include: {
+                patient: {
+                    select: { name: true }
+                }
+            }
+        })
+    }
+
+    async findUpcomingAppointments(): Promise<Appointment[]> {
+        return await this.prisma.appointment.findMany({
+            where: {
+                starts_at: { gt: new Date() },
+                status: 'SCHEDULED'
+            },
+            orderBy: {
+                starts_at: 'asc'
+            },
+            include: {
+                patient: {
+                    select: { name: true }
+                }
+            },
+            take: 5
+        })
+    }
+
+    async countAppointmentsByDate(startOfDay: Date, startOfNextDay: Date): Promise<number> {
+        return await this.prisma.appointment.count({
+            where: {
+                starts_at: {
+                    gte: startOfDay,
+                    lt: startOfNextDay
+                }
+            }
+        })
+    }
+
     async createAppointment(appointment: Pick<Appointment, 'starts_at' | 'ends_at' | 'patient_id'>): Promise<Appointment> {
         return await this.prisma.appointment.create({
             data: appointment

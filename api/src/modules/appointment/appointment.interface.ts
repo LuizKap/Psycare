@@ -21,6 +21,12 @@ export interface IAppointmentRepository {
 
     findAllAppointmentsByDate(startOfDay: Date, startOfNextDay: Date): Promise<Appointment[]>
 
+    findNextAppointment(): Promise<Appointment | null>
+    
+    findUpcomingAppointments():Promise<Appointment[]>
+
+    countAppointmentsByDate(startOfDay: Date, startOfNextDay: Date): Promise<number>
+
     findAppointmentByDate(starts_at: Date, excludeId?: Appointment['id']): Promise<Appointment | null>
 
     createAppointment(appointment: Pick<Appointment, 'starts_at' | 'ends_at' | 'patient_id'>): Promise<Appointment>
