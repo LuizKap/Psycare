@@ -1,6 +1,7 @@
 import { createContext, useEffect, useState } from "react";
 import type { Appointment, AppointmentsContextType, ProviderProps } from "../types";
 import { useAuth } from "../hooks/useAuth";
+import { appointment_api } from "../fetch/appointment.api";
 
 
 
@@ -12,34 +13,27 @@ export function AppointmentsProvider({ children }: ProviderProps) {
     const auth = useAuth()
 
     const [appointments, setAppointments] = useState<Appointment[]>([])
-
     const [loading, setLoading] = useState<boolean>(false)
 
-    useEffect(() => {
+    async function refreshAppointments() {
 
-        async function getScheduledAppointments() {
+        if (auth.loading) return
 
-            if (auth.loading) return
+        if (!auth.profile) return
 
-            if (!auth.profile) return
+        try {
+            setLoading(true)
 
-            try {
-                setLoading(true)
+            const scheduledAppointments = await appointment_api.getPatientScheduledAppointments()
 
-                const response = await fetch('/appointments/scheduled/patient')
-
-                if (!response.ok) return
-
-                const scheduledAppointments: Appointment[] = await response.json()
-
-                setAppointments(scheduledAppointments)
-            } finally {
-                setLoading(false)
-            }
+            setAppointments(scheduledAppointments)
+        } finally {
+            setLoading(false)
         }
+    }
 
-        getScheduledAppointments()
-
+    useEffect(() => {
+        refreshAppointments()
     }, [auth.loading])
 
     return (

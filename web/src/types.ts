@@ -71,16 +71,31 @@ export type Appointment = {
   patient_id: string;
 }
 
+export type NextAppointment = {
+  id: string;
+  status: 'SCHEDULED' | 'COMPLETED' | 'CANCELLED';
+  starts_at: string;
+  ends_at: string;
+  notes: string | null;
+  created_at: string;
+  updated_at: string;
+  rescheduled_at: string | null;
+  patient_id: string;
+  patient: {
+    name: string
+  }
+}
+
 
 // ====================
 // Context
 // ====================
 
 export type AuthContextType = {
-    profile: Patient | Psychologist | null
-    setProfile: React.Dispatch<React.SetStateAction<Patient | Psychologist | null>>
-    loading: boolean
-    refreshProfile: () => Promise<void>
+  profile: Patient | Psychologist | null
+  setProfile: React.Dispatch<React.SetStateAction<Patient | Psychologist | null>>
+  loading: boolean
+  refreshProfile: () => Promise<void>
 }
 
 export type AppointmentsContextType = {

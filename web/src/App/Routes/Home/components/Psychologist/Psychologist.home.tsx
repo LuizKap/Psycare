@@ -2,11 +2,37 @@
 import { Link } from 'react-router'
 import { useAuth } from '../../../../../hooks/useAuth'
 import styles from './Psychologist.home.module.css'
+import { useEffect, useState } from 'react'
+import { appointment_api } from '../../../../../fetch/appointment.api'
+import type { NextAppointment } from '../../../../../types'
+import { toast } from 'sonner'
+import dayjs from '../..//../../../utils/dayjs'
 
 
 export function PsychologistHome() {
 
     const auth = useAuth()
+    const [count, setCount] = useState<number>(0)
+    const [nextAppointment, setNextAppointment] = useState<NextAppointment | null>(null)
+
+    useEffect(() => {
+        async function loadDashboard() {
+
+            try {
+                const [todayCountAppointments, nextAppointment] = await Promise.all([
+                    appointment_api.countTodayAppointments(),
+                    appointment_api.getNextAppointment()
+                ])
+
+                setCount(todayCountAppointments)
+                setNextAppointment(nextAppointment)
+            } catch (error) {
+                toast.error(error instanceof Error ? error.message : 'Erro ao carregar algumas informações')
+            }
+        }
+
+        loadDashboard()
+    }, [])
 
     return (
         <>
@@ -21,7 +47,7 @@ export function PsychologistHome() {
                         <img src="/profile/appointments.svg" alt="" />
                         <h2>Consultas hoje</h2>
                     </div>
-                    <span>numero</span>
+                    <span>{count === 0 ? 'Nenhuma consulta' : `${count} consultas`}</span>
                     <Link to='/list/appointments'>
                         Lista de Consultas
                     </Link>
@@ -46,8 +72,18 @@ export function PsychologistHome() {
                         <h2>Próxima consulta</h2>
                     </div>
 
-                    <span>14:00</span>
-                    <p>João Silva</p>
+                    <span>
+                        {nextAppointment ?
+                            dayjs(nextAppointment.starts_at).tz('America/Sao_Paulo').format('HH:mm')
+                            :
+                            'Não há consultas'}
+                    </span>
+                    <p>
+                        {nextAppointment ?
+                            nextAppointment.patient.name
+                            :
+                            ''}
+                    </p>
                 </article>
             </section>
 
