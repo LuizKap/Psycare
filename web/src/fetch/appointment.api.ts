@@ -82,6 +82,18 @@ export const appointment_api = {
         return count
     }
     ,
+    async countPatients(): Promise<number> {
+        const response = await fetch('/patient/count')
+
+        if (!response.ok) {
+            const error = await response.json()
+            throw new Error(error.message)
+        }
+
+        const count = await response.json()
+        return count
+    }
+    ,
     async getNextAppointment(): Promise<NextAppointment | null> {
         const response = await fetch('/appointments/next')
 

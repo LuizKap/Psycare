@@ -12,23 +12,26 @@ import dayjs from '../../../../../utils/dayjs'
 export function PsychologistHome() {
 
     const auth = useAuth()
-    const [count, setCount] = useState<number>(0)
+    const [todayAppointmentsCount, setTodayAppointmentsCount] = useState<number>(0)
     const [nextAppointment, setNextAppointment] = useState<NextAppointment | null>(null)
     const [upcomingAppointments, setUpcomingAppointments] = useState<NextAppointment[]>([])
+    const [patientsCount, setPatientsCount] = useState<number>(0)
 
     useEffect(() => {
         async function loadDashboard() {
 
             try {
-                const [todayCountAppointments, nextAppointment, upcomingAppointments] = await Promise.all([
+                const [todayAppointmentsCount, nextAppointment, upcomingAppointments, PatientsCount] = await Promise.all([
                     appointment_api.countTodayAppointments(),
                     appointment_api.getNextAppointment(),
-                    appointment_api.getUpcomingAppointments()
+                    appointment_api.getUpcomingAppointments(),
+                    appointment_api.countPatients()
                 ])
 
-                setCount(todayCountAppointments)
+                setTodayAppointmentsCount(todayAppointmentsCount)
                 setNextAppointment(nextAppointment)
                 setUpcomingAppointments(upcomingAppointments)
+                setPatientsCount(PatientsCount)
             } catch (error) {
                 toast.error(error instanceof Error ? error.message : 'Erro ao carregar algumas informações')
             }
@@ -50,7 +53,7 @@ export function PsychologistHome() {
                         <img src="/profile/appointments.svg" alt="" />
                         <h2>Consultas hoje</h2>
                     </div>
-                    <span>{count === 0 ? 'Nenhuma consulta' : `${count} consultas`}</span>
+                    <span>{todayAppointmentsCount === 0 ? 'Nenhuma consulta' : `${todayAppointmentsCount} consultas`}</span>
                     <Link to='/list/appointments'>
                         Lista de Consultas
                     </Link>
@@ -62,7 +65,7 @@ export function PsychologistHome() {
                         <h2>Pacientes Ativos</h2>
                     </div>
 
-                    <span>numero</span>
+                    <span>{patientsCount}</span>
 
                     <Link to='/list/patient'>
                         Lista de pacientes
