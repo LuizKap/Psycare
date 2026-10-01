@@ -21,6 +21,10 @@ export class PatientService {
         return patient
     }
 
+    async countPatients():Promise<number> {
+        return await this.patientRepository.countPatients()
+    }
+
     async updatePatient(id: Patient['id'], updateData: UpdatePatientData
     ): Promise<Patient> {
 

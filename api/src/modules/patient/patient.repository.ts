@@ -30,6 +30,10 @@ export class PatientRepository implements IPatientRepository {
         })
     }
 
+    async countPatients(): Promise<number> {
+        return await this.prisma.patient.count()
+    }
+
     async updatePatient(id: Patient['id'], updateData: UpdatePatientData): Promise<Patient> {
         const data = build_update_patient_data(updateData)
 

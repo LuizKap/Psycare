@@ -19,6 +19,11 @@ export class PatientController {
         res.json(patient)
     }
 
+    countPatients = async (req: Request, res: Response) => {
+        const count = await this.patientService.countPatients()
+        res.json(count)
+    }
+
     updatePatient = async (req: Request, res: Response) => {
         const { patient_id } = req.user as PatientUser
         const updatedData = updatePatientSchema.parse(req.body)
@@ -45,7 +50,7 @@ export class PatientController {
     }
 
     removeProfilePicture = async (req: Request, res: Response) => {
-        const {patient_id} = req.user as PatientUser
+        const { patient_id } = req.user as PatientUser
 
         const patient = await this.patientService.removeProfilePicture(patient_id)
 
