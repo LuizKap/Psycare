@@ -1,6 +1,5 @@
 import type { Request, Response } from "express";
 import type { PatientService } from "./patient.service.js";
-import type { PatientUser } from "../../middlewares/auth.middleware.js";
 import { updatePatientSchema } from "./patient.schema.js";
 import { HttpError } from "../errors/HttpError.js";
 
@@ -12,9 +11,9 @@ export class PatientController {
     ) { }
 
     getPatientProfile = async (req: Request, res: Response) => {
-        const user = req.user as PatientUser
+        const patient_id = req.patientId
 
-        const patient = await this.patientService.getPatientProfile(user.patient_id)
+        const patient = await this.patientService.getPatientProfile(patient_id)
 
         res.json(patient)
     }
@@ -25,7 +24,7 @@ export class PatientController {
     }
 
     updatePatient = async (req: Request, res: Response) => {
-        const { patient_id } = req.user as PatientUser
+        const patient_id = req.patientId
         const updatedData = updatePatientSchema.parse(req.body)
 
         const updatedPatient = await this.patientService.updatePatient(patient_id, updatedData)
@@ -34,7 +33,7 @@ export class PatientController {
     }
 
     uploadProfilePicture = async (req: Request, res: Response) => {
-        const { patient_id } = req.user as PatientUser
+        const patient_id = req.patientId
         const file = req.file
 
         if (!file) {
@@ -50,7 +49,7 @@ export class PatientController {
     }
 
     removeProfilePicture = async (req: Request, res: Response) => {
-        const { patient_id } = req.user as PatientUser
+        const patient_id = req.patientId
 
         const patient = await this.patientService.removeProfilePicture(patient_id)
 

@@ -1,36 +1,21 @@
 import type { NextFunction, Request, Response } from "express";
 import type { IAuthRepository } from "../modules/auth/auth.interface.js";
 import { HttpError } from "../modules/errors/HttpError.js";
-import type { IPsychologistRepository } from "../modules/psychologist/psychologist.interface.js";
-import type { IPatientRepository } from "../modules/patient/patient.interface.js";
 
 declare global {
     namespace Express {
         interface Request {
-            user?: AuthUser
+            user?: AuthUser,
+            patientId: string,
+            psychologistId: string
         }
     }
 }
 
-type AuthUser = PatientUser | PsychologistUser
-
-export type PatientUser = {
+export type AuthUser = {
     id: string
-    patient_id: string
-    name: string
     email: string
-    phone: string | null
-    profile_image_url: string | null
-    role: 'PATIENT'
-}
-
-export type PsychologistUser = {
-    id: string
-    psychologist_id: string
-    name: string
-    email: string
-    phone: string
-    role: 'PSYCHOLOGIST'
+    role: 'PATIENT' | 'PSYCHOLOGIST'
 }
 
 
@@ -38,9 +23,7 @@ export type PsychologistUser = {
 export { }
 
 export const authMiddleware = (
-    authRepository: IAuthRepository,
-    psychologistRepository: IPsychologistRepository,
-    patientRepository: IPatientRepository) => {
+    authRepository: IAuthRepository) => {
     return async (req: Request, res: Response, next: NextFunction) => {
         try {
             const token = req.cookies.session
@@ -66,40 +49,10 @@ export const authMiddleware = (
                 return next(new HttpError(404, 'Usuário não encontrado'))
             }
 
-            if (user.role === 'PATIENT') {
-
-                const patient = await patientRepository.findPatientByUserId(user.id)
-
-                if (!patient) {
-                    return next(new HttpError(403, 'Paciente não encontrado'))
-                }
-
-                req.user = {
-                    id: user.id,
-                    patient_id: patient.id,
-                    name: patient.name,
-                    phone: patient.phone,
-                    profile_image_url: patient.profile_image_url,
-                    email: user.email,
-                    role: user.role
-                }
-            }
-
-            if (user.role === 'PSYCHOLOGIST') {
-                const psychologist = await psychologistRepository.findPsychologistByUserId(user.id)
-
-                if (!psychologist) {
-                    return next(new HttpError(403, 'Psicólogo não encontrado'))
-                }
-
-                req.user = {
-                    id: psychologist.id,
-                    psychologist_id: psychologist.id,
-                    name: psychologist.name,
-                    phone: psychologist.phone,
-                    email: user.email,
-                    role: user.role
-                }
+            req.user = {
+                id: user.id,
+                email: user.email,
+                role: user.role
             }
 
             return next()

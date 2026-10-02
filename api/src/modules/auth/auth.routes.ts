@@ -7,6 +7,10 @@ import { requireAuthMiddleware } from "../../middlewares/requireAuth.middleware.
 
 export const authRouter = Router()
 
+authRouter.get(
+    "/me",
+    authController.getProfile
+)
 
 authRouter.post(
     "/register/patient",

@@ -1,3 +1,4 @@
+
 import { HttpError } from "../errors/HttpError.js";
 import { loginPatientSchema, loginPsychologistSchema, registerPatientSchema, registerPsychologistSchema } from "./auth.schema.js";
 import type { AuthService } from "./auth.service.js";
@@ -5,6 +6,14 @@ import type { Request, Response } from "express";
 
 export class AuthController {
     constructor(private authService: AuthService) { }
+
+    getProfile = async (req: Request, res: Response) => {
+        const user = req.user
+
+        if (!user) return res.json(null)
+
+        res.json(user)
+    }
 
     registerPatient = async (req: Request, res: Response) => {
         const userData = registerPatientSchema.parse(req.body)

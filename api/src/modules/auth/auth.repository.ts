@@ -75,9 +75,10 @@ export class AuthRepository implements IAuthRepository {
         })
     }
 
-    async findUserById(id: User['id']): Promise<User | null> {
+    async findUserById(id: User['id']): Promise<Omit<User, 'password'> | null> {
         return this.prisma.user.findUnique({
-            where: { id }
+            where: { id },
+            omit: {password: true}
         })
     }
 

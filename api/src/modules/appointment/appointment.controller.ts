@@ -1,7 +1,7 @@
 import type { Request, Response } from "express";
 import type { AppointmentService } from "./appointment.service.js";
 import { appointmentFilterSchema, appointmentPaginationSchema, appointmentSortingSchema, checkAvailabilitySchema, createAppointmentSchema, idSchema, rescheduleSchema, updateNotesSchema } from "./appointment.schema.js";
-import type { PatientUser } from "../../middlewares/auth.middleware.js";
+
 
 export class AppointmentController {
     constructor(private appointmentService: AppointmentService) { }
@@ -17,7 +17,7 @@ export class AppointmentController {
     createAppointment = async (req: Request, res: Response) => {
 
         const { starts_at } = createAppointmentSchema.parse(req.body)
-        const { patient_id } = req.user as PatientUser
+        const patient_id = req.patientId
 
         const appointment = await this.appointmentService.createAppointment({ starts_at, patient_id })
 
@@ -26,7 +26,7 @@ export class AppointmentController {
 
     getPatientAppointments = async (req: Request, res: Response) => {
 
-        const { patient_id } = req.user as PatientUser
+        const patient_id = req.patientId
 
         const appointments = await this.appointmentService.getPatientAppointments(patient_id)
 
@@ -35,7 +35,7 @@ export class AppointmentController {
 
     getPatientScheduledAppointments = async (req: Request, res: Response) => {
 
-        const { patient_id } = req.user as PatientUser
+        const patient_id = req.patientId
 
         const appointments = await this.appointmentService.getPatientScheduledAppointments(patient_id)
 
@@ -85,7 +85,7 @@ export class AppointmentController {
 
         const { starts_at } = rescheduleSchema.parse(req.body)
         const { id } = idSchema.parse(req.params)
-        const { patient_id } = req.user as PatientUser
+        const patient_id = req.patientId
 
         const updatedAppointment = await this.appointmentService.reschedule(id, starts_at, patient_id)
 
@@ -108,7 +108,7 @@ export class AppointmentController {
 
     patientCancel = async (req: Request, res: Response) => {
         const { id } = idSchema.parse(req.params)
-        const { patient_id } = req.user as PatientUser
+        const patient_id = req.patientId
 
         const cancelledAppointment = await this.appointmentService.patientCancel(id, patient_id)
 

@@ -1,11 +1,10 @@
 import { Router } from "express"
 
-import { patientController } from "./patient.dependencies.js"
+import { patientController, requirePatient } from "./patient.dependencies.js"
 
 import { requireAuthMiddleware } from "../../middlewares/requireAuth.middleware.js"
-import { requirePatientMiddleware } from "../../middlewares/requirePatient.middleware.js"
 import upload from "../../middlewares/upload.middleware.js"
-import { requirePsychologistMiddleware } from "../../middlewares/requirePsychologist.middleware.js"
+import { requirePsychologist } from "../psychologist/psychologist.dependencies.js"
 
 
 export const patientRouter = Router()
@@ -17,31 +16,31 @@ patientRouter.use(
 
 patientRouter.get(
     "/me",
-    requirePatientMiddleware,
+    requirePatient,
     patientController.getPatientProfile
 )
 
 patientRouter.get(
     "/count",
-    requirePsychologistMiddleware,
+    requirePsychologist,
     patientController.countPatients
 )
 
 patientRouter.patch(
     "/",
-    requirePatientMiddleware,
+    requirePatient,
     patientController.updatePatient
 )
 
 patientRouter.patch(
     "/me/profile-picture",
-    requirePatientMiddleware,
+    requirePatient,
     upload.single("file"),
     patientController.uploadProfilePicture
 )
 
 patientRouter.delete(
     "/me/profile-picture",
-    requirePatientMiddleware,
+    requirePatient,
     patientController.removeProfilePicture
 )

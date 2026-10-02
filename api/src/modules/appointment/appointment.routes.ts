@@ -3,8 +3,8 @@ import { Router } from "express"
 import { appointmentController } from "./appointment.dependencies.js"
 
 import { requireAuthMiddleware } from "../../middlewares/requireAuth.middleware.js"
-import { requirePatientMiddleware } from "../../middlewares/requirePatient.middleware.js"
-import { requirePsychologistMiddleware } from "../../middlewares/requirePsychologist.middleware.js"
+import { requirePatient } from "../patient/patient.dependencies.js"
+import { requirePsychologist } from "../psychologist/psychologist.dependencies.js"
 
 
 export const appointmentRouter = Router()
@@ -15,19 +15,19 @@ appointmentRouter.use(requireAuthMiddleware)
 // GET — Patient
 appointmentRouter.get(
     "/",
-    requirePatientMiddleware,
+    requirePatient,
     appointmentController.getPatientAppointments
 )
 
 appointmentRouter.get(
     "/scheduled/patient",
-    requirePatientMiddleware,
+    requirePatient,
     appointmentController.getPatientScheduledAppointments
 )
 
 appointmentRouter.get(
     "/availability",
-    requirePatientMiddleware,
+    requirePatient,
     appointmentController.getAvailability
 )
 
@@ -35,25 +35,25 @@ appointmentRouter.get(
 // GET — Psychologist
 appointmentRouter.get(
     "/filter",
-    requirePsychologistMiddleware,
+    requirePsychologist,
     appointmentController.getFilteredAppointments
 )
 
 appointmentRouter.get(
     "/count/today",
-    requirePsychologistMiddleware,
+    requirePsychologist,
     appointmentController.countTodayAppointments
 )
 
 appointmentRouter.get(
     "/next",
-    requirePsychologistMiddleware,
+    requirePsychologist,
     appointmentController.getNextAppointment
 )
 
 appointmentRouter.get(
     "/upcoming",
-    requirePsychologistMiddleware,
+    requirePsychologist,
     appointmentController.getUpcomingAppointments
 )
 
@@ -61,7 +61,7 @@ appointmentRouter.get(
 // POST — Patient
 appointmentRouter.post(
     "/",
-    requirePatientMiddleware,
+    requirePatient,
     appointmentController.createAppointment
 )
 
@@ -69,13 +69,13 @@ appointmentRouter.post(
 // PATCH — Patient
 appointmentRouter.patch(
     "/:id/reschedule",
-    requirePatientMiddleware,
+    requirePatient,
     appointmentController.reschedule
 )
 
 appointmentRouter.patch(
     "/:id/cancel/patient",
-    requirePatientMiddleware,
+    requirePatient,
     appointmentController.patientCancel
 )
 
@@ -83,12 +83,12 @@ appointmentRouter.patch(
 // PATCH — Psychologist
 appointmentRouter.patch(
     "/:id/notes",
-    requirePsychologistMiddleware,
+    requirePsychologist,
     appointmentController.updateNotes
 )
 
 appointmentRouter.patch(
     "/:id/cancel/psychologist",
-    requirePsychologistMiddleware,
+    requirePsychologist,
     appointmentController.psychologistCancel
 )

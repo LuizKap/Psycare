@@ -16,7 +16,7 @@ export interface IAuthRepository {
 
     createSession(sessionData: Pick<Session, 'token' | 'expires_at' | 'user_id' | 'user_type'>): Promise<Session>
 
-    findUserById(id: User['id']): Promise<User | null>
+    findUserById(id: User['id']): Promise<Omit<User,'password'> | null>
 
     findUserByEmail(email: User['email']): Promise<User | null>
 
