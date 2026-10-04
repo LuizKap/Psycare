@@ -6,16 +6,16 @@ import PatientSidebar from "./PatientSidebar/PatientSidebar"
 import { useAuth } from "../../../../hooks/useAuth"
 import GuestSidebar from "./GuestSidebar/GuestSidebar"
 import { AppointmentsProvider } from "../../../../contexts/Appointments.context"
+import { PatientProvider } from "../../../../contexts/Patient.context"
 
 export function PatientLayout() {
 
     const { user } = useAuth()
+    const [isOpen, setIsOpen] = useState(false)
 
     if (user?.role === 'PSYCHOLOGIST') {
         return <Navigate to="/unauthorized" replace />
     }
-
-    const [isOpen, setIsOpen] = useState(false)
 
     const toggleSidebar = () => {
         setIsOpen(isOpen => !isOpen)
@@ -36,11 +36,14 @@ export function PatientLayout() {
 
     if (user?.role === 'PATIENT') {
         return (
-            <AppointmentsProvider>
-                {content}
-            </AppointmentsProvider>
+            <PatientProvider>
+                <AppointmentsProvider>
+                    {content}
+                </AppointmentsProvider>
+            </PatientProvider>
         )
+    } else {
+        return content
     }
 
-    return content
 }

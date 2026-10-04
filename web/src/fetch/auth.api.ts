@@ -1,4 +1,4 @@
-import { ApiError, type ApiErrorResponse, type User } from "../types"
+import { ApiValidationError, type ApiErrorResponse, type User } from "../types"
 
 
 export const auth_api = {
@@ -34,7 +34,7 @@ export const auth_api = {
         if (!response.ok) {
             const error: ApiErrorResponse = await response.json()
 
-            throw new ApiError(
+            throw new ApiValidationError(
                 error.message,
                 error.errors)
         }
@@ -63,7 +63,7 @@ export const auth_api = {
         if (!response.ok) {
             const error: ApiErrorResponse = await response.json()
 
-            throw new ApiError(
+            throw new ApiValidationError(
                 error.message,
                 error.errors)
         }
@@ -88,7 +88,7 @@ export const auth_api = {
         if (!response.ok) {
             const error: ApiErrorResponse = await response.json()
 
-            throw new ApiError(
+            throw new ApiValidationError(
                 error.message,
                 error.errors)
         }
@@ -114,7 +114,7 @@ export const auth_api = {
         if (!response.ok) {
             const error: ApiErrorResponse = await response.json()
 
-            throw new ApiError(
+            throw new ApiValidationError(
                 error.message,
                 error.errors)
         }

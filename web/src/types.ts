@@ -32,10 +32,7 @@ export type Patient = {
   profile_image_url: string | null
   created_at: string
   updated_at: string
-
-  user: User & {
-    role: 'PATIENT'
-  }
+  user_id: string
 }
 
 export type Psychologist = {
@@ -44,10 +41,7 @@ export type Psychologist = {
   created_at: string
   updated_at: string
   phone: string
-
-  user: User & {
-    role: 'PSYCHOLOGIST'
-  }
+  user_id: string
 }
 
 
@@ -99,6 +93,12 @@ export type AppointmentsContextType = {
   loading: boolean
 }
 
+export type PatientContextType = {
+  patient: Patient | null
+  loading: boolean
+  refreshPatient: () => Promise<void>
+}
+
 // ====================
 // Errors
 // ====================
@@ -114,11 +114,18 @@ export type FormError = {
 }
 
 export class ApiError extends Error {
-    errors?: FormError[]
+  constructor(message: string) {
+    super(message)
+    this.name = "ApiError"
+  }
+}
 
-    constructor(message: string, errors?: FormError[]) {
-        super(message)
-        this.name = "ApiError"
-        this.errors = errors
-    }
+export class ApiValidationError extends ApiError {
+  errors: FormError[]
+
+  constructor(message: string, errors: FormError[]) {
+    super(message)
+    this.name = "ApiValidationError"
+    this.errors = errors
+  }
 }

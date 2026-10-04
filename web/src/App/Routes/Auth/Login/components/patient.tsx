@@ -2,7 +2,7 @@ import { Link, useNavigate } from "react-router"
 import { useAuth } from "../../../../../hooks/useAuth"
 import styles from "../Login.module.css"
 import { useState, type SubmitEvent } from "react"
-import { ApiError, type FormError } from "../../../../../types"
+import { ApiValidationError, type FormError } from "../../../../../types"
 
 import { toast } from "sonner"
 import { auth_api } from "../../../../../fetch/auth.api"
@@ -41,7 +41,7 @@ export function LoginPatient() {
 
         } catch (error) {
 
-            if (error instanceof ApiError) {
+            if (error instanceof ApiValidationError) {
                 setFormErrors(error.errors ?? [])
 
                 const messages = error.errors?.map(({ message }) => message) ?? []

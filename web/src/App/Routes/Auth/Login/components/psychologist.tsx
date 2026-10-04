@@ -1,5 +1,5 @@
 import { Link, useNavigate } from "react-router";
-import { ApiError, type FormError } from "../../../../../types";
+import { ApiValidationError, type FormError } from "../../../../../types";
 import styles from "../Login.module.css"
 import { useAuth } from "../../../../../hooks/useAuth";
 import { useState, type SubmitEvent } from "react";
@@ -40,7 +40,7 @@ export function LoginPsychologist() {
 
         } catch (error) {
 
-            if (error instanceof ApiError) {
+            if (error instanceof ApiValidationError) {
                 setFormErrors(error.errors ?? [])
 
                 const messages = error.errors?.map(({ message }) => message) ?? []

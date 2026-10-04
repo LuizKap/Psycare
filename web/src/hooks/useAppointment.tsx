@@ -8,6 +8,7 @@ export function useAppointment() {
     if (!context) {
         throw new Error('useAppointment deve ser usado dentro de AppointmentProvider')
     }
-
-    return context
+    else {
+        return context
+    }
 }

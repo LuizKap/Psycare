@@ -1,6 +1,6 @@
 import { useState, type SubmitEvent } from "react"
 import { Link, useNavigate } from "react-router"
-import { ApiError, type FormError } from "../../../../../types"
+import { ApiValidationError, type FormError } from "../../../../../types"
 import styles from '../Register.module.css'
 import { useAuth } from "../../../../../hooks/useAuth"
 import { toast } from "sonner"
@@ -39,7 +39,7 @@ function RegisterPsychologist() {
 
         } catch (error) {
 
-            if (error instanceof ApiError) {
+            if (error instanceof ApiValidationError) {
                 setFormErrors(error.errors ?? [])
 
                 const messages = error.errors?.map(({ message }) => message) ?? []
