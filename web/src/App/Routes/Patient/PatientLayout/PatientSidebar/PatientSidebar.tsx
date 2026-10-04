@@ -1,19 +1,21 @@
 import { Link } from "react-router"
 
-import { useAuth } from "../../../../hooks/useAuth"
+import { useAppointment } from "../../../../../hooks/useAppointment"
 
-import type { Psychologist, SidebarProps } from "../../../../types"
+import type { SidebarProps } from "../../../../../types"
 
-import dayjs from "../../../../utils/dayjs"
+import dayjs from "../../../../../utils/dayjs"
+import { formatAppointmentDate } from "../../../../../utils/formatAppointmentDate"
 
-import styles from "./PsychologistSidebar.module.css"
+import styles from "./PatientSidebar.module.css"
 
 
-function PsychologistSidebar({ isOpen }: SidebarProps) {
+function PatientSidebar({ isOpen }: SidebarProps) {
 
-    const auth = useAuth()
-    const profile = auth.profile as Psychologist
+    const appointments_data = useAppointment()
 
+    const appointments = appointments_data.appointments
+    
 
     return (
         <div className={`${styles.side} ${isOpen ? styles.open : ""}`}>
@@ -21,7 +23,7 @@ function PsychologistSidebar({ isOpen }: SidebarProps) {
             <section className={styles["side-introduction"]}>
 
                 <h2 className={styles["side-username"]}>
-                    Olá Dr. {profile.name}
+                    Olá {/*profile?.name*/}
                 </h2>
 
                 <img
@@ -30,14 +32,12 @@ function PsychologistSidebar({ isOpen }: SidebarProps) {
                 />
 
                 <p>
-                    Psicólogo desde{" "}
-                    {profile &&
-                        dayjs(profile.created_at).format("MMM [de] YYYY")
-                    }
+                    Paciente desde{" "}
+                    {dayjs(/*profile?.created_at*/).format("MMM [de] YYYY")}
                 </p>
 
                 <Link
-                    to="/psychologist/me"
+                    to="/patient/me"
                     className={styles["profile-link"]}
                 >
                     Editar Perfil
@@ -53,17 +53,25 @@ function PsychologistSidebar({ isOpen }: SidebarProps) {
                     alt="Calendário-imagem"
                 />
 
-                <h3>Próximo Atendimento</h3>
+                <h3>Próxima Consulta</h3>
 
                 <p>
-                    Nenhum atendimento agendado
+                    {appointments[0]
+                        ? formatAppointmentDate(appointments[0].starts_at)
+                        : "Nenhuma consulta agendada"}
                 </p>
 
                 <Link
-                    to="/appointments"
+                    to={
+                        appointments[0]
+                            ? "/appointments/reschedule"
+                            : "/appointments/create"
+                    }
                     className={styles["reschedule-link"]}
                 >
-                    Ver consultas
+                    {appointments[0]
+                        ? "Reagendar"
+                        : "Agendar uma consulta"}
                 </Link>
 
             </section>
@@ -84,23 +92,23 @@ function PsychologistSidebar({ isOpen }: SidebarProps) {
                     className={styles["side-menu-link"]}
                 >
                     <img src="/profile/appointments.svg" alt="" />
-                    <span>Consultas</span>
+                    <span>Minhas consultas</span>
                 </Link>
 
                 <Link
-                    to="/patients"
-                    className={styles["side-menu-link"]}
-                >
-                    <img src="/profile/user.svg" alt="" />
-                    <span>Pacientes</span>
-                </Link>
-
-                <Link
-                    to="/agenda"
+                    to="/appointments/create"
                     className={styles["side-menu-link"]}
                 >
                     <img src="/profile/new-appointment.svg" alt="" />
-                    <span>Minha agenda</span>
+                    <span>Agendar nova consulta</span>
+                </Link>
+
+                <Link
+                    to="/mood"
+                    className={styles["side-menu-link"]}
+                >
+                    <img src="/profile/mood.svg" alt="" />
+                    <span>Diário do humor</span>
                 </Link>
 
                 <Link
@@ -117,4 +125,4 @@ function PsychologistSidebar({ isOpen }: SidebarProps) {
     )
 }
 
-export default PsychologistSidebar
+export default PatientSidebar

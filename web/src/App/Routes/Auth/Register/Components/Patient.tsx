@@ -1,10 +1,11 @@
 import { useState } from "react"
 import { Link, useNavigate } from "react-router"
 import type { SubmitEvent } from "react"
-import type { ApiError, FormError } from "../../../../../types"
+import { ApiError, type FormError } from "../../../../../types"
 import styles from '../Register.module.css'
-import { useAuth } from "../../../../../hooks/useAuth"
 import { toast } from "sonner"
+import { auth_api } from "../../../../../fetch/auth.api"
+import { useAuth } from "../../../../../hooks/useAuth"
 
 
 function RegisterPatient() {
@@ -17,8 +18,8 @@ function RegisterPatient() {
 
     const [loading, setLoading] = useState<boolean>(false)
 
-    function getError(field: string) {
-        return formErrors?.find(error => error.path.includes(field))?.message
+    function hasError(field: string) {
+        return formErrors?.some(error => error.path.includes(field))
     }
 
 
@@ -30,32 +31,37 @@ function RegisterPatient() {
         const formData = new FormData(event.currentTarget)
 
         try {
-
             setLoading(true)
 
-            const response = await fetch("/auth/register/patient", {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    name: formData.get('name'),
-                    email: formData.get('email'),
-                    password: formData.get('password'),
-                    confirmPassword: formData.get('confirmPassword'),
-                    phone: formData.get('phone') || undefined
-                })
-            })
+            await auth_api.registerPatient(formData)
+            await auth.refreshAuth()
 
-            if (!response.ok) {
-                const data: ApiError = await response.json()
-                toast.error(data.message)
-                setFormErrors(data.errors)
+            navigate('/')
+            
+        } catch (error) {
+
+            if (error instanceof ApiError) {
+                setFormErrors(error.errors ?? [])
+
+                const messages = error.errors?.map(({ message }) => message) ?? []
+
+                toast.error(
+                    messages.length > 0 ? (
+                        <div>
+                            {messages.map((message, index) => (
+                                <div key={index}>
+                                    {message}
+                                    <hr className={styles['error-divider']} />
+                                </div>
+                            ))}
+                        </div>
+                    ) : (error.message)
+                )
+
                 return
             }
 
-            await auth.refreshProfile()
-            navigate('/')
+            toast.error('Erro ao cadastrar paciente')
 
         } finally { setLoading(false) }
 
@@ -64,15 +70,9 @@ function RegisterPatient() {
     return (
         <form className={styles.form} onSubmit={handleSubmit}>
 
-            {getError('name') && (
-                <span className={styles['error-message']}>
-                    {getError('name')}
-                </span>
-            )}
-
             <label
                 htmlFor="name"
-                className={`${styles['input-container']} ${getError("name") ? styles['input-error'] : ""}`}
+                className={`${styles['input-container']} ${hasError("name") ? styles['input-error'] : ""}`}
             >
                 <img src="/profile/user.svg" alt="" />
                 <input
@@ -83,15 +83,9 @@ function RegisterPatient() {
                 />
             </label>
 
-            {getError('email') && (
-                <span className={styles['error-message']}>
-                    {getError('email')}
-                </span>
-            )}
-
             <label
                 htmlFor="email"
-                className={`${styles['input-container']} ${getError("email") ? styles['input-error'] : ""}`}
+                className={`${styles['input-container']} ${hasError("email") ? styles['input-error'] : ""}`}
             >
                 <img src="/profile/email.svg" alt="" />
                 <input
@@ -102,23 +96,11 @@ function RegisterPatient() {
                 />
             </label>
 
-            {getError('password') && (
-                <span className={styles['error-message']}>
-                    {getError('password')}
-                </span>
-            )}
-
-            {getError('confirmPassword') && (
-                <span className={styles['error-message']}>
-                    {getError('confirmPassword')}
-                </span>
-            )}
-
             <div className={styles['pass-container']}>
 
                 <label
                     htmlFor="password"
-                    className={`${styles['input-container']} ${getError("password") ? styles['input-error'] : ""}`}
+                    className={`${styles['input-container']} ${hasError("password") ? styles['input-error'] : ""}`}
                 >
                     <img src="/profile/password.svg" alt="" />
                     <input
@@ -131,7 +113,7 @@ function RegisterPatient() {
 
                 <label
                     htmlFor="confirmPassword"
-                    className={`${styles['input-container']} ${getError("confirmPassword") ? styles['input-error'] : ""}`}
+                    className={`${styles['input-container']} ${hasError("confirmPassword") ? styles['input-error'] : ""}`}
                 >
                     <img src="/profile/password.svg" alt="" />
                     <input
@@ -144,15 +126,9 @@ function RegisterPatient() {
 
             </div>
 
-            {getError('phone') && (
-                <span className={styles['error-message']}>
-                    {getError('phone')}
-                </span>
-            )}
-
             <label
                 htmlFor="phone"
-                className={`${styles['input-container']} ${getError("phone") ? styles['input-error'] : ""}`}
+                className={`${styles['input-container']} ${hasError("phone") ? styles['input-error'] : ""}`}
             >
                 <img src="/profile/phone.svg" alt="" />
                 <input

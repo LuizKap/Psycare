@@ -1,6 +1,7 @@
 import { createContext, useEffect, useState } from "react"
-import type { AuthContextType, Patient, ProviderProps, Psychologist } from "../types"
-
+import { type User, type AuthContextType, type ProviderProps } from "../types"
+import { auth_api } from "../fetch/auth.api"
+import { toast } from "sonner"
 
 
 
@@ -8,47 +9,36 @@ export const AuthContext = createContext<AuthContextType | null>(null)
 
 
 export function AuthProvider({ children }: ProviderProps) {
-    const [profile, setProfile] = useState<Patient | Psychologist | null>(null)
-    const [loading, setLoading] = useState<boolean>(false)
+    
+    const [user, setUser] = useState<User | null>(null)
+    const [loading, setLoading] = useState<boolean>(true)
 
-    async function refreshProfile() {
-        setLoading(true)
-
+    async function refreshAuth() {
         try {
-            const patientResponse = await fetch("/patient/me")
+            const user = await auth_api.getAuthUser()
+            setUser(user)
 
-            if (patientResponse.ok) {
-                const patient: Patient = await patientResponse.json()
-                setProfile(patient)
-                return
-            }
+        } catch (error) {
 
-            const psychologistResponse = await fetch("/psychologist/me")
+            toast.error(error instanceof Error ? error.message : 'Erro ao carregar auth')
 
-            if (psychologistResponse.ok) {
-                const psychologist: Psychologist = await psychologistResponse.json()
-                setProfile(psychologist)
-                return
-            }
-
-            setProfile(null)
-
-        } finally {
+        }
+        finally {
             setLoading(false)
         }
     }
 
+
     useEffect(() => {
-        refreshProfile()
+        refreshAuth()
     }, [])
 
     return (
         <AuthContext.Provider
             value={{
-                profile,
-                setProfile,
+                user,
                 loading,
-                refreshProfile
+                refreshAuth
             }}
         >
             {children}

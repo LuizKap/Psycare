@@ -1,9 +1,10 @@
 import { useState, type SubmitEvent } from "react"
 import { Link, useNavigate } from "react-router"
-import type { ApiError, FormError } from "../../../../../types"
+import { ApiError, type FormError } from "../../../../../types"
 import styles from '../Register.module.css'
 import { useAuth } from "../../../../../hooks/useAuth"
 import { toast } from "sonner"
+import { auth_api } from "../../../../../fetch/auth.api"
 
 
 function RegisterPsychologist() {
@@ -16,8 +17,8 @@ function RegisterPsychologist() {
 
     const [loading, setLoading] = useState<boolean>(false)
 
-    function getError(field: string) {
-        return formErrors?.find(error => error.path.includes(field))?.message
+    function hasError(field: string) {
+        return formErrors?.some(error => error.path.includes(field))
     }
 
 
@@ -31,31 +32,35 @@ function RegisterPsychologist() {
         try {
             setLoading(true)
 
-            const response = await fetch('/auth/register/psychologist', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    name: formData.get('name'),
-                    email: formData.get('email'),
-                    password: formData.get('password'),
-                    confirmPassword: formData.get('confirmPassword'),
-                    entryCode: formData.get('entryCode'),
-                    phone: formData.get('phone')
-                })
-            })
+            await auth_api.registerPsychologist(formData)
+            await auth.refreshAuth()
 
-            if (!response.ok) {
-                const data: ApiError = await response.json()
-                toast.error(data.message)
-                setFormErrors(data.errors)
+            navigate('/')
+
+        } catch (error) {
+
+            if (error instanceof ApiError) {
+                setFormErrors(error.errors ?? [])
+
+                const messages = error.errors?.map(({ message }) => message) ?? []
+
+                toast.error(
+                    messages.length > 0 ? (
+                        <div>
+                            {messages.map((message, index) => (
+                                <div key={index}>
+                                    {message}
+                                    <hr className={styles['error-divider']} />
+                                </div>
+                            ))}
+                        </div>
+                    ) : (error.message)
+                )
+
                 return
             }
 
-            await auth.refreshProfile()
-            navigate('/')
-
+            toast.error('Erro ao cadastrar psicólogo')
         } finally { setLoading(false) }
 
     }
@@ -63,47 +68,46 @@ function RegisterPsychologist() {
     return (
         <form onSubmit={handleSubmit} className={styles.form}>
 
-            {getError('name') && <span className={styles['error-message']}>{getError('name')}</span>}
 
-            <label className={`${styles['input-container']} ${getError("name") ? styles['input-error'] : ""}`}>
+
+            <label className={`${styles['input-container']} ${hasError("name") ? styles['input-error'] : ""}`}>
                 <img src="/profile/user.svg" alt="" />
                 <input type="text" name="name" id="name" placeholder="Nome Completo" />
             </label>
 
-            {getError('email') && <span className={styles['error-message']}>{getError('email')}</span>}
 
-            <label className={`${styles['input-container']} ${getError("email") ? styles['input-error'] : ""}`}>
+
+            <label className={`${styles['input-container']} ${hasError("email") ? styles['input-error'] : ""}`}>
                 <img src="/profile/email.svg" alt="" />
                 <input type="email" name="email" id="email" placeholder="email: exemplo@gmail.com" />
             </label>
 
-            {getError('password') && <span className={styles['error-message']}>{getError('password')}</span>}
-            {getError('confirmPassword') && <span className={styles['error-message']}>{getError('confirmPassword')}</span>}
+
 
             <div className={styles['pass-container']}>
 
-                <label className={`${styles['input-container']} ${getError("password") ? styles['input-error'] : ""}`}>
+                <label className={`${styles['input-container']} ${hasError("password") ? styles['input-error'] : ""}`}>
                     <img src="/profile/password.svg" alt="" />
                     <input type="password" name="password" id="password" placeholder="Digite sua senha" />
                 </label>
 
-                <label className={`${styles['input-container']} ${getError("confirmPassword") ? styles['input-error'] : ""}`}>
+                <label className={`${styles['input-container']} ${hasError("confirmPassword") ? styles['input-error'] : ""}`}>
                     <img src="/profile/password.svg" alt="" />
                     <input type="password" name="confirmPassword" id="confirmPassword" placeholder="Confirme a senha" />
                 </label>
 
             </div>
 
-            {getError('entryCode') && <span className={styles['error-message']}>{getError('entryCode')}</span>}
 
-            <label className={`${styles['input-container']} ${getError("entryCode") ? styles['input-error'] : ""}`}>
+
+            <label className={`${styles['input-container']} ${hasError("entryCode") ? styles['input-error'] : ""}`}>
                 <img src="/profile/password.svg" alt="" />
                 <input type="text" name="entryCode" id="entryCode" placeholder="Digite o código" />
             </label>
 
-            {getError('phone') && <span className={styles['error-message']}>{getError('phone')}</span>}
 
-            <label className={`${styles['input-container']} ${getError("phone") ? styles['input-error'] : ""}`}>
+
+            <label className={`${styles['input-container']} ${hasError("phone") ? styles['input-error'] : ""}`}>
                 <img src="/profile/phone.svg" alt="" />
                 <input type="tel" name="phone" id="phone" placeholder="telefone exemplo: 21987654321" />
             </label>

@@ -1,9 +1,10 @@
 import { Link, useNavigate } from "react-router";
-import type { ApiError, FormError } from "../../../../../types";
+import { ApiError, type FormError } from "../../../../../types";
 import styles from "../Login.module.css"
 import { useAuth } from "../../../../../hooks/useAuth";
 import { useState, type SubmitEvent } from "react";
 import { toast } from "sonner";
+import { auth_api } from "../../../../../fetch/auth.api";
 
 
 export function LoginPsychologist() {
@@ -16,8 +17,8 @@ export function LoginPsychologist() {
 
     const [loading, setLoading] = useState<boolean>(false)
 
-    function getError(field: string) {
-        return formErrors?.find(error => error.path.includes(field))?.message
+    function hasError(field: string) {
+        return formErrors?.some(error => error.path.includes(field))
     }
 
 
@@ -32,27 +33,35 @@ export function LoginPsychologist() {
 
             setLoading(true)
 
-            const response = await fetch("/auth/login/psychologist", {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    email: formData.get('email'),
-                    password: formData.get('password'),
-                    entryCode: formData.get('entryCode')
-                })
-            })
+            await auth_api.loginPsychologist(formData)
+            await auth.refreshAuth()
 
-            if (!response.ok) {
-                const data: ApiError = await response.json()
-                toast.error(data.message)
-                setFormErrors(data.errors)
+            navigate('/')
+
+        } catch (error) {
+
+            if (error instanceof ApiError) {
+                setFormErrors(error.errors ?? [])
+
+                const messages = error.errors?.map(({ message }) => message) ?? []
+
+                toast.error(
+                    messages.length > 0 ? (
+                        <div>
+                            {messages.map((message, index) => (
+                                <div key={index}>
+                                    {message}
+                                    <hr className={styles['error-divider']} />
+                                </div>
+                            ))}
+                        </div>
+                    ) : (error.message)
+                )
+
                 return
             }
 
-            await auth.refreshProfile()
-            navigate('/')
+            toast.error('Erro ao logar psicólogo')
 
         } finally { setLoading(false) }
     }
@@ -60,15 +69,9 @@ export function LoginPsychologist() {
     return (
         <form className={styles.form} onSubmit={handleSubmit}>
 
-            {getError('email') && (
-                <span className={styles['error-message']}>
-                    {getError('email')}
-                </span>
-            )}
-
             <label
                 htmlFor="email"
-                className={`${styles['input-container']} ${getError("email") ? styles['input-error'] : ""}`}
+                className={`${styles['input-container']} ${hasError("email") ? styles['input-error'] : ""}`}
             >
                 <img src="/profile/email.svg" alt="" />
                 <input
@@ -79,15 +82,9 @@ export function LoginPsychologist() {
                 />
             </label>
 
-            {getError('password') && (
-                <span className={styles['error-message']}>
-                    {getError('password')}
-                </span>
-            )}
-
             <label
                 htmlFor="password"
-                className={`${styles['input-container']} ${getError("password") ? styles['input-error'] : ""}`}
+                className={`${styles['input-container']} ${hasError("password") ? styles['input-error'] : ""}`}
             >
                 <img src="/profile/password.svg" alt="" />
                 <input
@@ -98,9 +95,7 @@ export function LoginPsychologist() {
                 />
             </label>
 
-            {getError('entryCode') && <span className={styles['error-message']}>{getError('entryCode')}</span>}
-
-            <label className={`${styles['input-container']} ${getError("entryCode") ? styles['input-error'] : ""}`}>
+            <label className={`${styles['input-container']} ${hasError("entryCode") ? styles['input-error'] : ""}`}>
                 <img src="/profile/password.svg" alt="" />
                 <input type="text" name="entryCode" id="entryCode" placeholder="Digite o código" />
             </label>

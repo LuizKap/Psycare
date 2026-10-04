@@ -10,10 +10,6 @@ export interface SidebarProps {
   isOpen: boolean
 }
 
-export interface HomeProps {
-  closeSidebar: () => void
-}
-
 export type ProviderProps = {
   children: React.ReactNode
 }
@@ -92,10 +88,9 @@ export type NextAppointment = {
 // ====================
 
 export type AuthContextType = {
-  profile: Patient | Psychologist | null
-  setProfile: React.Dispatch<React.SetStateAction<Patient | Psychologist | null>>
+  user: User | null
   loading: boolean
-  refreshProfile: () => Promise<void>
+  refreshAuth: () => Promise<void>
 }
 
 export type AppointmentsContextType = {
@@ -108,7 +103,7 @@ export type AppointmentsContextType = {
 // Errors
 // ====================
 
-export type ApiError = {
+export type ApiErrorResponse = {
   message: string
   errors: FormError[]
 }
@@ -116,4 +111,14 @@ export type ApiError = {
 export type FormError = {
   path: (string | number)[]
   message: string
+}
+
+export class ApiError extends Error {
+    errors?: FormError[]
+
+    constructor(message: string, errors?: FormError[]) {
+        super(message)
+        this.name = "ApiError"
+        this.errors = errors
+    }
 }

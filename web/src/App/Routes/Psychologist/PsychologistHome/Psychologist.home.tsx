@@ -1,17 +1,16 @@
 
 import { Link } from 'react-router'
-import { useAuth } from '../../../../../hooks/useAuth'
 import styles from './Psychologist.home.module.css'
 import { useEffect, useState } from 'react'
-import { appointment_api } from '../../../../../fetch/appointment.api'
-import type { NextAppointment } from '../../../../../types'
+import { appointment_api } from '../../../../fetch/appointment.api'
+import type { NextAppointment } from '../../../../types'
 import { toast } from 'sonner'
-import dayjs from '../../../../../utils/dayjs'
+import dayjs from '../../../../utils/dayjs'
+import { patient_api } from '../../../../fetch/patient.api'
 
 
 export function PsychologistHome() {
-
-    const auth = useAuth()
+    
     const [todayAppointmentsCount, setTodayAppointmentsCount] = useState<number>(0)
     const [nextAppointment, setNextAppointment] = useState<NextAppointment | null>(null)
     const [upcomingAppointments, setUpcomingAppointments] = useState<NextAppointment[]>([])
@@ -25,7 +24,7 @@ export function PsychologistHome() {
                     appointment_api.countTodayAppointments(),
                     appointment_api.getNextAppointment(),
                     appointment_api.getUpcomingAppointments(),
-                    appointment_api.countPatients()
+                    patient_api.countPatients()
                 ])
 
                 setTodayAppointmentsCount(todayAppointmentsCount)
@@ -43,7 +42,7 @@ export function PsychologistHome() {
     return (
         <>
             <section className={styles.introduction}>
-                <h1>Bem vindo Dr. {auth.profile?.name}!</h1>
+                <h1>Bem vindo Dr. {}!</h1>
             </section>
 
             <section className={styles.info}>

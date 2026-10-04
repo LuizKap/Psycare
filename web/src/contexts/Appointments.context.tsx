@@ -19,7 +19,7 @@ export function AppointmentsProvider({ children }: ProviderProps) {
 
         if (auth.loading) return
 
-        if (!auth.profile) return
+        /*if (!auth.profile) return */
 
         try {
             setLoading(true)
