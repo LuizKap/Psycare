@@ -53,7 +53,7 @@ export class PatientController {
 
         const patient = await this.patientService.removeProfilePicture(patient_id)
 
-        res.json(patient)
+        res.json({patient, message: 'Foto excluída'})
     }
 
 }

@@ -14,7 +14,8 @@ export class AuthService {
         private psychologistRepository: IPsychologistRepository
     ) { }
 
-    async registerPatient(registerData: Pick<Patient, 'name' | 'phone'> & Pick<User, 'email' | 'password'>): Promise<{ patient: Patient, user: User, token: Session['token'] }> {
+    async registerPatient(registerData: Pick<Patient, 'name' | 'phone'> & Pick<User, 'email' | 'password'>):
+        Promise<{ patient: Patient, user: User, token: Session['token'] }> {
 
         const { name, email, password, phone } = registerData
 

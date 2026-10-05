@@ -20,10 +20,10 @@ export const registerPatientSchema = z.object({
     password: z.string()
         .min(12, 'A senha deve ter no minimo 12 caracteres')
         .max(100, 'A senha não deve ter mais que 100 caracteres').refine((value) => value.trim().length > 0,
-            { error: 'O campo não deve ser vazio' }),
+            { error: 'O campo "senha" não deve ser vazio' }),
 
 
-    confirmPassword: z.string().min(1, 'O campo não deve ser vazio')
+    confirmPassword: z.string().min(1, 'O campo "confirmar senha" não deve ser vazio')
 
 
 }).refine((data => data.password === data.confirmPassword), {
@@ -41,7 +41,7 @@ export const loginPatientSchema = z.object({
         .toLowerCase(),
 
     password: z.string().refine((value) => value.trim().length > 0, {
-        error: 'O campo não deve ser vazio'
+        error: 'O campo "senha" não deve ser vazio'
     })
 
 }).strict()
@@ -63,9 +63,9 @@ export const registerPsychologistSchema = z.object({
     password: z.string()
         .min(12, 'A senha deve ter no minimo 12 caracteres')
         .max(100, 'A senha não deve ter mais que 100 caracteres').refine((value) => value.trim().length > 0,
-            { error: 'O campo não deve ser vazio' }),
+            { error: 'O campo "senha" não deve ser vazio' }),
 
-    confirmPassword: z.string().min(1, 'O campo não deve ser vazio'),
+    confirmPassword: z.string().min(1, 'O campo "confirmar senha" não deve ser vazio'),
 
     phone: z.string().regex(/^\d{11}$/, 'Telefone inválido'),
 
@@ -84,7 +84,7 @@ export const loginPsychologistSchema = z.object({
     email: z.email({ error: 'Digite um email válido' }).trim().toLowerCase(),
 
     password: z.string().refine((value) => value.trim().length > 0, {
-        error: 'O campo não deve ser vazio'
+        error: 'O campo "senha" não deve ser vazio'
     }),
 
     entryCode: z.string().trim().min(1, 'O código é obrigatório')
