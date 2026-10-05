@@ -8,8 +8,8 @@ import RegisterPatient from "./Routes/Auth/Register/Components/Patient"
 import RegisterPsychologist from "./Routes/Auth/Register/Components/Psychologist"
 
 import { Login } from "./Routes/Auth/Login/Login"
-import { LoginPatient } from "./Routes/Auth/Login/components/Patient"
-import { LoginPsychologist } from "./Routes/Auth/Login/components/Psychologist"
+import { LoginPatient } from "./Routes/Auth/Login/components/patient"
+import { LoginPsychologist } from "./Routes/Auth/Login/components/psychologist"
 
 import { Toaster } from "sonner"
 
@@ -22,9 +22,9 @@ import { Loading } from "./components/Loading/Loading"
 
 function App() {
 
-  const user = useAuth()
+  const auth = useAuth()
 
-  if (user.loading) return (
+  if (auth.loading) return (
     <Loading />
   )
 

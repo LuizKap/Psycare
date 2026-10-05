@@ -1,7 +1,8 @@
 import { createContext, useEffect, useState } from "react";
-import type { Appointment, AppointmentsContextType, ProviderProps } from "../types";
-import { useAuth } from "../hooks/useAuth";
+import { ApiError, type Appointment, type AppointmentsContextType, type ProviderProps } from "../types";
 import { appointment_api } from "../fetch/appointment.api";
+import { Loading } from "../App/components/Loading/Loading";
+import { toast } from "sonner";
 
 
 
@@ -10,31 +11,37 @@ export const AppointmentsContext = createContext<AppointmentsContextType | null>
 
 export function AppointmentsProvider({ children }: ProviderProps) {
 
-    const auth = useAuth()
-
     const [appointments, setAppointments] = useState<Appointment[]>([])
-    const [loading, setLoading] = useState<boolean>(false)
+    const [loading, setLoading] = useState<boolean>(true)
 
     async function refreshAppointments() {
 
-        if (auth.loading) return
-
-        /*if (!auth.profile) return */
-
         try {
-            setLoading(true)
-
             const scheduledAppointments = await appointment_api.getPatientScheduledAppointments()
 
             setAppointments(scheduledAppointments)
-        } finally {
+        }
+        catch (error) {
+
+            toast.error(error instanceof ApiError ? error.message : 'Erro ao carregar dados de consultas')
+            
+        }
+        finally {
             setLoading(false)
         }
+
     }
 
     useEffect(() => {
+
         refreshAppointments()
-    }, [auth.loading])
+
+    }, [])
+
+
+    if (loading) return (
+        <Loading />
+    )
 
     return (
 

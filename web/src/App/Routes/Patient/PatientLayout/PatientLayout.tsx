@@ -24,11 +24,7 @@ export function PatientLayout() {
     const content = (
         <>
             <PatientNavbar toggleSidebar={toggleSidebar} />
-
-            {user?.role === 'PATIENT'
-                ? <PatientSidebar isOpen={isOpen} />
-                : <GuestSidebar isOpen={isOpen} />
-            }
+            {user?.role === 'PATIENT' ? <PatientSidebar isOpen={isOpen} /> : <GuestSidebar isOpen={isOpen} />}
 
             <Outlet />
         </>

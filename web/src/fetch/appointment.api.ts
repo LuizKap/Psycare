@@ -1,4 +1,4 @@
-import type { Appointment, NextAppointment } from "../types"
+import { ApiError, type Appointment, type NextAppointment } from "../types"
 
 
 export const appointment_api = {
@@ -10,7 +10,7 @@ export const appointment_api = {
         if (!response.ok) {
             const error = await response.json()
 
-            throw new Error(error.message)
+            throw new ApiError(error.message)
         }
 
         const appointments: Appointment[] = await response.json()
@@ -24,7 +24,7 @@ export const appointment_api = {
 
         if (!response.ok) {
             const error = await response.json()
-            throw new Error(error.message)
+            throw new ApiError(error.message)
         }
 
         const scheduledAppointments: Appointment[] = await response.json()
@@ -38,7 +38,7 @@ export const appointment_api = {
 
         if (!response.ok) {
             const error = await response.json()
-            throw new Error(error.message)
+            throw new ApiError(error.message)
         }
 
         const times: string[] = await response.json()

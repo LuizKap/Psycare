@@ -94,14 +94,20 @@ export type AppointmentsContextType = {
 }
 
 export type PatientContextType = {
-  patient: Patient | null
+  patient: Patient
   loading: boolean
+  error: boolean,
   refreshPatient: () => Promise<void>
 }
 
 // ====================
 // Errors
 // ====================
+
+export type ErrorStateProps = {
+  message?: string
+  onRetry: () => void
+}
 
 export type ApiErrorResponse = {
   message: string

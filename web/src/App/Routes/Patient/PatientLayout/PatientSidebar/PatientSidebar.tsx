@@ -8,12 +8,15 @@ import dayjs from "../../../../../utils/dayjs"
 import { formatAppointmentDate } from "../../../../../utils/formatAppointmentDate"
 
 import styles from "./PatientSidebar.module.css"
+import { usePatient } from "../../../../../hooks/usePatient"
 
 
 function PatientSidebar({ isOpen }: SidebarProps) {
 
+    const patient_data = usePatient()
     const appointments_data = useAppointment()
 
+    const patient = patient_data.patient
     const appointments = appointments_data.appointments
     
 
@@ -23,7 +26,7 @@ function PatientSidebar({ isOpen }: SidebarProps) {
             <section className={styles["side-introduction"]}>
 
                 <h2 className={styles["side-username"]}>
-                    Olá {/*profile?.name*/}
+                    Olá {patient.name}
                 </h2>
 
                 <img
@@ -33,7 +36,7 @@ function PatientSidebar({ isOpen }: SidebarProps) {
 
                 <p>
                     Paciente desde{" "}
-                    {dayjs(/*profile?.created_at*/).format("MMM [de] YYYY")}
+                    {dayjs(patient.created_at).format("MMM [de] YYYY")}
                 </p>
 
                 <Link
