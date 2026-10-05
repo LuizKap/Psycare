@@ -1,4 +1,4 @@
-import { ApiValidationError, type ApiErrorResponse, type User } from "../types"
+import { ApiError, ApiValidationError, type ApiErrorResponse, type User } from "../types"
 
 
 export const auth_api = {
@@ -7,7 +7,7 @@ export const auth_api = {
         const response = await fetch('/auth/me')
 
         if (!response.ok) {
-            throw new Error('Erro ao buscar usuário autenticado')
+            throw new ApiError('Erro ao buscar usuário autenticado')
         }
 
         const user: User | null = await response.json()
@@ -34,9 +34,7 @@ export const auth_api = {
         if (!response.ok) {
             const error: ApiErrorResponse = await response.json()
 
-            throw new ApiValidationError(
-                error.message,
-                error.errors)
+            throw new ApiValidationError(error.message, error.errors)
         }
 
         const data: { user: User & { role: 'PATIENT' } } = await response.json()
@@ -63,9 +61,7 @@ export const auth_api = {
         if (!response.ok) {
             const error: ApiErrorResponse = await response.json()
 
-            throw new ApiValidationError(
-                error.message,
-                error.errors)
+            throw new ApiValidationError(error.message, error.errors)
         }
 
         const data: { user: User & { role: 'PSYCHOLOGIST' } } = await response.json()
@@ -88,9 +84,7 @@ export const auth_api = {
         if (!response.ok) {
             const error: ApiErrorResponse = await response.json()
 
-            throw new ApiValidationError(
-                error.message,
-                error.errors)
+            throw new ApiValidationError(error.message, error.errors)
         }
 
         const data: { user: User & { role: 'PATIENT' } } = await response.json()
@@ -114,9 +108,7 @@ export const auth_api = {
         if (!response.ok) {
             const error: ApiErrorResponse = await response.json()
 
-            throw new ApiValidationError(
-                error.message,
-                error.errors)
+            throw new ApiValidationError(error.message, error.errors)
         }
 
         const data: { user: User & { role: 'PSYCHOLOGIST' } } = await response.json()

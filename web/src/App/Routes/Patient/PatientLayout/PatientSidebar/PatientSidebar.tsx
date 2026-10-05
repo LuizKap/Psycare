@@ -13,10 +13,10 @@ import { usePatient } from "../../../../../hooks/usePatient"
 
 function PatientSidebar({ isOpen }: SidebarProps) {
 
-    const patient_data = usePatient()
+    const profile = usePatient()
     const appointments_data = useAppointment()
 
-    const patient = patient_data.patient
+    const patient = profile.patient
     const appointments = appointments_data.appointments
     
 

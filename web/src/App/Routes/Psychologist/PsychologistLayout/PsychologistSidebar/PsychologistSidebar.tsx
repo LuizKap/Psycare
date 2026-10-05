@@ -1,19 +1,17 @@
 import { Link } from "react-router"
 
-import { useAuth } from "../../../../../hooks/useAuth"
-
 import type { SidebarProps } from "../../../../../types"
 
 import dayjs from "../../../../../utils/dayjs"
 
 import styles from "./PsychologistSidebar.module.css"
+import { usePsychologist } from "../../../../../hooks/usePsychologist"
 
 
 function PsychologistSidebar({ isOpen }: SidebarProps) {
 
-    const auth = useAuth()
-    /*const profile = auth.user*/
-
+    const profile = usePsychologist()
+    const psychologist = profile.psychologist
 
     return (
         <div className={`${styles.side} ${isOpen ? styles.open : ""}`}>
@@ -21,7 +19,7 @@ function PsychologistSidebar({ isOpen }: SidebarProps) {
             <section className={styles["side-introduction"]}>
 
                 <h2 className={styles["side-username"]}>
-                    Olá Dr. {/*profile.name*/}
+                    Olá Dr. {psychologist.name}
                 </h2>
 
                 <img
@@ -31,9 +29,8 @@ function PsychologistSidebar({ isOpen }: SidebarProps) {
 
                 <p>
                     Psicólogo desde{" "}
-                    {/*profile &&
-                        dayjs(/*profile.created_at).format("MMM [de] YYYY")
-                    */}
+                    {dayjs(psychologist.created_at).format("MMM [de] YYYY")}
+
                 </p>
 
                 <Link

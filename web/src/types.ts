@@ -100,6 +100,13 @@ export type PatientContextType = {
   refreshPatient: () => Promise<void>
 }
 
+export type PsychologistContextType = {
+  psychologist: Psychologist
+  loading: boolean
+  error: boolean,
+  refreshPsychologist: () => Promise<void>
+}
+
 // ====================
 // Errors
 // ====================

@@ -1,5 +1,5 @@
 import { createContext, useEffect, useState } from "react"
-import { type User, type AuthContextType, type ProviderProps } from "../types"
+import { type User, type AuthContextType, type ProviderProps, ApiError } from "../types"
 import { auth_api } from "../fetch/auth.api"
 import { toast } from "sonner"
 
@@ -20,7 +20,7 @@ export function AuthProvider({ children }: ProviderProps) {
 
         } catch (error) {
 
-            toast.error(error instanceof Error ? error.message : 'Erro ao carregar auth')
+            toast.error(error instanceof ApiError ? error.message : 'Erro ao carregar auth')
 
         }
         finally {
