@@ -52,8 +52,6 @@
 }
 
 
-
-
 .side-introduction {
     display: flex;
     flex-direction: column;
@@ -96,8 +94,6 @@
     background: #139e5857;
 }
 
-
-
 .side-appointment {
     display: flex;
     flex-direction: column;
@@ -137,8 +133,6 @@
 }
 
 
-
-
 .side-menu {
     display: flex;
     flex-direction: column;
@@ -164,4 +158,13 @@
 
 .side-menu-link:hover {
     color: #10b978;
+}
+
+.side-menu button {
+    padding: 0;
+    border: none;
+    background: none;
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
 }

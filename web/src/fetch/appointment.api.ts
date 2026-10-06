@@ -75,7 +75,7 @@ export const appointment_api = {
 
         if (!response.ok) {
             const error = await response.json()
-            throw new Error(error.message)
+            throw new ApiError(error.message)
         }
 
         const count = await response.json()
@@ -87,7 +87,7 @@ export const appointment_api = {
 
         if (!response.ok) {
             const error = await response.json()
-            throw new Error(error.message)
+            throw new ApiError(error.message)
         }
 
         const appointment: NextAppointment = await response.json()
@@ -99,7 +99,7 @@ export const appointment_api = {
 
         if (!response.ok) {
             const error = await response.json()
-            throw new Error(error.message)
+            throw new ApiError(error.message)
         }
 
         const appointments: NextAppointment[] = await response.json()

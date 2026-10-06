@@ -1,17 +1,49 @@
 import { Link } from "react-router"
 
-import type { SidebarProps } from "../../../../../types"
+import { ApiError, type NextAppointment, type SidebarProps } from "../../../../../types"
 
 import dayjs from "../../../../../utils/dayjs"
 
 import styles from "./PsychologistSidebar.module.css"
 import { usePsychologist } from "../../../../../hooks/usePsychologist"
+import { appointment_api } from "../../../../../fetch/appointment.api"
+import { useEffect, useState } from "react"
+import { toast } from "sonner"
+import { useAuth } from "../../../../../hooks/useAuth"
 
 
 function PsychologistSidebar({ isOpen }: SidebarProps) {
 
+    const [nextAppointment, setNextAppointment] = useState<NextAppointment | null>(null)
+
+    const auth = useAuth()
     const profile = usePsychologist()
     const psychologist = profile.psychologist
+
+    async function handleLogout() {
+
+        try {
+
+            const message = await auth.logout()
+            toast.success(message)
+
+        } catch (error) {
+
+            toast.error(error instanceof ApiError ? error.message : 'Erro externo')
+
+        }
+
+    }
+
+    useEffect(() => {
+
+        async function loadData() {
+            const appointment = await appointment_api.getNextAppointment()
+            setNextAppointment(appointment)
+        }
+
+        loadData()
+    }, [])
 
     return (
         <div className={`${styles.side} ${isOpen ? styles.open : ""}`}>
@@ -53,7 +85,10 @@ function PsychologistSidebar({ isOpen }: SidebarProps) {
                 <h3>Próximo Atendimento</h3>
 
                 <p>
-                    Nenhum atendimento agendado
+                    {nextAppointment ?
+                        `${dayjs(nextAppointment.starts_at).format('DD/MM/YYYY HH:mm')}`
+                        : 'Nenhum atendimento agendado'
+                    }
                 </p>
 
                 <Link
@@ -100,13 +135,13 @@ function PsychologistSidebar({ isOpen }: SidebarProps) {
                     <span>Minha agenda</span>
                 </Link>
 
-                <Link
-                    to="/logout"
-                    className={styles["side-menu-link"]}
-                >
+                <button type="button" onClick={handleLogout}
+                    className={styles["side-menu-link"]}>
+
                     <img src="/profile/logout.svg" alt="" />
+
                     <span>Sair</span>
-                </Link>
+                </button>
 
             </section>
 

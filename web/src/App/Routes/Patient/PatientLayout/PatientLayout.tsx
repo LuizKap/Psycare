@@ -12,6 +12,7 @@ export function PatientLayout() {
 
     const { user } = useAuth()
     const [isOpen, setIsOpen] = useState(false)
+    console.log(user)
 
     if (user?.role === 'PSYCHOLOGIST') {
         return <Navigate to="/unauthorized" replace />

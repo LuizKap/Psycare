@@ -115,8 +115,17 @@ export const auth_api = {
         return data.user
     },
 
-    async logout() {
-        // fetch("/auth/logout")
+    async logout(): Promise<string> {
+
+        const response = await fetch('/api/auth/logout', { method: 'POST' })
+
+        if (!response.ok) {
+            const error = await response.json()
+            throw new ApiError(error.message)
+        }
+
+        const {message} = await response.json()
+        return message
     }
 
 

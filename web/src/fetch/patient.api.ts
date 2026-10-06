@@ -21,7 +21,7 @@ export const patient_api = {
 
         if (!response.ok) {
             const error = await response.json()
-            throw new Error(error.message)
+            throw new ApiError(error.message)
         }
 
         const count = await response.json()

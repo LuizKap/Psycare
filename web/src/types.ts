@@ -85,6 +85,7 @@ export type AuthContextType = {
   user: User | null
   loading: boolean
   refreshAuth: () => Promise<void>
+  logout: () => Promise<string>
 }
 
 export type AppointmentsContextType = {

@@ -5,11 +5,13 @@ import { toast } from "sonner"
 
 
 
+
 export const AuthContext = createContext<AuthContextType | null>(null)
 
 
 export function AuthProvider({ children }: ProviderProps) {
-    
+
+
     const [user, setUser] = useState<User | null>(null)
     const [loading, setLoading] = useState<boolean>(true)
 
@@ -28,6 +30,13 @@ export function AuthProvider({ children }: ProviderProps) {
         }
     }
 
+    async function logout() {
+
+        const message = await auth_api.logout()
+        setUser(null)
+        return message
+    }
+
 
     useEffect(() => {
         refreshAuth()
@@ -38,7 +47,8 @@ export function AuthProvider({ children }: ProviderProps) {
             value={{
                 user,
                 loading,
-                refreshAuth
+                refreshAuth,
+                logout
             }}
         >
             {children}

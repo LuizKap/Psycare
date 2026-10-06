@@ -3,7 +3,7 @@ import { Link } from 'react-router'
 import styles from './Psychologist.home.module.css'
 import { useEffect, useState } from 'react'
 import { appointment_api } from '../../../../fetch/appointment.api'
-import type { NextAppointment } from '../../../../types'
+import { ApiError, type NextAppointment } from '../../../../types'
 import { toast } from 'sonner'
 import dayjs from '../../../../utils/dayjs'
 import { patient_api } from '../../../../fetch/patient.api'
@@ -11,7 +11,7 @@ import { usePsychologist } from '../../../../hooks/usePsychologist'
 
 
 export function PsychologistHome() {
-    
+
     const profile = usePsychologist()
     const psychologist = profile.psychologist
 
@@ -25,19 +25,22 @@ export function PsychologistHome() {
         async function loadDashboard() {
 
             try {
-                const [todayAppointmentsCount, nextAppointment, upcomingAppointments, PatientsCount] = await Promise.all([
-                    appointment_api.countTodayAppointments(),
-                    appointment_api.getNextAppointment(),
-                    appointment_api.getUpcomingAppointments(),
-                    patient_api.countPatients()
-                ])
+                const [todayAppointmentsCount, nextAppointment, upcomingAppointments, patientsCount] =
+                    await Promise.all
+                        ([
+                            appointment_api.countTodayAppointments(),
+                            appointment_api.getNextAppointment(),
+                            appointment_api.getUpcomingAppointments(),
+                            patient_api.countPatients()
+                        ])
 
                 setTodayAppointmentsCount(todayAppointmentsCount)
                 setNextAppointment(nextAppointment)
                 setUpcomingAppointments(upcomingAppointments)
-                setPatientsCount(PatientsCount)
+                setPatientsCount(patientsCount)
+
             } catch (error) {
-                toast.error(error instanceof Error ? error.message : 'Erro ao carregar algumas informações')
+                toast.error(error instanceof ApiError ? error.message : 'Erro ao carregar algumas informações')
             }
         }
 
@@ -47,20 +50,29 @@ export function PsychologistHome() {
     return (
         <>
             <section className={styles.introduction}>
+
                 <h1>Bem vindo Dr. {psychologist.name}!</h1>
+
             </section>
 
             <section className={styles.info}>
 
                 <article className={styles['card-info']}>
+
                     <div>
                         <img src="/profile/appointments.svg" alt="" />
                         <h2>Consultas hoje</h2>
                     </div>
-                    <span>{todayAppointmentsCount === 0 ? 'Nenhuma consulta' : `${todayAppointmentsCount} consultas`}</span>
+
+                    <span>{todayAppointmentsCount === 0 ?
+                        'Nenhuma consulta' :
+                        `${todayAppointmentsCount} consultas`}
+                    </span>
+
                     <Link to='/list/appointments'>
                         Lista de Consultas
                     </Link>
+
                 </article>
 
                 <article className={styles['card-info']}>
@@ -114,7 +126,9 @@ export function PsychologistHome() {
                             key={appointment.id}
                         >
                             <span>
-                                {dayjs(appointment.starts_at).tz('America/Sao_Paulo').format('HH:mm')}
+                                {dayjs(appointment.starts_at)
+                                    .tz('America/Sao_Paulo')
+                                    .format('DD/MM HH:mm')}
                             </span>
 
                             <span>

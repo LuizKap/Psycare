@@ -35,7 +35,7 @@ function RegisterPsychologist() {
             await auth_api.registerPsychologist(formData)
             await auth.refreshAuth()
 
-            navigate('/')
+            navigate('/psychologist')
 
         } catch (error) {
 

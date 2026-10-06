@@ -5,7 +5,6 @@ import PsychologistNavbar from "../../../components/Navbar/PsychologistNavbar"
 import PsychologistSidebar from "./PsychologistSidebar/PsychologistSidebar"
 import { useAuth } from "../../../../hooks/useAuth"
 import { PsychologistProvider } from "../../../../contexts/Psychologist.context"
-import { AppointmentsProvider } from "../../../../contexts/Appointments.context"
 
 export function PsychologistLayout() {
 
@@ -14,10 +13,8 @@ export function PsychologistLayout() {
     const { user } = useAuth()
 
     if (!user) {
-        return <Navigate to="/login" replace />
+        return <Navigate to="/" replace />
     }
-
-    console.log(user.role)
 
     if (user.role !== "PSYCHOLOGIST") {
         return <Navigate to="/unauthorized" replace />

@@ -16,7 +16,7 @@ function PsychologistNavbar({ toggleSidebar }: NavbarProps) {
                 <div className={styles['nav-links-container']}>
 
                     <NavLink
-                        to="/"
+                        to="/psychologist"
                         className={({ isActive }) =>
                             `${styles['nav-link']} ${isActive ? styles.active : ''}`
                         }

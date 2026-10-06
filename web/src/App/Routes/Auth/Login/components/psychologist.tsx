@@ -36,7 +36,7 @@ export function LoginPsychologist() {
             await auth_api.loginPsychologist(formData)
             await auth.refreshAuth()
 
-            navigate('/')
+            navigate('/psychologist')
 
         } catch (error) {
 
