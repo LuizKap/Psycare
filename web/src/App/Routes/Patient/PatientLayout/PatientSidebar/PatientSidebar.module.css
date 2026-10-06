@@ -129,3 +129,12 @@
 .side-menu-link:hover {
     color: #10dd8875;
 }
+
+.side-menu button {
+    padding: 0;
+    border: none;
+    background: none;
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+}

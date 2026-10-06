@@ -1,24 +1,45 @@
-import { Link } from "react-router"
+import { Link, useNavigate } from "react-router"
 
 import { useAppointment } from "../../../../../hooks/useAppointment"
 
-import type { SidebarProps } from "../../../../../types"
+import { ApiError, type SidebarProps } from "../../../../../types"
 
 import dayjs from "../../../../../utils/dayjs"
 import { formatAppointmentDate } from "../../../../../utils/formatAppointmentDate"
 
 import styles from "./PatientSidebar.module.css"
 import { usePatient } from "../../../../../hooks/usePatient"
+import { toast } from "sonner"
+import { useAuth } from "../../../../../hooks/useAuth"
 
 
 function PatientSidebar({ isOpen }: SidebarProps) {
 
+    const auth = useAuth()
     const profile = usePatient()
     const appointments_data = useAppointment()
+    const navigate = useNavigate()
 
     const patient = profile.patient
     const appointments = appointments_data.appointments
-    
+
+
+    async function handleLogout() {
+
+        try {
+
+            const message = await auth.logout()
+            navigate('/')
+            toast.success(message)
+
+        } catch (error) {
+
+            toast.error(error instanceof ApiError ? error.message : 'Erro externo')
+
+        }
+
+    }
+
 
     return (
         <div className={`${styles.side} ${isOpen ? styles.open : ""}`}>
@@ -114,13 +135,13 @@ function PatientSidebar({ isOpen }: SidebarProps) {
                     <span>Diário do humor</span>
                 </Link>
 
-                <Link
-                    to="/logout"
-                    className={styles["side-menu-link"]}
-                >
+                <button type="button" onClick={handleLogout}
+                    className={styles["side-menu-link"]}>
+
                     <img src="/profile/logout.svg" alt="" />
+
                     <span>Sair</span>
-                </Link>
+                </button>
 
             </section>
 
