@@ -13,10 +13,10 @@ app.use(cookieParser())
 app.use(express.json())
 
 app.use(authMiddlewareInstance)
-app.use('/auth', authRouter)
-app.use('/patient', patientRouter)
-app.use('/appointments', appointmentRouter)
-app.use('/psychologist', psychologistRouter)
+app.use('/api/auth', authRouter)
+app.use('/api/patient', patientRouter)
+app.use('/api/appointments', appointmentRouter)
+app.use('/api/psychologist', psychologistRouter)
 app.use(errorHandlerMiddleware)
 
 export default app
