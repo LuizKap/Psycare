@@ -5,7 +5,7 @@ export const psychologist_api = {
 
     async getProfile(): Promise<Psychologist> {
 
-        const response = await fetch('/psychologist/me')
+        const response = await fetch('/api/psychologist/me')
 
         if (!response.ok) {
             const error: ApiErrorResponse = await response.json()
@@ -19,7 +19,7 @@ export const psychologist_api = {
 
     async updateProfile(formData: FormData): Promise<string> {
 
-        const response = await fetch("/psychologist", {
+        const response = await fetch("/api/psychologist", {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json'

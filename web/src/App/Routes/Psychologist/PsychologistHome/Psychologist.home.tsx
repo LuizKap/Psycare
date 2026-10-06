@@ -7,10 +7,15 @@ import type { NextAppointment } from '../../../../types'
 import { toast } from 'sonner'
 import dayjs from '../../../../utils/dayjs'
 import { patient_api } from '../../../../fetch/patient.api'
+import { usePsychologist } from '../../../../hooks/usePsychologist'
 
 
 export function PsychologistHome() {
     
+    const profile = usePsychologist()
+    const psychologist = profile.psychologist
+
+
     const [todayAppointmentsCount, setTodayAppointmentsCount] = useState<number>(0)
     const [nextAppointment, setNextAppointment] = useState<NextAppointment | null>(null)
     const [upcomingAppointments, setUpcomingAppointments] = useState<NextAppointment[]>([])
@@ -42,7 +47,7 @@ export function PsychologistHome() {
     return (
         <>
             <section className={styles.introduction}>
-                <h1>Bem vindo Dr. {}!</h1>
+                <h1>Bem vindo Dr. {psychologist.name}!</h1>
             </section>
 
             <section className={styles.info}>

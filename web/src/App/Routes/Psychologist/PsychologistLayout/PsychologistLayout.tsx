@@ -4,8 +4,12 @@ import { useState } from "react"
 import PsychologistNavbar from "../../../components/Navbar/PsychologistNavbar"
 import PsychologistSidebar from "./PsychologistSidebar/PsychologistSidebar"
 import { useAuth } from "../../../../hooks/useAuth"
+import { PsychologistProvider } from "../../../../contexts/Psychologist.context"
+import { AppointmentsProvider } from "../../../../contexts/Appointments.context"
 
 export function PsychologistLayout() {
+
+    const [isOpen, setIsOpen] = useState(false)
 
     const { user } = useAuth()
 
@@ -13,11 +17,11 @@ export function PsychologistLayout() {
         return <Navigate to="/login" replace />
     }
 
+    console.log(user.role)
+
     if (user.role !== "PSYCHOLOGIST") {
         return <Navigate to="/unauthorized" replace />
     }
-
-    const [isOpen, setIsOpen] = useState(false)
 
     const toggleSidebar = () => {
         setIsOpen(isOpen => !isOpen)
@@ -25,10 +29,12 @@ export function PsychologistLayout() {
 
     return (
         <>
-            <PsychologistNavbar toggleSidebar={toggleSidebar} />
-            <PsychologistSidebar isOpen={isOpen} />
+            <PsychologistProvider>
+                <PsychologistNavbar toggleSidebar={toggleSidebar} />
+                <PsychologistSidebar isOpen={isOpen} />
 
-            <Outlet />
+                <Outlet />
+            </PsychologistProvider>
         </>
     )
 }

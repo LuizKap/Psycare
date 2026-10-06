@@ -5,7 +5,7 @@ export const appointment_api = {
 
     async getPatientAppointments(): Promise<Appointment[]> {
 
-        const response = await fetch('/appointments')
+        const response = await fetch('/api/appointments')
 
         if (!response.ok) {
             const error = await response.json()
@@ -20,7 +20,7 @@ export const appointment_api = {
     ,
     async getPatientScheduledAppointments(): Promise<Appointment[]> {
 
-        const response = await fetch('/appointments/scheduled/patient')
+        const response = await fetch('/api/appointments/scheduled/patient')
 
         if (!response.ok) {
             const error = await response.json()
@@ -34,7 +34,7 @@ export const appointment_api = {
     ,
     async getAvailability(): Promise<string[]> {
 
-        const response = await fetch('/appointments/availability')
+        const response = await fetch('/api/appointments/availability')
 
         if (!response.ok) {
             const error = await response.json()
@@ -71,7 +71,7 @@ export const appointment_api = {
     }
     ,
     async countTodayAppointments(): Promise<number> {
-        const response = await fetch('/appointments/count/today')
+        const response = await fetch('/api/appointments/count/today')
 
         if (!response.ok) {
             const error = await response.json()
@@ -83,7 +83,7 @@ export const appointment_api = {
     }
     ,
     async getNextAppointment(): Promise<NextAppointment | null> {
-        const response = await fetch('/appointments/next')
+        const response = await fetch('/api/appointments/next')
 
         if (!response.ok) {
             const error = await response.json()
@@ -95,7 +95,7 @@ export const appointment_api = {
     }
     ,
     async getUpcomingAppointments(): Promise<NextAppointment[]> {
-        const response = await fetch('/appointments/upcoming')
+        const response = await fetch('/api/appointments/upcoming')
 
         if (!response.ok) {
             const error = await response.json()

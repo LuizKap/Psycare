@@ -6,22 +6,10 @@ export default defineConfig({
   plugins: [react()],
   server: {
     proxy: {
-      "/patient": {
-        target: "http://localhost:3000",
-        changeOrigin: true,
-      },
-      "/auth": {
-        target: "http://localhost:3000",
-        changeOrigin: true,
-      },
-      "/appointments": {
-        target: "http://localhost:3000",
-        changeOrigin: true,
-      },
-      "/psychologist": {
+      "/api": {
         target: "http://localhost:3000",
         changeOrigin: true
       }
-    },
-  },
+    }
+  }
 })

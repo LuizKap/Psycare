@@ -4,7 +4,7 @@ import { ApiError, ApiValidationError, type ApiErrorResponse, type User } from "
 export const auth_api = {
 
     async getAuthUser(): Promise<User | null> {
-        const response = await fetch('/auth/me')
+        const response = await fetch('/api/auth/me')
 
         if (!response.ok) {
             throw new ApiError('Erro ao buscar usuário autenticado')
@@ -17,7 +17,7 @@ export const auth_api = {
 
     async registerPatient(formData: FormData) {
 
-        const response = await fetch("/auth/register/patient", {
+        const response = await fetch("/api/auth/register/patient", {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -43,7 +43,7 @@ export const auth_api = {
 
     async registerPsychologist(formData: FormData) {
 
-        const response = await fetch('/auth/register/psychologist', {
+        const response = await fetch('/api/auth/register/psychologist', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -70,7 +70,7 @@ export const auth_api = {
 
     async loginPatient(formData: FormData) {
 
-        const response = await fetch("/auth/login/patient", {
+        const response = await fetch("/api/auth/login/patient", {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -93,7 +93,7 @@ export const auth_api = {
     },
 
     async loginPsychologist(formData: FormData) {
-        const response = await fetch("/auth/login/psychologist", {
+        const response = await fetch("/api/auth/login/psychologist", {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

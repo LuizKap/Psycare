@@ -8,8 +8,8 @@ import RegisterPatient from "./Routes/Auth/Register/Components/Patient"
 import RegisterPsychologist from "./Routes/Auth/Register/Components/Psychologist"
 
 import { Login } from "./Routes/Auth/Login/Login"
-import { LoginPatient } from "./Routes/Auth/Login/components/patient"
-import { LoginPsychologist } from "./Routes/Auth/Login/components/psychologist"
+import { LoginPatient } from "./Routes/Auth/Login/components/Patient"
+import { LoginPsychologist } from "./Routes/Auth/Login/components/Psychologist"
 
 import { Toaster } from "sonner"
 
