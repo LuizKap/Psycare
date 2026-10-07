@@ -156,6 +156,15 @@ export class AppointmentRepository implements IAppointmentRepository {
         })
     }
 
+    async findPreviousAppointmentsByPatientId(patient_id: Patient['id']): Promise<Appointment[]> {
+        return await this.prisma.appointment.findMany({
+            where: {
+                patient_id
+            },
+            orderBy: { starts_at: 'asc' }
+        })
+    }
+
     async updateFinishedAppointments(): Promise<number> {
         const result = await this.prisma.appointment.updateMany({
             where: {

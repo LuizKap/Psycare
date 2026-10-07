@@ -42,6 +42,15 @@ export class AppointmentController {
         res.json(appointments)
     }
 
+    getPatientPreviousAppointments = async (req: Request, res: Response) => {
+
+        const patient_id = req.patientId
+
+        const appointments = await this.appointmentService.getPatientPreviousAppointments(patient_id)
+
+        res.json(appointments)
+    }
+
     getNextAppointment = async (req: Request, res: Response) => {
         const appointment = await this.appointmentService.getNextAppointment()
 

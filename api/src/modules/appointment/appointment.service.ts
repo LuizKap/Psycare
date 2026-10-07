@@ -97,6 +97,13 @@ export class AppointmentService {
         return appointments
     }
 
+    async getPatientPreviousAppointments(patient_id: Patient['id']): Promise<Appointment[]> {
+
+        const appointments = await this.appointmentRepository.findPreviousAppointmentsByPatientId(patient_id)
+
+        return appointments
+    }
+
     async getFilteredAppointments(
         filters: AppointmentFilters,
         sorting: AppointmentSorting,

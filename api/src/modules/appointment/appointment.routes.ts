@@ -31,6 +31,12 @@ appointmentRouter.get(
     appointmentController.getAvailability
 )
 
+appointmentRouter.get(
+    "/previous/patient",
+    requirePatient,
+    appointmentController.getPatientPreviousAppointments
+)
+
 
 // GET — Psychologist
 appointmentRouter.get(
