@@ -25,7 +25,7 @@ function PatientNavbar({ toggleSidebar }: NavbarProps) {
                     </NavLink>
 
                     <NavLink
-                        to="/appointments"
+                        to="/patient/appointments"
                         className={({ isActive }) =>
                             `${styles['nav-link']} ${isActive ? styles.active : ''}`
                         }
