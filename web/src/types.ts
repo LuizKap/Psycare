@@ -88,9 +88,8 @@ export type AuthContextType = {
   logout: () => Promise<string>
 }
 
-export type AppointmentsContextType = {
+export type ScheduledAppointmentsContextType = {
   appointments: Appointment[]
-  setAppointments: React.Dispatch<React.SetStateAction<Appointment[]>>
   loading: boolean
 }
 

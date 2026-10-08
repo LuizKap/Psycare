@@ -3,33 +3,19 @@ import { ApiError, type Appointment, type NextAppointment } from "../types"
 
 export const appointment_api = {
 
-    async getPatientAppointments(): Promise<Appointment[]> {
+    async getPatientAppointments(status?: Appointment['status']): Promise<Appointment[]> {
 
-        const response = await fetch('/api/appointments')
+        const response = await fetch(`/api/appointments${status ? `?status=${status}` : ''}`)
 
         if (!response.ok) {
             const error = await response.json()
-
+            
             throw new ApiError(error.message)
         }
 
         const appointments: Appointment[] = await response.json()
 
         return appointments
-    }
-    ,
-    async getPatientScheduledAppointments(): Promise<Appointment[]> {
-
-        const response = await fetch('/api/appointments/scheduled/patient')
-
-        if (!response.ok) {
-            const error = await response.json()
-            throw new ApiError(error.message)
-        }
-
-        const scheduledAppointments: Appointment[] = await response.json()
-
-        return scheduledAppointments
     }
     ,
     async getAvailability(): Promise<string[]> {

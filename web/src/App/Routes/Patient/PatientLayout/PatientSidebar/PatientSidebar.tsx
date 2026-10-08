@@ -1,6 +1,6 @@
 import { Link, useNavigate } from "react-router"
 
-import { useAppointment } from "../../../../../hooks/useAppointment"
+import { useScheduledAppointment } from "../../../../../hooks/useScheduledAppointment"
 
 import { ApiError, type SidebarProps } from "../../../../../types"
 
@@ -17,7 +17,7 @@ function PatientSidebar({ isOpen }: SidebarProps) {
 
     const auth = useAuth()
     const profile = usePatient()
-    const appointments_data = useAppointment()
+    const appointments_data = useScheduledAppointment()
     const navigate = useNavigate()
 
     const patient = profile.patient

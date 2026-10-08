@@ -1,11 +1,11 @@
 
-import { useAppointment } from "../../../../hooks/useAppointment"
+import { useScheduledAppointment } from "../../../../hooks/useScheduledAppointment"
 import dayjs from '../../../../utils/dayjs'
 import styles from "./MyAppointments.module.css"
 
 export function MyAppointments() {
 
-    const appointments_data = useAppointment()
+    const appointments_data = useScheduledAppointment()
     const scheduledAppointments = appointments_data.appointments
 
 

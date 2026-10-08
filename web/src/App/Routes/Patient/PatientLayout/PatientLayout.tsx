@@ -5,7 +5,7 @@ import PatientNavbar from "../../../components/Navbar/PatientNavbar"
 import PatientSidebar from "./PatientSidebar/PatientSidebar"
 import { useAuth } from "../../../../hooks/useAuth"
 import GuestSidebar from "./GuestSidebar/GuestSidebar"
-import { AppointmentsProvider } from "../../../../contexts/Appointments.context"
+import { ScheduledAppointmentsProvider } from "../../../../contexts/Scheduled.appointments.context"
 import { PatientProvider } from "../../../../contexts/Patient.context"
 
 export function PatientLayout() {
@@ -34,9 +34,9 @@ export function PatientLayout() {
     if (user?.role === 'PATIENT') {
         return (
             <PatientProvider>
-                <AppointmentsProvider>
+                <ScheduledAppointmentsProvider>
                     {content}
-                </AppointmentsProvider>
+                </ScheduledAppointmentsProvider>
             </PatientProvider>
         )
     } else {

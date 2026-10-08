@@ -1,15 +1,15 @@
 import { createContext, useEffect, useState } from "react";
-import { ApiError, type Appointment, type AppointmentsContextType, type ProviderProps } from "../types";
+import { ApiError, type Appointment, type ScheduledAppointmentsContextType, type ProviderProps } from "../types";
 import { appointment_api } from "../fetch/appointment.api";
 import { Loading } from "../App/components/Loading/Loading";
 import { toast } from "sonner";
 
 
 
-export const AppointmentsContext = createContext<AppointmentsContextType | null>(null)
+export const ScheduledAppointmentsContext = createContext<ScheduledAppointmentsContextType | null>(null)
 
 
-export function AppointmentsProvider({ children }: ProviderProps) {
+export function ScheduledAppointmentsProvider({ children }: ProviderProps) {
 
     const [appointments, setAppointments] = useState<Appointment[]>([])
     const [loading, setLoading] = useState<boolean>(true)
@@ -17,7 +17,8 @@ export function AppointmentsProvider({ children }: ProviderProps) {
     async function refreshAppointments() {
 
         try {
-            const scheduledAppointments = await appointment_api.getPatientScheduledAppointments()
+            const scheduledAppointments = await appointment_api.getPatientAppointments('SCHEDULED')
+            console.log(scheduledAppointments)
 
             setAppointments(scheduledAppointments)
         }
@@ -45,9 +46,9 @@ export function AppointmentsProvider({ children }: ProviderProps) {
 
     return (
 
-        <AppointmentsContext.Provider value={{ appointments, setAppointments, loading }}>
+        <ScheduledAppointmentsContext.Provider value={{ appointments, loading }}>
             {children}
-        </AppointmentsContext.Provider>
+        </ScheduledAppointmentsContext.Provider>
 
     )
 }
