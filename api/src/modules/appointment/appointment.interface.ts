@@ -33,9 +33,7 @@ export interface IAppointmentRepository {
 
     findAppointmentById(appointment: Appointment['id']): Promise<Appointment | null>
 
-    findAllAppointmentsByPatientId(patient_id: Patient['id']): Promise<Appointment[]>
-
-    findScheduledAppointmentsByPatientId(patient_id: Patient['id']): Promise<Appointment[]>
+    findAppointmentsByPatientId(patient_id: Patient['id'], status?: Appointment['status']): Promise<Appointment[]>
 
     findPreviousAppointmentsByPatientId(patient_id: Patient['id']): Promise<Appointment[]>
 

@@ -20,12 +20,6 @@ appointmentRouter.get(
 )
 
 appointmentRouter.get(
-    "/scheduled/patient",
-    requirePatient,
-    appointmentController.getPatientScheduledAppointments
-)
-
-appointmentRouter.get(
     "/availability",
     requirePatient,
     appointmentController.getAvailability

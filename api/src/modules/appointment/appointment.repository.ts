@@ -138,19 +138,12 @@ export class AppointmentRepository implements IAppointmentRepository {
         })
     }
 
-    async findAllAppointmentsByPatientId(patient_id: Appointment['patient_id']): Promise<Appointment[]> {
+    async findAppointmentsByPatientId(patient_id: Appointment['patient_id'], status?: Appointment['status']): Promise<Appointment[]> {
         return await this.prisma.appointment.findMany({
-            where: { patient_id: patient_id },
-            orderBy: { starts_at: 'asc' }
-        })
-    }
-
-
-    async findScheduledAppointmentsByPatientId(patient_id: Patient['id']): Promise<Appointment[]> {
-        return await this.prisma.appointment.findMany({
-            where: {
-                patient_id,
-                status: 'SCHEDULED'
+            where:
+            {
+                patient_id: patient_id,
+                ...(status && { status })
             },
             orderBy: { starts_at: 'asc' }
         })
@@ -159,9 +152,10 @@ export class AppointmentRepository implements IAppointmentRepository {
     async findPreviousAppointmentsByPatientId(patient_id: Patient['id']): Promise<Appointment[]> {
         return await this.prisma.appointment.findMany({
             where: {
-                patient_id
+                patient_id,
+                starts_at: {lt: new Date()}
             },
-            orderBy: { starts_at: 'asc' }
+            orderBy: { starts_at: 'desc' }
         })
     }
 

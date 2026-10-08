@@ -1,6 +1,6 @@
 import type { Request, Response } from "express";
 import type { AppointmentService } from "./appointment.service.js";
-import { appointmentFilterSchema, appointmentPaginationSchema, appointmentSortingSchema, checkAvailabilitySchema, createAppointmentSchema, idSchema, rescheduleSchema, updateNotesSchema } from "./appointment.schema.js";
+import { appointmentFilterSchema, appointmentPaginationSchema, appointmentSortingSchema, checkAvailabilitySchema, createAppointmentSchema, getPatientAppointmentsQuerySchema, idSchema, rescheduleSchema, updateNotesSchema } from "./appointment.schema.js";
 
 
 export class AppointmentController {
@@ -27,17 +27,9 @@ export class AppointmentController {
     getPatientAppointments = async (req: Request, res: Response) => {
 
         const patient_id = req.patientId
+        const {status} = getPatientAppointmentsQuerySchema.parse(req.query)
 
-        const appointments = await this.appointmentService.getPatientAppointments(patient_id)
-
-        res.json(appointments)
-    }
-
-    getPatientScheduledAppointments = async (req: Request, res: Response) => {
-
-        const patient_id = req.patientId
-
-        const appointments = await this.appointmentService.getPatientScheduledAppointments(patient_id)
+        const appointments = await this.appointmentService.getPatientAppointments(patient_id, status)
 
         res.json(appointments)
     }

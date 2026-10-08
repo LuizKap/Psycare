@@ -83,16 +83,9 @@ export class AppointmentService {
         return appointment
     }
 
-    async getPatientAppointments(patient_id: Patient['id']): Promise<Appointment[]> {
+    async getPatientAppointments(patient_id: Patient['id'], status?: Appointment['status']): Promise<Appointment[]> {
 
-        const appointments = await this.appointmentRepository.findAllAppointmentsByPatientId(patient_id)
-
-        return appointments
-    }
-
-    async getPatientScheduledAppointments(patient_id: Patient['id']): Promise<Appointment[]> {
-
-        const appointments = await this.appointmentRepository.findScheduledAppointmentsByPatientId(patient_id)
+        const appointments = await this.appointmentRepository.findAppointmentsByPatientId(patient_id, status)
 
         return appointments
     }
