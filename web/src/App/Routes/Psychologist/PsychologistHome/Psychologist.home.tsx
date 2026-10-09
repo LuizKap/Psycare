@@ -1,13 +1,10 @@
 
 import { Link } from 'react-router'
 import styles from './Psychologist.home.module.css'
-import { useEffect, useState } from 'react'
-import { appointment_api } from '../../../../fetch/appointment.api'
-import { ApiError, type NextAppointment } from '../../../../types'
-import { toast } from 'sonner'
 import dayjs from '../../../../utils/dayjs'
-import { patient_api } from '../../../../fetch/patient.api'
 import { usePsychologist } from '../../../../hooks/usePsychologist'
+import { usePsychologistDashboard } from '../../../../hooks/usePsychologistDashboard'
+import { Loading } from '../../../components/Loading/Loading'
 
 
 export function PsychologistHome() {
@@ -15,37 +12,15 @@ export function PsychologistHome() {
     const profile = usePsychologist()
     const psychologist = profile.psychologist
 
+    const {
+        todayAppointmentsCount,
+        nextAppointment,
+        upcomingAppointments,
+        patientsCount,
+        loading
+    } = usePsychologistDashboard()
 
-    const [todayAppointmentsCount, setTodayAppointmentsCount] = useState<number>(0)
-    const [nextAppointment, setNextAppointment] = useState<NextAppointment | null>(null)
-    const [upcomingAppointments, setUpcomingAppointments] = useState<NextAppointment[]>([])
-    const [patientsCount, setPatientsCount] = useState<number>(0)
-
-    useEffect(() => {
-        async function loadDashboard() {
-
-            try {
-                const [todayAppointmentsCount, nextAppointment, upcomingAppointments, patientsCount] =
-                    await Promise.all
-                        ([
-                            appointment_api.countTodayAppointments(),
-                            appointment_api.getNextAppointment(),
-                            appointment_api.getUpcomingAppointments(),
-                            patient_api.countPatients()
-                        ])
-
-                setTodayAppointmentsCount(todayAppointmentsCount)
-                setNextAppointment(nextAppointment)
-                setUpcomingAppointments(upcomingAppointments)
-                setPatientsCount(patientsCount)
-
-            } catch (error) {
-                toast.error(error instanceof ApiError ? error.message : 'Erro ao carregar algumas informações')
-            }
-        }
-
-        loadDashboard()
-    }, [])
+    if (loading) return <Loading />
 
     return (
         <>

@@ -18,7 +18,6 @@ export function ScheduledAppointmentsProvider({ children }: ProviderProps) {
 
         try {
             const scheduledAppointments = await appointment_api.getPatientAppointments('SCHEDULED')
-            console.log(scheduledAppointments)
 
             setAppointments(scheduledAppointments)
         }

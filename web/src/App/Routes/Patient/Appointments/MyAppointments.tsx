@@ -1,13 +1,35 @@
 
+import { useEffect, useState } from "react"
+import { appointment_api } from "../../../../fetch/appointment.api"
 import { useScheduledAppointment } from "../../../../hooks/useScheduledAppointment"
 import dayjs from '../../../../utils/dayjs'
 import styles from "./MyAppointments.module.css"
+import type { Appointment } from "../../../../types"
 
 export function MyAppointments() {
 
     const appointments_data = useScheduledAppointment()
     const scheduledAppointments = appointments_data.appointments
 
+    const [previousAppointments, setPreviousAppointments] = useState<Appointment[]>([])
+
+    useEffect(() => {
+
+        async function loadDashboard() {
+
+            try {
+
+                
+
+            } catch (error) {
+
+
+            }
+        }
+
+
+        loadDashboard()
+    }, [])
 
     return (
         <main className={styles["appointments-page"]}>

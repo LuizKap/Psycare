@@ -91,5 +91,17 @@ export const appointment_api = {
         const appointments: NextAppointment[] = await response.json()
         return appointments
     }
+    ,
+    async getPatientPreviousAppointments(){
+        const response = await fetch('/api/appointments/previous')
+
+        if (!response.ok) {
+            const error = await response.json()
+            throw new ApiError(error.message)
+        }
+
+        const appointments: Appointment[] = await response.json()
+        return appointments
+    }
 
 }
