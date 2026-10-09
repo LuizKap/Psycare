@@ -26,7 +26,7 @@ appointmentRouter.get(
 )
 
 appointmentRouter.get(
-    "/previous/patient",
+    "/previous",
     requirePatient,
     appointmentController.getPatientPreviousAppointments
 )

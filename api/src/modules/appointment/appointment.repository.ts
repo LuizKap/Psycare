@@ -115,13 +115,14 @@ export class AppointmentRepository implements IAppointmentRepository {
         })
     }
 
-    async countAppointmentsByDate(startOfDay: Date, startOfNextDay: Date): Promise<number> {
+    async countUpcomingAppointmentsToday(now: Date, startOfNextDay: Date): Promise<number> {
         return await this.prisma.appointment.count({
             where: {
                 starts_at: {
-                    gte: startOfDay,
+                    gte: now,
                     lt: startOfNextDay
-                }
+                },
+                status: 'SCHEDULED'
             }
         })
     }
@@ -153,7 +154,7 @@ export class AppointmentRepository implements IAppointmentRepository {
         return await this.prisma.appointment.findMany({
             where: {
                 patient_id,
-                starts_at: {lt: new Date()}
+                starts_at: { lt: new Date() }
             },
             orderBy: { starts_at: 'desc' }
         })

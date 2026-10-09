@@ -205,10 +205,10 @@ export class AppointmentService {
 
         const day = dayjs.tz(new Date(), 'America/Sao_Paulo')
 
-        const startOfDay = day.startOf('day').toDate()
+        const now = day.toDate()
         const startOfNextDay = day.add(1, 'day').startOf('day').toDate()
 
-        const count = await this.appointmentRepository.countAppointmentsByDate(startOfDay, startOfNextDay)
+        const count = await this.appointmentRepository.countUpcomingAppointmentsToday(now, startOfNextDay)
 
         return count
     }

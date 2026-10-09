@@ -25,7 +25,7 @@ export interface IAppointmentRepository {
     
     findUpcomingAppointments():Promise<Appointment[]>
 
-    countAppointmentsByDate(startOfDay: Date, startOfNextDay: Date): Promise<number>
+    countUpcomingAppointmentsToday(startOfDay: Date, startOfNextDay: Date): Promise<number>
 
     findAppointmentByDate(starts_at: Date, excludeId?: Appointment['id']): Promise<Appointment | null>
 
