@@ -1,0 +1,34 @@
+.error {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 0;
+}
+
+.error p {
+    margin: 0;
+    font-size: 0.85rem;
+    line-height: 1.4;
+}
+
+.retry {
+    border: none;
+    border-radius: 8px;
+    padding: 7px 10px;
+    cursor: pointer;
+    font: inherit;
+    font-size: 0.85rem;
+    color: inherit;
+    background: rgba(100, 116, 139, 0.16);
+    transition: background 0.2s ease;
+}
+
+.retry:hover {
+    background: rgba(100, 116, 139, 0.28);
+}
+
+.retry:focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: 3px;
+}

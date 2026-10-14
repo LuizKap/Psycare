@@ -90,18 +90,20 @@ export type AuthContextType = {
 
 export type ScheduledAppointmentsContextType = {
   appointments: Appointment[]
-  loading: boolean
+  loading: boolean,
+  error: boolean,
+  refreshScheduledAppointments: () => void
 }
 
 export type PatientContextType = {
-  patient: Patient
+  patient: Patient | null
   loading: boolean
   error: boolean,
   refreshPatient: () => Promise<void>
 }
 
 export type PsychologistContextType = {
-  psychologist: Psychologist
+  psychologist: Psychologist | null
   loading: boolean
   error: boolean,
   refreshPsychologist: () => Promise<void>

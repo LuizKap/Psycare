@@ -1,4 +1,4 @@
-import { createContext, useEffect, useState } from "react"
+import { createContext, useCallback, useEffect, useState } from "react"
 import { type User, type AuthContextType, type ProviderProps, ApiError } from "../types"
 import { auth_api } from "../fetch/auth.api"
 import { toast } from "sonner"
@@ -15,7 +15,10 @@ export function AuthProvider({ children }: ProviderProps) {
     const [user, setUser] = useState<User | null>(null)
     const [loading, setLoading] = useState<boolean>(true)
 
-    async function refreshAuth() {
+    const refreshAuth = useCallback(async () => {
+
+        setLoading(true)
+
         try {
             const user = await auth_api.getAuthUser()
             setUser(user)
@@ -28,7 +31,7 @@ export function AuthProvider({ children }: ProviderProps) {
         finally {
             setLoading(false)
         }
-    }
+    }, [])
 
     async function logout() {
 
@@ -39,8 +42,8 @@ export function AuthProvider({ children }: ProviderProps) {
 
 
     useEffect(() => {
-        refreshAuth()
-    }, [])
+        void refreshAuth()
+    }, [refreshAuth])
 
     return (
         <AuthContext.Provider

@@ -1,35 +1,25 @@
-
-import { useEffect, useState } from "react"
-import { appointment_api } from "../../../../fetch/appointment.api"
-import { useScheduledAppointment } from "../../../../hooks/useScheduledAppointment"
-import dayjs from '../../../../utils/dayjs'
+import { useScheduledAppointments } from "../../../../hooks/useScheduledAppointments"
+import dayjs from "../../../../utils/dayjs"
 import styles from "./MyAppointments.module.css"
-import type { Appointment } from "../../../../types"
+import { AppointmentSkeleton } from "../../../components/Skeletons/AppointmentSkeleton"
+import { usePreviousAppointments } from "../../../../hooks/usePreviousAppointments"
+import { InlineError } from "../../../components/Error/InlineError"
 
 export function MyAppointments() {
 
-    const appointments_data = useScheduledAppointment()
-    const scheduledAppointments = appointments_data.appointments
+    const {
+        appointments: scheduledAppointments,
+        loading,
+        refreshScheduledAppointments,
+        error
+    } = useScheduledAppointments()
 
-    const [previousAppointments, setPreviousAppointments] = useState<Appointment[]>([])
-
-    useEffect(() => {
-
-        async function loadDashboard() {
-
-            try {
-
-                
-
-            } catch (error) {
-
-
-            }
-        }
-
-
-        loadDashboard()
-    }, [])
+    const {
+        previousAppointments,
+        refreshPreviousAppointments,
+        loading: previousAppointmentsLoading,
+        error: previousAppointmentsError
+    } = usePreviousAppointments()
 
     return (
         <main className={styles["appointments-page"]}>
@@ -47,31 +37,67 @@ export function MyAppointments() {
 
                 <div className={styles["appointments-list"]}>
 
-                    {
-                        scheduledAppointments.length === 0 ?
-                            'Nenhuma consulta agendada' :
-                            scheduledAppointments.map((appointment) => (
+                    {loading ? (
+                        <>
+                            <AppointmentSkeleton />
+                            <AppointmentSkeleton />
+                        </>
+                    ) : error ?
+                        (
+                            <InlineError
+                                onRetry={refreshScheduledAppointments}
+                                message="Não foi possível carregar consultas agendadas" />
 
-                                <article key={appointment.id} className={styles["appointment-card"]}>
-                                    <div className={styles["appointment-date"]}>
-                                        <span>{dayjs(appointment.starts_at).format('DD')}</span>
-                                        <small>{dayjs(appointment.starts_at).format('MMMM')}</small>
-                                    </div>
+                        ) : scheduledAppointments.length === 0 ?
+                            (
+                                <p>Nenhuma consulta agendada</p>
+                            )
+                            :
+                            (
+                                scheduledAppointments.map((appointment) => (
 
-                                    <div className={styles["appointment-info"]}>
-                                        <p>{dayjs(appointment.starts_at).format('DD/MM/YYYY [às] HH:mm')}</p>
-                                        <span className={styles["appointment-status"]}>
-                                            {appointment.status === 'SCHEDULED' ? 'Agendado' : ''}
-                                        </span>
-                                    </div>
+                                    <article
+                                        key={appointment.id}
+                                        className={styles["appointment-card"]}
+                                    >
+                                        <div className={styles["appointment-date"]}>
+                                            <span>
+                                                {dayjs(appointment.starts_at).format("DD")}
+                                            </span>
 
-                                    <div className={styles["appointment-actions"]}>
-                                        <button type="button">Ver detalhes</button>
-                                        <button type="button">Reagendar</button>
-                                    </div>
-                                </article>
-                            ))
-                    }
+                                            <small>
+                                                {dayjs(appointment.starts_at).format("MMMM")}
+                                            </small>
+                                        </div>
+
+                                        <div className={styles["appointment-info"]}>
+                                            <p>
+                                                {dayjs(appointment.starts_at).format(
+                                                    "DD/MM/YYYY [às] HH:mm"
+                                                )}
+                                            </p>
+
+                                            <span className={styles["appointment-status"]}>
+                                                {appointment.status === "SCHEDULED"
+                                                    ? "Agendado"
+                                                    : ""}
+                                            </span>
+                                        </div>
+
+                                        <div className={styles["appointment-actions"]}>
+                                            <button type="button">
+                                                Ver detalhes
+                                            </button>
+
+                                            <button type="button">
+                                                Reagendar
+                                            </button>
+                                        </div>
+                                    </article>
+
+                                ))
+                            )}
+
                 </div>
             </section>
 
@@ -83,29 +109,70 @@ export function MyAppointments() {
 
                 <div className={styles["appointments-list"]}>
 
-                    <article className={styles["appointment-card"]}>
-                        <div className={styles["appointment-date"]}>
-                            <span>28</span>
-                            <small>SET</small>
-                        </div>
+                    {previousAppointmentsLoading ? (
+                        <>
+                            <AppointmentSkeleton />
+                            <AppointmentSkeleton />
+                        </>
+                    )
+                        : previousAppointmentsError ? (
+                            <InlineError
+                                onRetry={refreshPreviousAppointments}
+                                message="Não foi possível carregar consultas anteriores"
+                            />
+                        )
+                            : previousAppointments.length === 0 ?
+                                <p> Nenhuma consulta anterior </p>
+                                :
+                                (
+                                    previousAppointments.map((appointment) => (
 
-                        <div className={styles["appointment-info"]}>
-                            <h3>Dr. João Silva</h3>
-                            <p>28/09/2026 às 15:00</p>
-                            <span className={styles["appointment-status"]}>
-                                Concluída
-                            </span>
-                        </div>
+                                        <article className={styles["appointment-card"]} key={appointment.id}>
 
-                        <div className={styles["appointment-actions"]}>
-                            <button type="button">Ver detalhes</button>
-                        </div>
-                    </article>
+                                            <div className={styles["appointment-date"]}>
 
+                                                <span>
+                                                    {dayjs(appointment.starts_at).tz('America/Sao_Paulo').format('DD')}
+                                                </span>
+
+                                                <small>
+                                                    {dayjs(appointment.starts_at).tz('America/Sao_Paulo').format('MM')}
+                                                </small>
+
+                                            </div>
+
+                                            <div className={styles["appointment-info"]}>
+
+                                                <p>
+                                                    {
+                                                        dayjs(appointment.starts_at)
+                                                            .tz('America/Sao_Paulo')
+                                                            .format("DD/MM/YYYY [às] HH:mm")
+                                                    }
+                                                </p>
+
+                                                <span className={styles["appointment-status"]}>
+                                                    {
+                                                        appointment.status === 'COMPLETED' ? 'Concluída'
+                                                            : appointment.status === 'CANCELLED' ? 'Cancelada' :
+                                                                ''
+                                                    }
+                                                </span>
+                                            </div>
+
+                                            <div className={styles["appointment-actions"]}>
+                                                <button type="button">
+                                                    Ver detalhes
+                                                </button>
+                                            </div>
+                                        </article>
+
+                                    ))
+                                )
+                    }
                 </div>
             </section>
 
         </main>
     )
 }
-

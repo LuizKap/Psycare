@@ -1,6 +1,6 @@
 import { Link, useNavigate } from "react-router"
 
-import { useScheduledAppointment } from "../../../../../hooks/useScheduledAppointment"
+import { useScheduledAppointments } from "../../../../../hooks/useScheduledAppointments"
 
 import { ApiError, type SidebarProps } from "../../../../../types"
 
@@ -11,17 +11,33 @@ import styles from "./PatientSidebar.module.css"
 import { usePatient } from "../../../../../hooks/usePatient"
 import { toast } from "sonner"
 import { useAuth } from "../../../../../hooks/useAuth"
+import { ErrorState } from "../../../../components/Error/Error"
+import { Loading } from "../../../../components/Loading/Loading"
+import { AppointmentSkeleton } from "../../../../components/Skeletons/AppointmentSkeleton"
+import { InlineError } from "../../../../components/Error/InlineError"
 
 
 function PatientSidebar({ isOpen }: SidebarProps) {
 
     const auth = useAuth()
-    const profile = usePatient()
-    const appointments_data = useScheduledAppointment()
+
+    const {
+        patient,
+        loading: patientLoading,
+        error: patientError,
+        refreshPatient
+    } = usePatient()
+
+    const {
+        appointments,
+        loading: appointmentsLoading,
+        error: appointmentsError,
+        refreshScheduledAppointments
+    } = useScheduledAppointments()
+
+
     const navigate = useNavigate()
 
-    const patient = profile.patient
-    const appointments = appointments_data.appointments
 
 
     async function handleLogout() {
@@ -38,6 +54,19 @@ function PatientSidebar({ isOpen }: SidebarProps) {
 
         }
 
+    }
+
+    if (patientLoading) {
+        return <Loading />
+    }
+
+    if (patientError || !patient) {
+        return (
+            <ErrorState
+                message="Não foi possível carregar seus dados"
+                onRetry={refreshPatient}
+            />
+        )
     }
 
 
@@ -79,25 +108,35 @@ function PatientSidebar({ isOpen }: SidebarProps) {
 
                 <h3>Próxima Consulta</h3>
 
-                <p>
-                    {appointments[0]
-                        ? formatAppointmentDate(appointments[0].starts_at)
-                        : "Nenhuma consulta agendada"}
-                </p>
+                {appointmentsLoading ? (
+                    <AppointmentSkeleton />
+                ) : appointmentsError ? (
+                    <InlineError
+                        message="Não foi possível carregar a consulta."
+                        onRetry={refreshScheduledAppointments}
+                    />
+                ) : (
+                    <>
+                        <p>
+                            {appointments[0]
+                                ? formatAppointmentDate(appointments[0].starts_at)
+                                : "Nenhuma consulta agendada"}
+                        </p>
 
-                <Link
-                    to={
-                        appointments[0]
-                            ? "/appointments/reschedule"
-                            : "/appointments/create"
-                    }
-                    className={styles["reschedule-link"]}
-                >
-                    {appointments[0]
-                        ? "Reagendar"
-                        : "Agendar uma consulta"}
-                </Link>
-
+                        <Link
+                            to={
+                                appointments[0]
+                                    ? "/appointments/reschedule"
+                                    : "/appointments/create"
+                            }
+                            className={styles["reschedule-link"]}
+                        >
+                            {appointments[0]
+                                ? "Reagendar"
+                                : "Agendar uma consulta"}
+                        </Link>
+                    </>
+                )}
             </section>
 
 
@@ -145,7 +184,7 @@ function PatientSidebar({ isOpen }: SidebarProps) {
 
             </section>
 
-        </div>
+        </div >
     )
 }
 

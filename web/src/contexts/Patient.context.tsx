@@ -1,9 +1,8 @@
-import { createContext, useEffect, useState } from "react"
+import { createContext, useEffect, useState, useCallback } from "react"
 import { ApiError, type Patient, type PatientContextType, type ProviderProps } from "../types"
 import { patient_api } from "../fetch/patient.api"
 import { toast } from "sonner"
-import { Loading } from "../App/components/Loading/Loading"
-import { ErrorState } from "../App/components/Error/Error"
+
 
 
 export const PatientContext = createContext<PatientContextType | null>(null)
@@ -15,7 +14,7 @@ export function PatientProvider({ children }: ProviderProps) {
     const [error, setError] = useState<boolean>(false)
 
 
-    async function refreshPatient() {
+    const refreshPatient = useCallback(async () => {
         setLoading(true)
         setError(false)
 
@@ -33,23 +32,15 @@ export function PatientProvider({ children }: ProviderProps) {
         finally {
             setLoading(false)
         }
-    }
-
-    useEffect(() => {
-        refreshPatient()
     }, [])
 
-    if (loading) {
-        return <Loading />
-    }
-
-    if (error) {
-        return <ErrorState message = 'Não foi possível carregar seus dados' onRetry={refreshPatient} />
-    }
+    useEffect(() => {
+        void refreshPatient()
+    }, [refreshPatient])
 
     return (
         <PatientContext.Provider value={{
-            patient: patient!,
+            patient,
             loading,
             error,
             refreshPatient
