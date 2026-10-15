@@ -151,7 +151,7 @@ function PatientSidebar({ isOpen }: SidebarProps) {
                 </Link>
 
                 <Link
-                    to="/appointments"
+                    to="/patient/appointments"
                     className={styles["side-menu-link"]}
                 >
                     <img src="/profile/appointments.svg" alt="" />

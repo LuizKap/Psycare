@@ -18,7 +18,8 @@ import { PsychologistLayout } from "./Routes/Psychologist/PsychologistLayout/Psy
 import Unauthorized from "./Routes/Unauthorized/Unauthorized"
 import { useAuth } from "../hooks/useAuth"
 import { Loading } from "./components/Loading/Loading"
-import { MyAppointments } from "./Routes/Patient/Appointments/MyAppointments"
+import { MyAppointments } from "./Routes/Patient/Appointments/MyAppointments/MyAppointments"
+import { CreateAppointment } from "./Routes/Patient/Appointments/CreateAppointment/CreateAppointment"
 
 
 function App() {
@@ -51,7 +52,13 @@ function App() {
 
           <Route
             path="/patient/appointments"
-            element={<MyAppointments />} />
+            element={<MyAppointments />}
+          />
+
+          <Route
+          path="/appointments/create"
+          element={<CreateAppointment/>}
+          />
 
         </Route>
 

@@ -1,3 +1,4 @@
+import type { Dayjs } from "dayjs"
 import { ApiError, type Appointment, type NextAppointment } from "../types"
 
 
@@ -9,7 +10,7 @@ export const appointment_api = {
 
         if (!response.ok) {
             const error = await response.json()
-            
+
             throw new ApiError(error.message)
         }
 
@@ -18,9 +19,11 @@ export const appointment_api = {
         return appointments
     }
     ,
-    async getAvailability(): Promise<string[]> {
+    async getAvailability(date: Dayjs): Promise<string[]> {
 
-        const response = await fetch('/api/appointments/availability')
+        const response = await fetch(
+            `/api/appointments/availability?date=${date.format('YYYY-MM-DD')}`
+        );
 
         if (!response.ok) {
             const error = await response.json()
@@ -92,7 +95,7 @@ export const appointment_api = {
         return appointments
     }
     ,
-    async getPatientPreviousAppointments(){
+    async getPatientPreviousAppointments() {
         const response = await fetch('/api/appointments/previous')
 
         if (!response.ok) {

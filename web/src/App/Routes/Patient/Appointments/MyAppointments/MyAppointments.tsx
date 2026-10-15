@@ -1,9 +1,9 @@
-import { useScheduledAppointments } from "../../../../hooks/useScheduledAppointments"
-import dayjs from "../../../../utils/dayjs"
+import { useScheduledAppointments } from "../../../../../hooks/useScheduledAppointments"
+import dayjs from "../../../../../utils/dayjs"
 import styles from "./MyAppointments.module.css"
-import { AppointmentSkeleton } from "../../../components/Skeletons/AppointmentSkeleton"
-import { usePreviousAppointments } from "../../../../hooks/usePreviousAppointments"
-import { InlineError } from "../../../components/Error/InlineError"
+import { AppointmentSkeleton } from "../../../../components/Skeletons/AppointmentSkeleton"
+import { usePreviousAppointments } from "../../../../../hooks/usePreviousAppointments"
+import { InlineError } from "../../../../components/Error/InlineError"
 
 export function MyAppointments() {
 
@@ -136,7 +136,7 @@ export function MyAppointments() {
                                                 </span>
 
                                                 <small>
-                                                    {dayjs(appointment.starts_at).tz('America/Sao_Paulo').format('MM')}
+                                                    {dayjs(appointment.starts_at).tz('America/Sao_Paulo').format('MMMM')}
                                                 </small>
 
                                             </div>

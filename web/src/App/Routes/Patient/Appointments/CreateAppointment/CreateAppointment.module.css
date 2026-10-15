@@ -1,0 +1,450 @@
+
+.create-appointment-page {
+    --green: #628b79;
+    --green-dark: #456d5b;
+    --green-light: #eaf2ed;
+    --text: #283b34;
+    --muted: #87938d;
+    --border: #e6ece8;
+    --surface: rgba(255, 255, 255, 0.82);
+
+    width: 100%;
+    min-height: 100%;
+    padding: 38px;
+    color: var(--text);
+    box-sizing: border-box;
+}
+
+.create-appointment-page * {
+    box-sizing: border-box;
+}
+
+.page-header {
+    max-width: 720px;
+    margin-bottom: 32px;
+}
+
+.eyebrow {
+    display: inline-block;
+    margin-bottom: 12px;
+    color: var(--green);
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.16em;
+}
+
+.page-header h1 {
+    margin: 0 0 12px;
+    font-size: clamp(1.8rem, 3vw, 2.5rem);
+    font-weight: 700;
+    letter-spacing: -0.045em;
+}
+
+.page-header p {
+    max-width: 580px;
+    margin: 0;
+    color: #7c8982;
+    font-size: 0.98rem;
+    line-height: 1.7;
+}
+
+.appointment-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    align-items: start;
+    gap: 24px;
+}
+
+.booking-card,
+.confirmation-card {
+    border: 1px solid rgba(224, 233, 227, 0.9);
+    border-radius: 22px;
+    background: var(--surface);
+    box-shadow: 0 12px 36px rgba(46, 75, 59, 0.045);
+    backdrop-filter: blur(14px);
+}
+
+.booking-card {
+    min-width: 0;
+    padding: 26px;
+}
+
+.section-heading {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 28px;
+}
+
+.step-number {
+    display: grid;
+    flex: 0 0 44px;
+    width: 44px;
+    height: 44px;
+    place-items: center;
+    border-radius: 14px;
+    background: var(--green-light);
+    color: var(--green-dark);
+    font-size: 0.85rem;
+    font-weight: 800;
+}
+
+.section-heading h2 {
+    margin: 0 0 5px;
+    font-size: 1.08rem;
+    font-weight: 700;
+}
+
+.section-heading p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 0.83rem;
+    line-height: 1.5;
+}
+
+/* Calendário */
+
+.calendar-placeholder {
+    width: 100%;
+}
+
+.calendar-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 24px;
+}
+
+.calendar-header h3 {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 700;
+    text-transform: capitalize;
+}
+
+.calendar-arrow {
+    display: grid;
+    width: 36px;
+    height: 36px;
+    place-items: center;
+    border: 1px solid var(--border);
+    border-radius: 11px;
+    background: #fff;
+    color: var(--text);
+    font-size: 1.5rem;
+    cursor: pointer;
+    transition: background 0.2s, border-color 0.2s;
+}
+
+.calendar-arrow:hover {
+    border-color: #c8d9ce;
+    background: var(--green-light);
+}
+
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+    gap: 7px;
+}
+
+.calendar-grid > span {
+    display: grid;
+    min-width: 0;
+    min-height: 34px;
+    place-items: center;
+    color: #8c9991;
+    font-size: 0.72rem;
+    font-weight: 600;
+}
+
+.calendar-grid > button {
+    display: grid;
+    min-width: 0;
+    aspect-ratio: 1;
+    place-items: center;
+    border: 1px solid transparent;
+    border-radius: 12px;
+    background: transparent;
+    color: var(--text);
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s, border-color 0.2s;
+}
+
+.calendar-grid > button:not(:disabled):hover {
+    border-color: #c9dcd0;
+    background: var(--green-light);
+}
+
+.calendar-grid > button:disabled {
+    color: #cbd2cd;
+    cursor: not-allowed;
+}
+
+.calendar-grid > button.calendar-day-selected {
+    border-color: var(--green-dark);
+    background: var(--green);
+    color: #fff;
+}
+
+.calendar-grid > .calendar-muted {
+    color: #cbd2cd;
+}
+
+.calendar-legend {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    margin-top: 22px;
+    color: var(--muted);
+    font-size: 0.76rem;
+}
+
+.legend-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--green);
+}
+
+/* Horários */
+
+.selected-date {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+    margin-bottom: 27px;
+    padding: 15px;
+    border: 1px solid var(--border);
+    border-radius: 15px;
+    background: #fafcfb;
+}
+
+.date-icon {
+    display: grid;
+    flex: 0 0 40px;
+    width: 40px;
+    height: 40px;
+    place-items: center;
+    border-radius: 12px;
+    background: var(--green-light);
+    color: var(--green-dark);
+    font-size: 1.3rem;
+}
+
+.selected-date small {
+    display: block;
+    margin-bottom: 5px;
+    color: var(--muted);
+    font-size: 0.72rem;
+}
+
+.selected-date p {
+    margin: 0;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.period-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin: 22px 0 12px;
+}
+
+.period-heading span {
+    font-size: 0.87rem;
+    font-weight: 700;
+}
+
+.period-heading small {
+    color: var(--muted);
+    font-size: 0.72rem;
+}
+
+.time-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 10px;
+}
+
+.time-grid button {
+    min-width: 0;
+    min-height: 43px;
+    padding: 8px;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: #fff;
+    color: var(--text);
+    font-size: 0.84rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s, border-color 0.2s, color 0.2s;
+}
+
+.time-grid button:not(:disabled):hover {
+    border-color: var(--green);
+    background: var(--green-light);
+}
+
+.time-grid button.selected-time {
+    border-color: var(--green-dark);
+    background: var(--green);
+    color: #fff;
+}
+
+.time-grid button:disabled {
+    background: #f5f7f5;
+    color: #bdc6c0;
+    cursor: not-allowed;
+}
+
+.availability-note {
+    margin: 22px 0 0;
+    padding: 13px 14px;
+    border-radius: 12px;
+    background: #f4f7f5;
+    color: #7e8c83;
+    font-size: 0.77rem;
+    line-height: 1.6;
+}
+
+/* Confirmação */
+
+.confirmation-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    margin-top: 24px;
+    padding: 24px 26px;
+}
+
+.confirmation-info {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.confirmation-icon {
+    display: grid;
+    flex: 0 0 46px;
+    width: 46px;
+    height: 46px;
+    place-items: center;
+    border-radius: 15px;
+    background: #f6f0e6;
+    color: #ad8d58;
+    font-size: 1.6rem;
+}
+
+.confirmation-info h2 {
+    margin: 0 0 6px;
+    font-size: 0.96rem;
+}
+
+.confirmation-info p {
+    max-width: 420px;
+    margin: 0;
+    color: var(--muted);
+    font-size: 0.8rem;
+    line-height: 1.6;
+}
+
+.confirm-button {
+    display: flex;
+    flex: 0 0 auto;
+    align-items: center;
+    justify-content: center;
+    gap: 18px;
+    min-height: 48px;
+    padding: 0 20px;
+    border: none;
+    border-radius: 13px;
+    background: var(--green);
+    color: #fff;
+    font-size: 0.84rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.2s;
+}
+
+.confirm-button:not(:disabled):hover {
+    transform: translateY(-1px);
+    background: var(--green-dark);
+}
+
+.confirm-button:disabled {
+    background: #b5c5bb;
+    cursor: not-allowed;
+}
+
+/* Acessibilidade */
+
+.create-appointment-page button:focus-visible {
+    outline: 3px solid rgba(98, 139, 121, 0.35);
+    outline-offset: 3px;
+}
+
+/* Responsividade */
+
+@media (max-width: 1100px) {
+    .create-appointment-page {
+        padding: 28px;
+    }
+
+    .appointment-layout {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .confirmation-card {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .confirm-button {
+        width: 100%;
+    }
+}
+
+@media (max-width: 600px) {
+    .create-appointment-page {
+        padding: 20px 14px;
+    }
+
+    .page-header {
+        margin-bottom: 24px;
+    }
+
+    .booking-card {
+        padding: 19px 15px;
+        border-radius: 18px;
+    }
+
+    .section-heading {
+        gap: 11px;
+    }
+
+    .section-heading p {
+        font-size: 0.77rem;
+    }
+
+    .calendar-grid {
+        gap: 4px;
+    }
+
+    .calendar-grid > button {
+        border-radius: 9px;
+        font-size: 0.8rem;
+    }
+
+    .time-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .confirmation-card {
+        padding: 20px 16px;
+    }
+}
