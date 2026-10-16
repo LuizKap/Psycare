@@ -21,7 +21,8 @@
 
 .page-header {
     max-width: 720px;
-    margin-bottom: 32px;
+    margin: 0 auto 32px;
+    text-align: center;
 }
 
 .eyebrow {
@@ -381,7 +382,6 @@
     cursor: not-allowed;
 }
 
-/* Acessibilidade */
 
 .create-appointment-page button:focus-visible {
     outline: 3px solid rgba(98, 139, 121, 0.35);

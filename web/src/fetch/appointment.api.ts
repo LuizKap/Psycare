@@ -1,5 +1,5 @@
 import type { Dayjs } from "dayjs"
-import { ApiError, type Appointment, type NextAppointment } from "../types"
+import { ApiError, ApiValidationError, type ApiErrorResponse, type Appointment, type NextAppointment } from "../types"
 
 
 export const appointment_api = {
@@ -35,8 +35,26 @@ export const appointment_api = {
         return times
     }
     ,
-    async createAppointment() {
+    async createAppointment(dateUTC: string) {
 
+        const response = await fetch(
+            '/api/appointments', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                starts_at: dateUTC
+            })
+        })
+
+        if (!response.ok) {
+            const error: ApiErrorResponse = await response.json()
+            throw new ApiValidationError(error.message, error.errors)
+        }
+
+        const message: string = 'Consulta marcada com sucesso!'
+        return message
     }
     ,
     async reschedule() {

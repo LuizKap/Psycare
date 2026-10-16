@@ -14,8 +14,8 @@ import { usePsychologist } from "../../../../../hooks/usePsychologist";
 import { useAuth } from "../../../../../hooks/useAuth";
 
 import { InlineError } from "../../../../components/Error/InlineError";
-import { AppointmentSkeleton } from "../../../../components/Skeletons/AppointmentSkeleton";
 import { useNextAppointment } from "../../../../../hooks/useNextAppointment";
+import Skeleton from "react-loading-skeleton";
 
 function PsychologistSidebar({ isOpen }: SidebarProps) {
 
@@ -89,7 +89,7 @@ function PsychologistSidebar({ isOpen }: SidebarProps) {
 
                 <h3>Próximo Atendimento</h3>
 
-                {appointmentLoading ? (<AppointmentSkeleton />) : appointmentError ? (
+                {appointmentLoading ? (<Skeleton count={1} />) : appointmentError ? (
                     <InlineError
                         message="Não foi possível carregar o atendimento."
                         onRetry={refreshNextAppointment}

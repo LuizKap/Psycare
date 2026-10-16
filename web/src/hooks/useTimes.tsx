@@ -8,7 +8,7 @@ import { ApiError } from "../types";
 
 export function useTimes(selectedDay: Dayjs | null) {
 
-    const [availableTimes, setAvaialableTimes] = useState<string[]>([])
+    const [availableTimes, setAvailableTimes] = useState<string[]>([])
 
     const [loadingTimes, setLoadingTimes] = useState<boolean>(false)
     const [errorTimes, setErrorTimes] = useState<boolean>(false)
@@ -22,7 +22,7 @@ export function useTimes(selectedDay: Dayjs | null) {
         let isCurrent = true
 
         async function loadTimes() {
-            setAvaialableTimes([])
+            setAvailableTimes([])
 
             if (!selectedDay) {
                 setLoadingTimes(false)
@@ -37,13 +37,13 @@ export function useTimes(selectedDay: Dayjs | null) {
                 const availableTimes = await appointment_api.getAvailability(selectedDay)
 
                 if (isCurrent) {
-                    setAvaialableTimes(availableTimes)
+                    setAvailableTimes(availableTimes)
                 }
             }
             catch (error) {
                 if (isCurrent) {
                     setErrorTimes(true)
-                    setAvaialableTimes([])
+                    setAvailableTimes([])
 
                     toast.error(
                         error instanceof ApiError ? error.message : "Erro ao carregar horários disponíveis"
@@ -63,9 +63,20 @@ export function useTimes(selectedDay: Dayjs | null) {
         }
     }, [selectedDay])
 
+    const morningTimes = availableTimes.filter(time => Number(time.slice(0, 2)) < 12)
+
+    const afternoonTimes = availableTimes.filter(time => {
+        const hour = Number(time.slice(0, 2))
+        return hour >= 12 && hour < 18
+    })
+
+    const nightTimes = availableTimes.filter(time => Number(time.slice(0, 2)) >= 18)
 
 
     return {
+        morningTimes,
+        afternoonTimes,
+        nightTimes,
         availableTimes,
         loadingTimes,
         errorTimes
