@@ -4,7 +4,7 @@ async function runAppointmentJob() {
     try {
         const completed = await appointmentService.completeFinishedAppointments()
 
-        console.log(`${completed} consultas foram completadas`)
+        console.log(`${completed} consultas foram concluídas`)
     } catch (error) {
         console.error('Erro no Appointment Job:', error)
     }

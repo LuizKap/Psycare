@@ -11,7 +11,7 @@ export const errorHandlerMiddleware: ErrorRequestHandler = (error, req, res, nex
     }
 
     if (error instanceof ZodError) {
-        res.status(400).json({ message: 'Dados Inválidos', errors: error.issues })
+        res.status(400).json({ message: 'Dados Inválidos: ZodError', errors: error.issues })
         return
     }
 

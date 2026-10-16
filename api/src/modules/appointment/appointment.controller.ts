@@ -15,7 +15,6 @@ export class AppointmentController {
     }
 
     createAppointment = async (req: Request, res: Response) => {
-
         const { starts_at } = createAppointmentSchema.parse(req.body)
         const patient_id = req.patientId
 

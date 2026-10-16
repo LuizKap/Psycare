@@ -18,7 +18,7 @@ const dateRangeSchema = z.object({
 
 
 export const createAppointmentSchema = z.object({
-
+    
     starts_at: z.iso.datetime({
         message: 'Data e hora de início da consulta inválidas'
     }).transform(value => new Date(value))
