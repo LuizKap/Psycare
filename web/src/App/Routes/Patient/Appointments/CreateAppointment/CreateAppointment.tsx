@@ -7,7 +7,7 @@ import type { Dayjs } from 'dayjs';
 import { useTimes } from '../../../../../hooks/useTimes';
 import { useCreateAppointment } from '../../../../../hooks/useCreateAppointment';
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton'
-import 'react-loading-skeleton/dist/skeleton.css'
+
 
 
 

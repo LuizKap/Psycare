@@ -16,7 +16,7 @@ function PsychologistNavbar({ toggleSidebar }: NavbarProps) {
                 <div className={styles['nav-links-container']}>
 
                     <NavLink
-                        to="/psychologist"
+                        to="/psychologist" end // (end) para resolver bug de rota ativa
                         className={({ isActive }) =>
                             `${styles['nav-link']} ${isActive ? styles.active : ''}`
                         }
@@ -25,7 +25,7 @@ function PsychologistNavbar({ toggleSidebar }: NavbarProps) {
                     </NavLink>
 
                     <NavLink
-                        to="/appointments"
+                        to="/psychologist/appointments"
                         className={({ isActive }) =>
                             `${styles['nav-link']} ${isActive ? styles.active : ''}`
                         }

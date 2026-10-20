@@ -1,5 +1,15 @@
 import type { Dayjs } from "dayjs"
-import { ApiError, ApiValidationError, type ApiErrorResponse, type Appointment, type NextAppointment } from "../types"
+import {
+    ApiError,
+    ApiValidationError,
+    type ApiErrorResponse,
+    type Appointment,
+    type AppointmentFilter,
+    type AppointmentPagination,
+    type AppointmentSorting,
+    type FilteredAppointments,
+    type NextAppointment
+} from "../types"
 
 
 export const appointment_api = {
@@ -61,8 +71,53 @@ export const appointment_api = {
 
     }
     ,
-    async getFilteredAppointments() {
+    async getFilteredAppointments(
+        filter: AppointmentFilter,
+        sorting: AppointmentSorting,
+        pagination: AppointmentPagination
+    ) {
 
+        const params = new URLSearchParams()
+
+        if (filter.patient_name) params.set('patient_name', filter.patient_name);
+
+        if (filter.status) params.set('status', filter.status);
+
+        if (filter.notes !== undefined) params.set('notes', String(filter.notes));
+
+        if (filter.starts_at?.gte) params.set('starts_at[gte]', filter.starts_at.gte.toISOString());
+
+        if (filter.starts_at?.lt) params.set('starts_at[lt]', filter.starts_at.lt.toISOString());
+
+        if (filter.created_at?.gte) params.set('created_at[gte]', filter.created_at.gte.toISOString());
+
+        if (filter.created_at?.lt) params.set('created_at[lt]', filter.created_at.lt.toISOString());
+
+
+        // Sorting
+
+        if (sorting.sortBy) params.set('sortBy', sorting.sortBy)
+
+        if (sorting.sortOrder) params.set('sortOrder', sorting.sortOrder)
+
+        // Pagination
+
+        if (pagination.page) params.set('page', String(pagination.page))
+
+        if (pagination.limit) params.set('limit', String(pagination.limit))
+
+        const response = await fetch(
+            `/api/appointments/filter?${params.toString()}`
+        )
+
+        if (!response.ok) {
+            const error: ApiErrorResponse = await response.json()
+            throw new ApiValidationError(error.message, error.errors)
+        }
+
+        const filteredAppointments: FilteredAppointments = await response.json()
+
+        return filteredAppointments
     }
     ,
     async updateNotes() {

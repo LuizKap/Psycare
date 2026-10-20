@@ -11,6 +11,7 @@ import { psychologistRouter } from './modules/psychologist/psychologist.routes.j
 const app = express()
 app.use(cookieParser())
 app.use(express.json())
+app.set('query parser', 'extended')
 
 app.use(authMiddlewareInstance)
 app.use('/api/auth', authRouter)

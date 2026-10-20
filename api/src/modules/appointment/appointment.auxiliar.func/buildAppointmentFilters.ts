@@ -13,13 +13,13 @@ export type AppointmentFilters = {
     notes?: boolean | undefined
 
     starts_at?: {
-        gte: Date;
-        lt: Date;
+        gte?: Date | undefined;
+        lt?: Date | undefined;
     } | undefined
 
     created_at?: {
-        gte: Date;
-        lt: Date;
+        gte?: Date | undefined;
+        lt?: Date | undefined;
     } | undefined
 }
 
@@ -57,9 +57,29 @@ export function build_find_appointments_filters(filters: AppointmentFilters): Pr
 
     if (filters.status) where.status = filters.status
 
-    if (filters.starts_at) where.starts_at = filters.starts_at
+    if (filters.starts_at) {
+        where.starts_at = {}
 
-    if (filters.created_at) where.created_at = filters.created_at
+        if (filters.starts_at.gte) {
+            where.starts_at.gte = filters.starts_at.gte
+        }
+
+        if (filters.starts_at.lt) {
+            where.starts_at.lt = filters.starts_at.lt
+        }
+    }
+
+    if (filters.created_at) {
+        where.created_at = {}
+
+        if (filters.created_at.gte) {
+            where.created_at.gte = filters.created_at.gte
+        }
+
+        if (filters.created_at.lt) {
+            where.created_at.lt = filters.created_at.lt
+        }
+    }
 
     if (filters.notes === true) where.notes = { not: null }
 

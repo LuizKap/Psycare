@@ -4,13 +4,13 @@ import dayjs from './appointment.util.dayjs.js'
 const dateRangeSchema = z.object({
     gte: z.iso.datetime({
         message: 'Data inicial inválida'
-    }).transform(value => new Date(value)),
+    }).transform(value => new Date(value)).optional(),
 
     lt: z.iso.datetime({
         message: 'Data final inválida'
-    }).transform(value => new Date(value))
+    }).transform(value => new Date(value)).optional()
 }).refine(
-    data => data.gte < data.lt,
+    data => !data.gte || !data.lt || data.gte < data.lt,
     {
         message: 'A data inicial deve ser anterior à data final'
     }
@@ -54,7 +54,7 @@ export const appointmentFilterSchema = z.object({
         {
             message: 'O filtro de notas deve ser true ou false'
         }
-    ).optional().transform(value => value === 'true'),
+    ).transform(value => value === 'true').optional(),
 
     created_at: dateRangeSchema.optional(),
 

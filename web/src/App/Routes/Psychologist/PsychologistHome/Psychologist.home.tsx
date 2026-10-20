@@ -5,6 +5,7 @@ import { usePsychologist } from "../../../../hooks/usePsychologist";
 import { usePsychologistDashboard } from "../../../../hooks/usePsychologistDashboard";
 import { Loading } from "../../../components/Loading/Loading";
 import { ErrorState } from "../../../components/Error/Error";
+import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 
 export function PsychologistHome() {
 
@@ -37,7 +38,10 @@ export function PsychologistHome() {
     }
 
     return (
-        <>
+        <SkeletonTheme
+            baseColor="#A8C5B4"
+            highlightColor="#F0F7F2">
+
             <section className={styles.introduction}>
                 <h1>Bem-vindo, Dr. {psychologist.name}!</h1>
             </section>
@@ -53,7 +57,7 @@ export function PsychologistHome() {
                         {todayAppointmentsCount === 0 ? "Nenhuma consulta" : `${todayAppointmentsCount} consultas`}
                     </span>
 
-                    <Link to="/list/appointments">
+                    <Link to="/psychologist/appointments">
                         Lista de Consultas
                     </Link>
                 </article>
@@ -99,7 +103,7 @@ export function PsychologistHome() {
 
                     {dashboardLoading ?
                         (
-                            <p>Carregando próximos atendimentos...</p>
+                            <Skeleton count={5}/>
                         ) : upcomingAppointments.length === 0 ?
                             (
                                 <p>Nenhum atendimento próximo.</p>
@@ -123,6 +127,6 @@ export function PsychologistHome() {
                             )}
                 </div>
             </section>
-        </>
+        </SkeletonTheme>
     );
 }

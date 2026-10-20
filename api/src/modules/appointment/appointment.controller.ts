@@ -26,7 +26,7 @@ export class AppointmentController {
     getPatientAppointments = async (req: Request, res: Response) => {
 
         const patient_id = req.patientId
-        const {status} = getPatientAppointmentsQuerySchema.parse(req.query)
+        const { status } = getPatientAppointmentsQuerySchema.parse(req.query)
 
         const appointments = await this.appointmentService.getPatientAppointments(patient_id, status)
 
@@ -58,7 +58,8 @@ export class AppointmentController {
 
         const { created_at, notes, starts_at, status, patient_name } = appointmentFilterSchema.parse(req.query)
         const { sortBy = 'created_at', sortOrder = 'asc' } = appointmentSortingSchema.parse(req.query)
-        const { limit = 20, page = 1 } = appointmentPaginationSchema.parse(req.query)
+        const { limit = 10, page = 1 } = appointmentPaginationSchema.parse(req.query)
+
 
         const appointments = await this.appointmentService.getFilteredAppointments(
             { created_at, notes, starts_at, status, patient_name },

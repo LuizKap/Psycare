@@ -76,6 +76,56 @@ export type NextAppointment = {
   }
 }
 
+export type AppointmentFilter = {
+  patient_name?: string;
+  status?: 'SCHEDULED' | 'COMPLETED' | 'CANCELLED';
+  notes?: boolean;
+  created_at?: {
+
+    gte?: Date,
+    lt?: Date
+
+  };
+  starts_at?: {
+
+    gte?: Date,
+    lt?: Date
+
+  };
+}
+
+export type AppointmentPagination = {
+  page?: number;
+  limit?: number;
+}
+
+export type AppointmentSorting = {
+  sortBy?: 'created_at' | 'starts_at';
+  sortOrder?: 'asc' | 'desc'
+}
+
+export type PaginationProperties = {
+  totalPages: number;
+  totalItems: number;
+  page: number;
+  limit: number;
+}
+
+export type FilteredAppointments = {
+  appointments: (Appointment & {
+    patient: {
+      name: string
+    }
+  })[],
+  pagination: PaginationProperties
+}
+
+export type AppointmentQueryConfig = {
+    filter: AppointmentFilter
+    sorting: AppointmentSorting
+    pagination: AppointmentPagination
+}
+
 
 // ====================
 // Context
