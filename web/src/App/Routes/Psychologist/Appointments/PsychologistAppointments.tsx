@@ -25,8 +25,6 @@ export function PsychologistAppointments() {
 
     const [filtersVersion, setFiltersVersion] = useState(0)
 
-    console.log(sorting)
-
     const {
         filteredAppointments,
         handleFilterAppointments,
@@ -62,7 +60,15 @@ export function PsychologistAppointments() {
                         <p>Encontre consultas por paciente, data ou status.</p>
                     </div>
 
-                    <button className={styles["clear-filters"]} type="button">
+                    <button className={styles["clear-filters"]} type="button" disabled={loading}
+
+                        onClick={() => {
+                            setFilter({})
+                            setSorting(DEFAULT_APPOINTMENT_QUERY.sorting)
+                            setPagination({})
+                            setFiltersVersion((prev) => prev + 1)
+                            handleFilterAppointments({}, DEFAULT_APPOINTMENT_QUERY.sorting, {})
+                        }}>
                         Limpar filtros
                     </button>
                 </div>
@@ -248,7 +254,7 @@ export function PsychologistAppointments() {
                         Limpar
                     </button>
 
-                    <button className={styles["primary-button"]} type="button"
+                    <button className={styles["primary-button"]} type="button" disabled={loading}
                         onClick={() => handleFilterAppointments(filter, sorting, pagination)}>
                         Aplicar filtros
                     </button>
@@ -377,15 +383,8 @@ export function PsychologistAppointments() {
                             Anterior
                         </button>
 
-                        <button type="button" className={styles["current-page"]}
-                            onClick={() => handleFilterAppointments(
-                                filter,
-                                sorting,
-                                {
-                                    ...pagination,
-                                    page: filteredAppointments.pagination.page
-                                }
-                            )}>
+
+                        <button type="button" className={styles["current-page"]}>
 
                             {filteredAppointments.pagination.page}
 
@@ -399,15 +398,30 @@ export function PsychologistAppointments() {
                                         sorting,
                                         {
                                             ...pagination,
-                                            page: filteredAppointments?.pagination.page + 1
+                                            page: filteredAppointments.pagination.page + 1
                                         }
                                     )}>
-                                    {filteredAppointments?.pagination.page + 1}
+                                    {filteredAppointments.pagination.page + 1}
                                 </button>
                             )
                         }
 
-                        <button type="button">Próxima</button>
+                        <button type="button"
+                            disabled={
+                                filteredAppointments.pagination.page
+                                ===
+                                filteredAppointments.pagination.totalPages
+                            }
+                            onClick={() => handleFilterAppointments(
+                                filter,
+                                sorting,
+                                {
+                                    ...pagination,
+                                    page: filteredAppointments.pagination.page + 1
+                                }
+                            )}>
+                            Próxima
+                        </button>
                     </div>
                 </footer>
             </section>
