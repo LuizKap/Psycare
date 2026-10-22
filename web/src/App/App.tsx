@@ -20,7 +20,7 @@ import { useAuth } from "../hooks/useAuth"
 import { Loading } from "./components/Loading/Loading"
 import { MyAppointments } from "./Routes/Patient/Appointments/MyAppointments/MyAppointments"
 import { CreateAppointment } from "./Routes/Patient/Appointments/CreateAppointment/CreateAppointment"
-import { PsychologistAppointments } from "./Routes/Psychologist/Appointments/PsychologistAppointments"
+import { PsychologistAppointments } from "./Routes/Psychologist/Appointments/PsychologistAppointments/PsychologistAppointments"
 import 'react-loading-skeleton/dist/skeleton.css'
 
 

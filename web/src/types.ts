@@ -126,6 +126,14 @@ export type AppointmentQueryConfig = {
     pagination: AppointmentPagination
 }
 
+export type AppointmentDetails = FilteredAppointments['appointments'][number]
+
+export type AppointmentDetailsPanelProps = {
+    appointment: AppointmentDetails | null
+    isOpen: boolean
+    onClose: () => void
+} 
+
 
 // ====================
 // Context

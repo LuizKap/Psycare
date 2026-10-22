@@ -102,7 +102,7 @@ function PsychologistSidebar({ isOpen }: SidebarProps) {
                     </p>
                 )}
                 <Link
-                    to="/appointments"
+                    to="/psychologist/appointments"
                     className={styles["reschedule-link"]}
                 >
                     Ver consultas
@@ -116,7 +116,7 @@ function PsychologistSidebar({ isOpen }: SidebarProps) {
                 </Link>
 
                 <Link
-                    to="/appointments"
+                    to="/psychologist/appointments"
                     className={styles["side-menu-link"]}
                 >
                     <img src="/profile/appointments.svg" alt="" />

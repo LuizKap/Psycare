@@ -1,10 +1,11 @@
 
 import { useEffect, useState } from "react"
-import { useFilteredAppointments } from "../../../../hooks/useFilteredAppointments"
+import { useFilteredAppointments } from "../../../../../hooks/useFilteredAppointments"
 import styles from "./PsychologistAppointments.module.css"
-import type { AppointmentFilter, AppointmentPagination, AppointmentQueryConfig, AppointmentSorting } from "../../../../types"
-import dayjs from '../../../../utils/dayjs'
+import type { AppointmentDetails, AppointmentFilter, AppointmentPagination, AppointmentQueryConfig, AppointmentSorting } from "../../../../../types"
+import dayjs from '../../../../../utils/dayjs'
 import Skeleton from "react-loading-skeleton"
+import { AppointmentDetailsPanel } from "../AppointmentDetailsPanel/AppointmentDetailsPanel"
 
 export function PsychologistAppointments() {
 
@@ -15,14 +16,18 @@ export function PsychologistAppointments() {
             sortOrder: 'desc'
         },
         pagination: {
+            page: 1,
             limit: 10
         }
     }
 
+    const [selectedAppointment, setSelectedAppointment] = useState<AppointmentDetails | null>(null)
+    const [isDetailsOpen, setIsDetailsOpen] = useState<boolean>(false)
+
+
     const [filter, setFilter] = useState<AppointmentFilter>({})
     const [sorting, setSorting] = useState<AppointmentSorting>(DEFAULT_APPOINTMENT_QUERY.sorting)
-    const [pagination, setPagination] = useState<AppointmentPagination>({})
-
+    const [pagination, setPagination] = useState<AppointmentPagination>(DEFAULT_APPOINTMENT_QUERY.pagination)
     const [filtersVersion, setFiltersVersion] = useState(0)
 
     const {
@@ -34,6 +39,23 @@ export function PsychologistAppointments() {
     useEffect(() => {
         void handleFilterAppointments({}, DEFAULT_APPOINTMENT_QUERY.sorting, DEFAULT_APPOINTMENT_QUERY.pagination)
     }, [handleFilterAppointments])
+
+
+    function handlePageChange(page: number) {
+        const nextPagination = {
+            ...pagination,
+            page,
+            limit: pagination.limit ?? DEFAULT_APPOINTMENT_QUERY.pagination.limit
+        }
+
+        setPagination(nextPagination)
+
+        void handleFilterAppointments(
+            filter,
+            sorting,
+            nextPagination
+        )
+    }
 
     return (
         <main className={styles["appointments-page"]}>
@@ -63,11 +85,16 @@ export function PsychologistAppointments() {
                     <button className={styles["clear-filters"]} type="button" disabled={loading}
 
                         onClick={() => {
-                            setFilter({})
+                            setFilter(DEFAULT_APPOINTMENT_QUERY.filter)
                             setSorting(DEFAULT_APPOINTMENT_QUERY.sorting)
-                            setPagination({})
-                            setFiltersVersion((prev) => prev + 1)
-                            handleFilterAppointments({}, DEFAULT_APPOINTMENT_QUERY.sorting, {})
+                            setPagination(DEFAULT_APPOINTMENT_QUERY.pagination)
+                            setFiltersVersion(prev => prev + 1)
+
+                            void handleFilterAppointments(
+                                DEFAULT_APPOINTMENT_QUERY.filter,
+                                DEFAULT_APPOINTMENT_QUERY.sorting,
+                                DEFAULT_APPOINTMENT_QUERY.pagination
+                            )
                         }}>
                         Limpar filtros
                     </button>
@@ -245,17 +272,36 @@ export function PsychologistAppointments() {
                     <button className={styles["secondary-button"]} type="button" disabled={loading}
 
                         onClick={() => {
-                            setFilter({})
+                            setFilter(DEFAULT_APPOINTMENT_QUERY.filter)
                             setSorting(DEFAULT_APPOINTMENT_QUERY.sorting)
-                            setPagination({})
-                            setFiltersVersion((prev) => prev + 1)
-                            handleFilterAppointments({}, DEFAULT_APPOINTMENT_QUERY.sorting, {})
+                            setPagination(DEFAULT_APPOINTMENT_QUERY.pagination)
+                            setFiltersVersion(prev => prev + 1)
+
+                            void handleFilterAppointments(
+                                DEFAULT_APPOINTMENT_QUERY.filter,
+                                DEFAULT_APPOINTMENT_QUERY.sorting,
+                                DEFAULT_APPOINTMENT_QUERY.pagination
+                            )
                         }}>
                         Limpar
                     </button>
 
                     <button className={styles["primary-button"]} type="button" disabled={loading}
-                        onClick={() => handleFilterAppointments(filter, sorting, pagination)}>
+                        onClick={() => {
+                            const firstPage = {
+                                ...pagination,
+                                page: 1,
+                                limit: pagination.limit ?? 10
+                            }
+
+                            setPagination(firstPage)
+
+                            void handleFilterAppointments(
+                                filter,
+                                sorting,
+                                firstPage
+                            )
+                        }}>
                         Aplicar filtros
                     </button>
                 </div>
@@ -313,7 +359,9 @@ export function PsychologistAppointments() {
 
                             return (
                                 <article className={styles["appointment-card"]} key={appointment.id}>
-                                    <div className={styles["patient-avatar"]}>MA</div>
+                                    <div className={styles["patient-avatar"]}>
+                                        {`${appointment.patient.name.charAt(0).toUpperCase()}${appointment.patient.name.charAt(1).toUpperCase()}`}
+                                    </div>
 
                                     <div className={styles["appointment-info"]}>
                                         <h3>{appointment.patient.name}</h3>
@@ -356,7 +404,14 @@ export function PsychologistAppointments() {
                                     </div>
 
                                     <div className={styles["appointment-actions"]}>
-                                        <button className={styles["details-button"]} type="button">
+                                        <button
+                                            className={styles["details-button"]}
+                                            type="button"
+                                            onClick={() => {
+                                                setIsDetailsOpen(true)
+                                                setSelectedAppointment(appointment)
+                                            }
+                                            }>
                                             Ver detalhes
                                         </button>
                                     </div>
@@ -371,15 +426,11 @@ export function PsychologistAppointments() {
                     </span>
 
                     <div className={styles["pagination-buttons"]}>
-                        <button type="button" disabled={filteredAppointments.pagination.page === 1}
-                            onClick={() => handleFilterAppointments(
-                                filter,
-                                sorting,
-                                {
-                                    ...pagination,
-                                    page: filteredAppointments.pagination.page - 1
-                                }
-                            )}>
+                        <button type="button" disabled={loading || filteredAppointments.pagination.page === 1}
+                            onClick={() =>
+                                handlePageChange(filteredAppointments.pagination.page - 1)
+                            }
+                        >
                             Anterior
                         </button>
 
@@ -393,14 +444,9 @@ export function PsychologistAppointments() {
                         {filteredAppointments.pagination.totalPages > 1
                             && filteredAppointments.pagination.page < filteredAppointments.pagination.totalPages && (
                                 <button type="button"
-                                    onClick={() => handleFilterAppointments(
-                                        filter,
-                                        sorting,
-                                        {
-                                            ...pagination,
-                                            page: filteredAppointments.pagination.page + 1
-                                        }
-                                    )}>
+                                    onClick={() =>
+                                        handlePageChange(filteredAppointments.pagination.page + 1)
+                                    }>
                                     {filteredAppointments.pagination.page + 1}
                                 </button>
                             )
@@ -408,23 +454,22 @@ export function PsychologistAppointments() {
 
                         <button type="button"
                             disabled={
-                                filteredAppointments.pagination.page
-                                ===
+                                loading ||
+                                filteredAppointments.pagination.page >=
                                 filteredAppointments.pagination.totalPages
                             }
-                            onClick={() => handleFilterAppointments(
-                                filter,
-                                sorting,
-                                {
-                                    ...pagination,
-                                    page: filteredAppointments.pagination.page + 1
-                                }
-                            )}>
+                            onClick={() =>
+                                handlePageChange(filteredAppointments.pagination.page + 1)
+                            }>
                             Próxima
                         </button>
                     </div>
                 </footer>
             </section>
+            <AppointmentDetailsPanel
+                isOpen={isDetailsOpen}
+                appointment={selectedAppointment}
+                onClose={() => setIsDetailsOpen(false)} />
         </main >
     )
 }
