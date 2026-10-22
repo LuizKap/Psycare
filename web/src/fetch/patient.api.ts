@@ -1,4 +1,4 @@
-import { ApiError, type ApiErrorResponse, type Patient } from "../types"
+import { ApiError, ApiValidationError, type ApiErrorResponse, type Patient } from "../types"
 
 
 export const patient_api = {
@@ -8,6 +8,11 @@ export const patient_api = {
 
         if (!response.ok) {
             const error: ApiErrorResponse = await response.json()
+
+            if (error.errors && error.errors.length > 0) {
+                throw new ApiValidationError(error.message, error.errors)
+            }
+
             throw new ApiError(error.message)
         }
 
@@ -20,7 +25,12 @@ export const patient_api = {
         const response = await fetch('/api/patient/count')
 
         if (!response.ok) {
-            const error = await response.json()
+            const error: ApiErrorResponse = await response.json()
+
+            if (error.errors && error.errors.length > 0) {
+                throw new ApiValidationError(error.message, error.errors)
+            }
+
             throw new ApiError(error.message)
         }
 

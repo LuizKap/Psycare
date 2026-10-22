@@ -9,6 +9,11 @@ export const psychologist_api = {
 
         if (!response.ok) {
             const error: ApiErrorResponse = await response.json()
+
+            if (error.errors && error.errors.length > 0) {
+                throw new ApiValidationError(error.message, error.errors)
+            }
+
             throw new ApiError(error.message)
         }
 
@@ -32,7 +37,12 @@ export const psychologist_api = {
 
         if (!response.ok) {
             const error: ApiErrorResponse = await response.json()
-            throw new ApiValidationError(error.message, error.errors)
+
+            if (error.errors && error.errors.length > 0) {
+                throw new ApiValidationError(error.message, error.errors)
+            }
+
+            throw new ApiError(error.message)
         }
 
         const data: { psychologist: Psychologist, message: string } = await response.json()

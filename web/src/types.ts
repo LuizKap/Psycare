@@ -178,7 +178,7 @@ export type ErrorStateProps = {
 
 export type ApiErrorResponse = {
   message: string
-  errors: FormError[]
+  errors?: FormError[]
 }
 
 export type FormError = {

@@ -19,7 +19,11 @@ export const appointment_api = {
         const response = await fetch(`/api/appointments${status ? `?status=${status}` : ''}`)
 
         if (!response.ok) {
-            const error = await response.json()
+            const error: ApiErrorResponse = await response.json()
+
+            if (error.errors && error.errors.length > 0) {
+                throw new ApiValidationError(error.message, error.errors)
+            }
 
             throw new ApiError(error.message)
         }
@@ -36,7 +40,12 @@ export const appointment_api = {
         );
 
         if (!response.ok) {
-            const error = await response.json()
+            const error: ApiErrorResponse = await response.json()
+
+            if (error.errors && error.errors.length > 0) {
+                throw new ApiValidationError(error.message, error.errors)
+            }
+
             throw new ApiError(error.message)
         }
 
@@ -60,7 +69,12 @@ export const appointment_api = {
 
         if (!response.ok) {
             const error: ApiErrorResponse = await response.json()
-            throw new ApiValidationError(error.message, error.errors)
+
+            if (error.errors && error.errors.length > 0) {
+                throw new ApiValidationError(error.message, error.errors)
+            }
+
+            throw new ApiError(error.message)
         }
 
         const message: string = 'Consulta marcada com sucesso!'
@@ -112,7 +126,12 @@ export const appointment_api = {
 
         if (!response.ok) {
             const error: ApiErrorResponse = await response.json()
-            throw new ApiValidationError(error.message, error.errors)
+
+            if (error.errors && error.errors.length > 0) {
+                throw new ApiValidationError(error.message, error.errors)
+            }
+
+            throw new ApiError(error.message)
         }
 
         const filteredAppointments: FilteredAppointments = await response.json()
@@ -120,7 +139,27 @@ export const appointment_api = {
         return filteredAppointments
     }
     ,
-    async updateNotes() {
+    async updateNotes(id: Appointment['id'], notes: Appointment['notes']) {
+
+        const response = await fetch(`/api/appointments/${id}/notes`, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                notes
+            })
+        })
+
+        if (!response.ok) {
+            const error: ApiErrorResponse = await response.json()
+
+            if (error.errors && error.errors.length > 0) {
+                throw new ApiValidationError(error.message, error.errors)
+            }
+
+            throw new ApiError(error.message)
+        }
 
     }
     ,
@@ -136,7 +175,12 @@ export const appointment_api = {
         const response = await fetch('/api/appointments/count/today')
 
         if (!response.ok) {
-            const error = await response.json()
+            const error: ApiErrorResponse = await response.json()
+
+            if (error.errors && error.errors.length > 0) {
+                throw new ApiValidationError(error.message, error.errors)
+            }
+
             throw new ApiError(error.message)
         }
 
@@ -148,7 +192,12 @@ export const appointment_api = {
         const response = await fetch('/api/appointments/next')
 
         if (!response.ok) {
-            const error = await response.json()
+            const error: ApiErrorResponse = await response.json()
+
+            if (error.errors && error.errors.length > 0) {
+                throw new ApiValidationError(error.message, error.errors)
+            }
+
             throw new ApiError(error.message)
         }
 
@@ -160,7 +209,12 @@ export const appointment_api = {
         const response = await fetch('/api/appointments/upcoming')
 
         if (!response.ok) {
-            const error = await response.json()
+            const error: ApiErrorResponse = await response.json()
+
+            if (error.errors && error.errors.length > 0) {
+                throw new ApiValidationError(error.message, error.errors)
+            }
+
             throw new ApiError(error.message)
         }
 
@@ -172,7 +226,12 @@ export const appointment_api = {
         const response = await fetch('/api/appointments/previous')
 
         if (!response.ok) {
-            const error = await response.json()
+            const error: ApiErrorResponse = await response.json()
+
+            if (error.errors && error.errors.length > 0) {
+                throw new ApiValidationError(error.message, error.errors)
+            }
+
             throw new ApiError(error.message)
         }
 

@@ -7,7 +7,13 @@ export const auth_api = {
         const response = await fetch('/api/auth/me')
 
         if (!response.ok) {
-            throw new ApiError('Erro ao buscar usuário autenticado')
+            const error: ApiErrorResponse = await response.json()
+
+            if (error.errors && error.errors.length > 0) {
+                throw new ApiValidationError(error.message, error.errors)
+            }
+
+            throw new ApiError(error.message)
         }
 
         const user: User | null = await response.json()
@@ -34,7 +40,11 @@ export const auth_api = {
         if (!response.ok) {
             const error: ApiErrorResponse = await response.json()
 
-            throw new ApiValidationError(error.message, error.errors)
+            if (error.errors && error.errors.length > 0) {
+                throw new ApiValidationError(error.message, error.errors)
+            }
+
+            throw new ApiError(error.message)
         }
 
         const data: { user: User & { role: 'PATIENT' } } = await response.json()
@@ -61,7 +71,11 @@ export const auth_api = {
         if (!response.ok) {
             const error: ApiErrorResponse = await response.json()
 
-            throw new ApiValidationError(error.message, error.errors)
+            if (error.errors && error.errors.length > 0) {
+                throw new ApiValidationError(error.message, error.errors)
+            }
+
+            throw new ApiError(error.message)
         }
 
         const data: { user: User & { role: 'PSYCHOLOGIST' } } = await response.json()
@@ -84,7 +98,11 @@ export const auth_api = {
         if (!response.ok) {
             const error: ApiErrorResponse = await response.json()
 
-            throw new ApiValidationError(error.message, error.errors)
+            if (error.errors && error.errors.length > 0) {
+                throw new ApiValidationError(error.message, error.errors)
+            }
+
+            throw new ApiError(error.message)
         }
 
         const data: { user: User & { role: 'PATIENT' } } = await response.json()
@@ -108,7 +126,11 @@ export const auth_api = {
         if (!response.ok) {
             const error: ApiErrorResponse = await response.json()
 
-            throw new ApiValidationError(error.message, error.errors)
+            if (error.errors && error.errors.length > 0) {
+                throw new ApiValidationError(error.message, error.errors)
+            }
+
+            throw new ApiError(error.message)
         }
 
         const data: { user: User & { role: 'PSYCHOLOGIST' } } = await response.json()
@@ -124,7 +146,7 @@ export const auth_api = {
             throw new ApiError(error.message)
         }
 
-        const {message} = await response.json()
+        const { message } = await response.json()
         return message
     }
 
