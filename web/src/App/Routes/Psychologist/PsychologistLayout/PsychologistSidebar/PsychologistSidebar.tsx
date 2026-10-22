@@ -110,7 +110,7 @@ function PsychologistSidebar({ isOpen }: SidebarProps) {
             </section>
 
             <section className={styles["side-menu"]}>
-                <Link to="/" className={styles["side-menu-link"]}>
+                <Link to="/psychologist" className={styles["side-menu-link"]}>
                     <img src="/profile/home.svg" alt="" />
                     <span>Home</span>
                 </Link>
