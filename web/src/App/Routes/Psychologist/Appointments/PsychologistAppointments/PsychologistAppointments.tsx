@@ -33,7 +33,8 @@ export function PsychologistAppointments() {
     const {
         filteredAppointments,
         handleFilterAppointments,
-        loading } = useFilteredAppointments()
+        loading
+    } = useFilteredAppointments()
 
 
     useEffect(() => {
@@ -41,6 +42,12 @@ export function PsychologistAppointments() {
     }, [handleFilterAppointments])
 
 
+    //atualiza a lista ao salvar notas
+    function handleNotesSaved() {
+        void handleFilterAppointments(filter, sorting, pagination)
+    }
+
+    //lida com a troca de paginas
     function handlePageChange(page: number) {
         const nextPagination = {
             ...pagination,
@@ -468,7 +475,9 @@ export function PsychologistAppointments() {
             </section>
             <AppointmentDetailsPanel
                 isOpen={isDetailsOpen}
-                appointment={selectedAppointment}
+                selectedAppointment={selectedAppointment}
+                setSelectedAppointment={setSelectedAppointment}
+                onNotesSaved={handleNotesSaved}
                 onClose={() => setIsDetailsOpen(false)} />
         </main >
     )

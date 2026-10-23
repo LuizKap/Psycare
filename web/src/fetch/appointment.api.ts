@@ -161,8 +161,8 @@ export const appointment_api = {
             throw new ApiError(error.message)
         }
 
-        const message: string = 'Notas atualizadas com sucesso!'
-        return message
+        const {updatedAppointment, message}  = await response.json()
+        return {updatedAppointment, message}
     }
     ,
     async psychologistCancel() {

@@ -15,9 +15,11 @@ export function useUpdateNotes() {
         setLoading(true)
 
         try {
-            const message = await appointment_api.updateNotes(appointmentId, notes)
+            const { updatedAppointment, message } = await appointment_api.updateNotes(appointmentId, notes)
 
             toast.success(message)
+
+            return updatedAppointment
 
         } catch (error) {
             error instanceof ApiValidationError ? error.errors.forEach(error => {

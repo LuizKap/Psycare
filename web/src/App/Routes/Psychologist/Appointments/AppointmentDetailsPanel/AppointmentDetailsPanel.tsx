@@ -3,18 +3,43 @@ import dayjs from "../../../../../utils/dayjs"
 import Skeleton from "react-loading-skeleton"
 import styles from "./AppointmentDetailsPanel.module.css"
 import { useUpdateNotes } from "../../../../../hooks/useUpdateNotes"
+import { useEffect, useRef, useState } from "react"
 
 
 
 export function AppointmentDetailsPanel({
-    appointment,
+    selectedAppointment,
+    setSelectedAppointment,
+    onNotesSaved,
     isOpen,
     onClose
 }: AppointmentDetailsPanelProps) {
 
     const { handleUpdateNotes, loading } = useUpdateNotes()
 
-    document.body.style.overflow = `${isOpen ? 'hidden' : ''}`
+    const [updatedNote, setUpdatedNote] = useState<string>(selectedAppointment?.notes ?? "")
+    const saveBtnRef = useRef<HTMLButtonElement>(null)
+
+    console.log(updatedNote)
+
+    //preenche updatedNote ao mudar de appointment
+    useEffect(() => {
+
+        setUpdatedNote(selectedAppointment?.notes ?? "")
+
+    }, [selectedAppointment])
+
+
+    // Bloqueia o scroll do body enquanto o painel estiver aberto
+    useEffect(() => {
+        if (!isOpen) return
+
+        document.body.style.overflow = 'hidden'
+
+        return () => {
+            document.body.style.overflow = ''
+        }
+    }, [isOpen])
 
     return (
         <div
@@ -58,15 +83,15 @@ export function AppointmentDetailsPanel({
                     </button>
                 </header>
 
-                {!appointment ? (
+                {!selectedAppointment ? (
                     <div className={styles.content}>
                         <Skeleton count={4} />
                     </div>
                 ) : (
-                    <div className={styles.content} key={appointment.id}>
+                    <div className={styles.content} key={selectedAppointment.id}>
                         <section className={styles.patientSection}>
                             <div className={styles.avatar}>
-                                {appointment.patient.name
+                                {selectedAppointment.patient.name
                                     .charAt(0)
                                     .toUpperCase()}
                             </div>
@@ -76,7 +101,7 @@ export function AppointmentDetailsPanel({
                                     PACIENTE
                                 </span>
 
-                                <h3>{appointment.patient.name}</h3>
+                                <h3>{selectedAppointment.patient.name}</h3>
                             </div>
                         </section>
 
@@ -89,7 +114,7 @@ export function AppointmentDetailsPanel({
                                 </span>
 
                                 <p>
-                                    {dayjs(appointment.starts_at)
+                                    {dayjs(selectedAppointment.starts_at)
                                         .tz("America/Sao_Paulo")
                                         .format("DD/MM/YYYY [às] HH:mm")}
                                 </p>
@@ -101,7 +126,7 @@ export function AppointmentDetailsPanel({
                                 </span>
 
                                 <p>
-                                    {dayjs(appointment.created_at)
+                                    {dayjs(selectedAppointment.created_at)
                                         .tz("America/Sao_Paulo")
                                         .format("DD/MM/YYYY [às] HH:mm")}
                                 </p>
@@ -113,16 +138,16 @@ export function AppointmentDetailsPanel({
                                 </span>
 
                                 <span
-                                    className={`${styles.status} ${appointment.status === "SCHEDULED"
+                                    className={`${styles.status} ${selectedAppointment.status === "SCHEDULED"
                                         ? styles.scheduled
-                                        : appointment.status === "COMPLETED"
+                                        : selectedAppointment.status === "COMPLETED"
                                             ? styles.completed
                                             : styles.cancelled
                                         }`}
                                 >
-                                    {appointment.status === "SCHEDULED"
+                                    {selectedAppointment.status === "SCHEDULED"
                                         ? "Agendada"
-                                        : appointment.status === "COMPLETED"
+                                        : selectedAppointment.status === "COMPLETED"
                                             ? "Concluída"
                                             : "Cancelada"}
                                 </span>
@@ -140,13 +165,13 @@ export function AppointmentDetailsPanel({
                                 </div>
                             </div>
 
-                            {appointment.notes ? (
+                            {selectedAppointment.notes ? (
                                 <div className={styles.existingNotes}>
                                     <span className={styles.label}>
                                         NOTAS REGISTRADAS
                                     </span>
 
-                                    <p>{appointment.notes}</p>
+                                    <p>{selectedAppointment.notes}</p>
                                 </div>
                             ) : (
                                 <p className={styles.emptyNotes}>
@@ -164,15 +189,27 @@ export function AppointmentDetailsPanel({
                             <textarea
                                 id="appointment-notes"
                                 className={styles.notesTextarea}
-                                defaultValue={appointment.notes ?? ""}
+                                defaultValue={selectedAppointment.notes ?? ""}
                                 placeholder="Escreva suas observações..."
                                 rows={6}
+                                onChange={(ev) => {
+                                    setUpdatedNote(ev.target.value)
+                                    if (saveBtnRef.current) {
+                                        saveBtnRef.current.disabled = ev.target.value === selectedAppointment.notes
+                                    }
+                                }}
                             />
 
                             <button
                                 className={styles.saveButton}
                                 type="button"
-                                disabled
+                                ref={saveBtnRef}
+                                disabled={updatedNote === selectedAppointment.notes || loading}
+                                onClick={async () => {
+                                    const appointment = await handleUpdateNotes(selectedAppointment.id, updatedNote)
+                                    setSelectedAppointment(appointment)
+                                    onNotesSaved()
+                                }}
                             >
                                 Salvar notas
                             </button>

@@ -121,18 +121,24 @@ export type FilteredAppointments = {
 }
 
 export type AppointmentQueryConfig = {
-    filter: AppointmentFilter
-    sorting: AppointmentSorting
-    pagination: AppointmentPagination
+  filter: AppointmentFilter
+  sorting: AppointmentSorting
+  pagination: AppointmentPagination
 }
 
 export type AppointmentDetails = FilteredAppointments['appointments'][number]
 
 export type AppointmentDetailsPanelProps = {
-    appointment: AppointmentDetails | null
-    isOpen: boolean
-    onClose: () => void
-} 
+  selectedAppointment: AppointmentDetails | null
+  setSelectedAppointment: React.Dispatch<React.SetStateAction<(Appointment & {
+    patient: {
+      name: string;
+    };
+  }) | null>>
+  isOpen: boolean
+  onNotesSaved: () => void
+  onClose: () => void
+}
 
 
 // ====================
