@@ -182,7 +182,14 @@ export class AppointmentRepository implements IAppointmentRepository {
 
         return await this.prisma.appointment.update({
             where: { id },
-            data: { notes }
+            data: { notes },
+            include: {
+                patient: {
+                    select: {
+                        name: true
+                    }
+                }
+            }
         })
     }
 

@@ -116,7 +116,7 @@ export const idSchema = z.object({
 
 export const updateNotesSchema = z.object({
 
-    notes: z.string().nullable()
+    notes: z.string().nullable().transform(note => note?.trim() === '' ? null : note)
 
 }).strict()
 
