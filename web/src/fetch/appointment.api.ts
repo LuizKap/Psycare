@@ -161,6 +161,8 @@ export const appointment_api = {
             throw new ApiError(error.message)
         }
 
+        const message: string = 'Notas atualizadas com sucesso!'
+        return message
     }
     ,
     async psychologistCancel() {

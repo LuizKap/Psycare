@@ -4,6 +4,10 @@
     color: #263b31;
 }
 
+.hide-scroll{
+    overflow-y: hidden;
+}
+
 .page-header {
     display: flex;
     align-items: center;

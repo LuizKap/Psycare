@@ -2,6 +2,8 @@ import type { AppointmentDetailsPanelProps } from "../../../../../types"
 import dayjs from "../../../../../utils/dayjs"
 import Skeleton from "react-loading-skeleton"
 import styles from "./AppointmentDetailsPanel.module.css"
+import { useUpdateNotes } from "../../../../../hooks/useUpdateNotes"
+
 
 
 export function AppointmentDetailsPanel({
@@ -9,6 +11,10 @@ export function AppointmentDetailsPanel({
     isOpen,
     onClose
 }: AppointmentDetailsPanelProps) {
+
+    const { handleUpdateNotes, loading } = useUpdateNotes()
+
+    document.body.style.overflow = `${isOpen ? 'hidden' : ''}`
 
     return (
         <div
@@ -43,7 +49,9 @@ export function AppointmentDetailsPanel({
                     <button
                         className={styles.closeButton}
                         type="button"
-                        onClick={onClose}
+                        onClick={() => {
+                            onClose()
+                        }}
                         aria-label="Fechar painel"
                     >
                         x
@@ -55,7 +63,7 @@ export function AppointmentDetailsPanel({
                         <Skeleton count={4} />
                     </div>
                 ) : (
-                    <div className={styles.content}>
+                    <div className={styles.content} key={appointment.id}>
                         <section className={styles.patientSection}>
                             <div className={styles.avatar}>
                                 {appointment.patient.name
