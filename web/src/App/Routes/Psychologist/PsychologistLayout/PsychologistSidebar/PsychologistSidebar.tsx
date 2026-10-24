@@ -123,11 +123,6 @@ function PsychologistSidebar({ isOpen }: SidebarProps) {
                     <span>Consultas</span>
                 </Link>
 
-                <Link to="/patients" className={styles["side-menu-link"]}>
-                    <img src="/profile/user.svg" alt="" />
-                    <span>Pacientes</span>
-                </Link>
-
                 <Link to="/agenda" className={styles["side-menu-link"]}>
                     <img src="/profile/new-appointment.svg" alt="" />
                     <span>Minha agenda</span>

@@ -22,6 +22,7 @@ import { MyAppointments } from "./Routes/Patient/Appointments/MyAppointments/MyA
 import { CreateAppointment } from "./Routes/Patient/Appointments/CreateAppointment/CreateAppointment"
 import { PsychologistAppointments } from "./Routes/Psychologist/Appointments/PsychologistAppointments/PsychologistAppointments"
 import 'react-loading-skeleton/dist/skeleton.css'
+import { PsychologistProfile } from "./Routes/Psychologist/PsychologistProfile/PsychologistProfile"
 
 
 function App() {
@@ -76,6 +77,10 @@ function App() {
             path="/psychologist/appointments"
             element={<PsychologistAppointments />}
           />
+
+          <Route
+            path="/psychologist/me"
+            element={<PsychologistProfile />} />
 
         </Route>
 

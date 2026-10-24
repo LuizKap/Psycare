@@ -34,15 +34,6 @@ function PsychologistNavbar({ toggleSidebar }: NavbarProps) {
                     </NavLink>
 
                     <NavLink
-                        to="/patients"
-                        className={({ isActive }) =>
-                            `${styles['nav-link']} ${isActive ? styles.active : ''}`
-                        }
-                    >
-                        Pacientes
-                    </NavLink>
-
-                    <NavLink
                         to="/agenda"
                         className={({ isActive }) =>
                             `${styles['nav-link']} ${isActive ? styles.active : ''}`

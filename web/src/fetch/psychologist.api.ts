@@ -22,7 +22,7 @@ export const psychologist_api = {
         return psychologist
     },
 
-    async updateProfile(formData: FormData): Promise<string> {
+    async updateProfile(name?: string, phone?: string): Promise<{ psychologist: Psychologist, message: string }> {
 
         const response = await fetch("/api/psychologist", {
             method: 'PATCH',
@@ -30,8 +30,8 @@ export const psychologist_api = {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                name: formData.get('name'),
-                phone: formData.get('phone')
+                name,
+                phone 
             })
         })
 
@@ -46,6 +46,6 @@ export const psychologist_api = {
         }
 
         const data: { psychologist: Psychologist, message: string } = await response.json()
-        return data.message
+        return data
     }
 }
