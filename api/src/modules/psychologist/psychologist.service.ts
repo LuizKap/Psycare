@@ -20,4 +20,14 @@ export class PsychologistService {
 
         return psychologist
     }
+
+    async getPublicProfile(): Promise<Psychologist> {
+
+        const psychologists = await this.psychologistRepository.findPsychologists()
+
+        const psychologist = psychologists[0]
+        if (!psychologist) throw new HttpError(404, 'Psicólogo não encontrado')
+
+        return psychologist
+    }
 }

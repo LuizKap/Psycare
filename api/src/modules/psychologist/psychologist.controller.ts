@@ -24,4 +24,11 @@ export class PsychologistController {
             message: 'Dados atualizados'
         })
     }
+
+    getPublicProfile = async (req: Request, res: Response) => {
+
+        const psychologist = await this.psychologistService.getPublicProfile()
+
+        res.json(psychologist)
+    }
 }
