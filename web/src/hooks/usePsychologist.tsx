@@ -7,7 +7,7 @@ export function usePsychologist() {
     const context = useContext(PsychologistContext)
 
     if (!context) {
-        throw new Error('usePsychologist deve ser usado dentro de PatientProvider')
+        throw new Error('usePsychologist deve ser usado dentro de PsychologistProvider')
     }
     else {
         return context

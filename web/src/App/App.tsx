@@ -23,6 +23,7 @@ import { CreateAppointment } from "./Routes/Patient/Appointments/CreateAppointme
 import { PsychologistAppointments } from "./Routes/Psychologist/Appointments/PsychologistAppointments/PsychologistAppointments"
 import 'react-loading-skeleton/dist/skeleton.css'
 import { PsychologistProfile } from "./Routes/Psychologist/PsychologistProfile/PsychologistProfile"
+import { AboutPsychologist } from "./Routes/Patient/AboutPsychologist/AboutPsychologist"
 
 
 function App() {
@@ -63,6 +64,11 @@ function App() {
             element={<CreateAppointment />}
           />
 
+          <Route
+            path="/about"
+            element={<AboutPsychologist />}
+          />
+
         </Route>
 
 
@@ -80,7 +86,8 @@ function App() {
 
           <Route
             path="/psychologist/me"
-            element={<PsychologistProfile />} />
+            element={<PsychologistProfile />}
+          />
 
         </Route>
 

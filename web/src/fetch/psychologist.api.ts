@@ -31,7 +31,7 @@ export const psychologist_api = {
             },
             body: JSON.stringify({
                 name,
-                phone 
+                phone
             })
         })
 
@@ -47,5 +47,25 @@ export const psychologist_api = {
 
         const data: { psychologist: Psychologist, message: string } = await response.json()
         return data
+    },
+
+    async getPublicProfile(): Promise<Pick<Psychologist, 'name' | 'phone'>> {
+
+        const response = await fetch('/api/psychologist/about')
+
+        if (!response.ok) {
+            const error: ApiErrorResponse = await response.json()
+
+            if (error.errors && error.errors.length > 0) {
+                throw new ApiValidationError(error.message, error.errors)
+            }
+
+            throw new ApiError(error.message)
+        }
+
+        const { name, phone }: Pick<Psychologist, 'name' | 'phone'> = await response.json()
+
+        return { name, phone }
     }
+
 }
