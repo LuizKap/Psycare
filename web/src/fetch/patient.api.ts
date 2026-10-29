@@ -36,6 +36,33 @@ export const patient_api = {
 
         const count = await response.json()
         return count
+    },
+
+    async updatePatient(name?: string, phone?: string | null) {
+
+        const response = await fetch("/api/patient", {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                name,
+                phone
+            })
+        })
+
+        if (!response.ok) {
+            const error: ApiErrorResponse = await response.json()
+
+            if (error.errors && error.errors.length > 0) {
+                throw new ApiValidationError(error.message, error.errors)
+            }
+
+            throw new ApiError(error.message)
+        }
+
+        const data: { patient: Patient, message: string } = await response.json()
+        return data
     }
 
 }

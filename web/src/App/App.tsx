@@ -24,6 +24,7 @@ import { PsychologistAppointments } from "./Routes/Psychologist/Appointments/Psy
 import 'react-loading-skeleton/dist/skeleton.css'
 import { PsychologistProfile } from "./Routes/Psychologist/PsychologistProfile/PsychologistProfile"
 import { AboutPsychologist } from "./Routes/Patient/AboutPsychologist/AboutPsychologist"
+import { PatientProfile } from "./Routes/Patient/PatientProfile/PatientProfile"
 
 
 function App() {
@@ -67,6 +68,11 @@ function App() {
           <Route
             path="/about"
             element={<AboutPsychologist />}
+          />
+
+          <Route
+            path="/patient/me"
+            element={<PatientProfile />}
           />
 
         </Route>

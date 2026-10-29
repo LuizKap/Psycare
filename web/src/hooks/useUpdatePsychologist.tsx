@@ -4,7 +4,6 @@ import { toast } from "sonner"
 import { ApiValidationError } from "../types"
 
 
-
 export function useUpdatePsychologist() {
 
     const [loading, setLoading] = useState<boolean>(false)
@@ -30,7 +29,6 @@ export function useUpdatePsychologist() {
         finally {
             setLoading(false)
         }
-
     }
 
     return {
