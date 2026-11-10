@@ -1,6 +1,6 @@
 import { useState, type SubmitEvent } from "react"
 import { Link, useNavigate } from "react-router"
-import { ApiValidationError, type FormError } from "../../../../../types"
+import { ApiError, ApiValidationError, type FormError } from "../../../../../types"
 import styles from '../Register.module.css'
 import { useAuth } from "../../../../../hooks/useAuth"
 import { toast } from "sonner"
@@ -60,7 +60,8 @@ function RegisterPsychologist() {
                 return
             }
 
-            toast.error('Erro ao cadastrar psicólogo')
+            toast.error(error instanceof ApiError ? error.message : "Ocorreu um erro inesperado")
+
         } finally { setLoading(false) }
 
     }

@@ -2,7 +2,7 @@ import { Link, useNavigate } from "react-router"
 import { useAuth } from "../../../../../hooks/useAuth"
 import styles from "../Login.module.css"
 import { useState, type SubmitEvent } from "react"
-import { ApiValidationError, type FormError } from "../../../../../types"
+import { ApiError, ApiValidationError, type FormError } from "../../../../../types"
 
 import { toast } from "sonner"
 import { auth_api } from "../../../../../fetch/auth.api"
@@ -61,8 +61,8 @@ export function LoginPatient() {
 
                 return
             }
-
-            toast.error('Erro ao logar paciente')
+            
+            toast.error(error instanceof ApiError ? error.message : "Ocorreu um erro inesperado")
 
         } finally { setLoading(false) }
     }

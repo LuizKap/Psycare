@@ -1,5 +1,5 @@
 import { Link, useNavigate } from "react-router";
-import { ApiValidationError, type FormError } from "../../../../../types";
+import { ApiError, ApiValidationError, type FormError } from "../../../../../types";
 import styles from "../Login.module.css"
 import { useAuth } from "../../../../../hooks/useAuth";
 import { useState, type SubmitEvent } from "react";
@@ -61,7 +61,7 @@ export function LoginPsychologist() {
                 return
             }
 
-            toast.error('Erro ao logar psicólogo')
+            toast.error(error instanceof ApiError ? error.message : "Ocorreu um erro inesperado")
 
         } finally { setLoading(false) }
     }
