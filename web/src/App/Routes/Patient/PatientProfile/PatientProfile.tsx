@@ -1,38 +1,36 @@
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { useAuth } from "../../../../hooks/useAuth"
 import { usePatient } from "../../../../hooks/usePatient"
-import { ErrorState } from "../../../components/Error/Error"
 import { Loading } from "../../../components/Loading/Loading"
 import styles from "./PatientProfile.module.css"
-import type { Patient } from "../../../../types"
 import { useUpdatePatient } from "../../../../hooks/useUpdatePatient"
+import { ErrorState } from "../../../components/Error/Error"
+import { useUpdateProfilePicture } from "../../../../hooks/useUpdateProfilePicture"
+import Skeleton from "react-loading-skeleton"
 
 export function PatientProfile() {
+
     const { user } = useAuth()
 
-    const {
-        patient,
-        loading: patientLoading,
-        error,
-        refreshPatient
-    } = usePatient()
+    const inputFileRef = useRef<HTMLInputElement>(null)
 
-    const {
-        updatePatient,
-        loading: updateLoading
-    } = useUpdatePatient()
+    const { loading: patientLoading, patient, error, refreshPatient } = usePatient()
 
-    const [updatedPatient, setUpdatedPatient] =
-        useState<Pick<Patient, "name" | "phone"> | null>(null)
+    const { updateProfilePicture, loading: pictureLoading } = useUpdateProfilePicture()
+
+    const { updatePatient, loading: updateLoading } = useUpdatePatient()
+
+    const [updatedPatient, setUpdatedPatient] = useState<{ name?: string, phone?: string | null }>()
 
     useEffect(() => {
+
         if (!patient) return
 
-        setUpdatedPatient({
-            name: patient.name,
-            phone: patient.phone
-        })
+        setUpdatedPatient({ name: patient.name, phone: patient.phone })
+
     }, [patient])
+
+
 
     if (patientLoading) return <Loading />
 
@@ -40,20 +38,12 @@ export function PatientProfile() {
         return (
             <ErrorState
                 onRetry={refreshPatient}
-                message="Não foi possível carregar informações do paciente"
+                message="Não foi possível carregar seu perfil :("
             />
         )
     }
 
-    const updatedPhone = updatedPatient?.phone?.trim() ?? ""
-    const currentPhone = patient.phone?.trim() ?? ""
-
-    const hasChanges =
-        updatedPatient !== null &&
-        (
-            updatedPatient.name !== patient.name ||
-            updatedPhone !== currentPhone
-        )
+    const currentPhone = patient.phone ?? ''
 
     return (
         <main className={styles["profile-page"]}>
@@ -79,18 +69,33 @@ export function PatientProfile() {
                 <div className={styles["profile-form"]}>
                     <section className={styles["photo-section"]}>
                         <div className={styles.avatar}>
-                            <svg
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                stroke="currentColor"
-                                strokeWidth="1.6"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                aria-hidden="true"
-                            >
-                                <circle cx="12" cy="8" r="4" />
-                                <path d="M5 21v-2a7 7 0 0 1 14 0v2" />
-                            </svg>
+                            {pictureLoading ? (
+                                <Skeleton
+                                    width="100%"
+                                    height="100%"
+                                    borderRadius={25}
+                                />
+                            ) : patient.profile_image_url ? (
+                                <img
+                                    src={patient.profile_image_url}
+                                    className={styles["photo-img"]}
+                                    alt="Foto de perfil do paciente"
+                                />
+                            ) : (
+                                <svg
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    strokeWidth="1.6"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    aria-hidden="true"
+                                >
+                                    <circle cx="12" cy="8" r="4" />
+                                    <path d="M5 21v-2a7 7 0 0 1 14 0v2" />
+                                </svg>
+                            )}
+
                         </div>
 
                         <div className={styles["photo-info"]}>
@@ -99,9 +104,29 @@ export function PatientProfile() {
                                 Escolha uma foto para personalizar sua conta.
                             </p>
 
+                            <input type="file" accept="image/*" style={{ display: "none" }} ref={inputFileRef}
+
+                                onChange={async (ev) => {
+
+                                    const file = ev.currentTarget.files?.[0]
+
+                                    if (!file) return
+
+                                    console.log(file)
+
+                                    await updateProfilePicture(file)
+                                    await refreshPatient()
+                                }}
+
+                            />
+
                             <button
                                 className={styles["photo-button"]}
                                 type="button"
+
+                                onClick={() => {
+                                    inputFileRef.current?.click()
+                                }}
                             >
                                 Alterar foto
                             </button>
@@ -117,14 +142,12 @@ export function PatientProfile() {
                             <input
                                 type="text"
                                 name="name"
-                                value={updatedPatient?.name ?? ""}
+                                value={updatedPatient?.name ?? patient.name}
                                 placeholder="Digite seu nome completo"
-                                onChange={(ev) => {
-                                    setUpdatedPatient(prev => ({
-                                        name: ev.target.value,
-                                        phone: prev?.phone ?? patient.phone
-                                    }))
-                                }}
+                                onChange={(ev) => setUpdatedPatient((prev) => ({
+                                    ...prev,
+                                    name: ev.target.value
+                                }))}
                             />
                         </label>
 
@@ -134,7 +157,7 @@ export function PatientProfile() {
                             <input
                                 type="email"
                                 name="email"
-                                value={user?.email ?? ""}
+                                value={user?.email}
                                 readOnly
                             />
 
@@ -149,14 +172,12 @@ export function PatientProfile() {
                             <input
                                 type="tel"
                                 name="phone"
-                                value={updatedPatient?.phone ?? ""}
+                                value={updatedPatient ? updatedPatient.phone ?? "" : currentPhone}
                                 placeholder="Digite seu telefone"
-                                onChange={(ev) => {
-                                    setUpdatedPatient(prev => ({
-                                        name: prev?.name ?? patient.name,
-                                        phone: ev.target.value
-                                    }))
-                                }}
+                                onChange={(ev) => setUpdatedPatient((prev) => ({
+                                    ...prev,
+                                    phone: ev.target.value.trim() || null,
+                                }))}
                             />
 
                             <small>
@@ -166,27 +187,28 @@ export function PatientProfile() {
                     </div>
 
                     <div className={styles["form-actions"]}>
+
                         <button
                             className={styles["primary-button"]}
                             type="button"
-                            disabled={updateLoading || !hasChanges}
-                            onClick={() => {
+                            disabled={
+                                !updatedPatient
+                                || updateLoading
+                                || updatedPatient?.name === patient.name
+                                && updatedPatient?.phone === patient.phone
+                            }
+
+                            onClick={async () => {
                                 if (!updatedPatient) return
 
-                                const changes: {
-                                    name?: string
-                                    phone?: string | null
-                                } = {}
+                                const changes: { name?: string, phone?: string | null } = {}
 
-                                if (updatedPatient.name !== patient.name) {
-                                    changes.name = updatedPatient.name
-                                }
+                                if (updatedPatient.name !== patient.name) changes.name = updatedPatient.name
 
-                                if (updatedPhone !== currentPhone) {
-                                    changes.phone = updatedPhone || null
-                                }
+                                if (updatedPatient.phone !== patient.phone) changes.phone = updatedPatient.phone
 
-                                void updatePatient(changes)
+                                await updatePatient(changes)
+                                refreshPatient()
                             }}
                         >
                             Salvar alterações

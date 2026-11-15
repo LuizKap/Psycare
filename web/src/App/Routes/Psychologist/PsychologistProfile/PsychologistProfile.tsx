@@ -113,7 +113,7 @@ export function PsychologistProfile() {
                                 (updatedPsychologist?.name === psychologist.name
                                     && updatedPsychologist?.phone === psychologist.phone)}
 
-                            onClick={() => {
+                            onClick={ async () => {
                                 if (!updatedPsychologist) return
 
                                 const changes: { name?: string; phone?: string } = {}
@@ -126,7 +126,8 @@ export function PsychologistProfile() {
                                     changes.phone = updatedPsychologist.phone
                                 }
 
-                                void updatePsychologist(changes)
+                                await updatePsychologist(changes)
+                                refreshPsychologist()
                             }}
                         >
                             Salvar alterações

@@ -37,4 +37,5 @@ export function useUpdatePatient() {
         updatePatient,
         loading
     }
+    
 }

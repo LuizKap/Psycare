@@ -67,10 +67,18 @@
     padding-bottom: 25px;
 }
 
+.photo-img {
+    object-fit: cover;
+    width: 100%;
+    height: 100%;
+    border-radius: inherit;
+}
+
 .avatar {
     display: grid;
     place-items: center;
     flex-shrink: 0;
+    overflow: hidden;
 
     width: 88px;
     height: 88px;
@@ -80,7 +88,7 @@
     border: 1px solid #ffffff;
     border-radius: 25px;
 
-    box-shadow: 0 4px 16px #294b3610;
+    box-shadow: 0 4px 16px #4b292910;
 }
 
 .avatar svg {

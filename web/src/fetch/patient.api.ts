@@ -63,6 +63,31 @@ export const patient_api = {
 
         const data: { patient: Patient, message: string } = await response.json()
         return data
+    },
+
+    async updateProfilePicture(file: File) {
+
+        const formData = new FormData()
+        formData.append("file", file)
+
+        const response = await fetch("/api/patient/me/profile-picture", {
+            method: 'PATCH',
+            body: formData
+        })
+
+        if (!response.ok) {
+
+            const error: ApiErrorResponse = await response.json()
+
+            if (error.errors && error.errors.length > 0) {
+                throw new ApiValidationError(error.message, error.errors)
+            }
+
+            throw new ApiError(error.message)
+        }
+
+        const data: { patient: Patient, message: string } = await response.json()
+        return data
     }
 
 }
