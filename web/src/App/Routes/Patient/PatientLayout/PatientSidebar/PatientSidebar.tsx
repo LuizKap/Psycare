@@ -85,7 +85,7 @@ function PatientSidebar({ isOpen }: SidebarProps) {
                     </h2>
 
                     <img
-                        src="/profile/user.svg"
+                        src={patient.profile_image_url ? patient.profile_image_url : "/profile/user.svg"}
                         alt="usuario-imagem"
                     />
 
@@ -114,7 +114,7 @@ function PatientSidebar({ isOpen }: SidebarProps) {
                     <h3>Próxima Consulta</h3>
 
                     {appointmentsLoading ? (
-                        <Skeleton count={2} width={200}/>
+                        <Skeleton count={2} width={200} />
                     ) : appointmentsError ? (
                         <InlineError
                             message="Não foi possível carregar a consulta."
