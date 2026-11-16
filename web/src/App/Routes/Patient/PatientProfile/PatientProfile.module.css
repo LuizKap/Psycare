@@ -67,6 +67,46 @@
     padding-bottom: 25px;
 }
 
+.photo-actions {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+.remove-photo-button {
+    padding: 0;
+
+    color: #a54d4d;
+    background: transparent;
+    border: none;
+
+    font: inherit;
+    font-size: 0.88rem;
+    font-weight: 650;
+
+    cursor: pointer;
+
+    transition: color 0.2s ease;
+}
+
+.remove-photo-button:hover:not(:disabled) {
+    color: #843737;
+    text-decoration: underline;
+}
+
+.remove-photo-button:focus-visible {
+    outline: 2px solid #d99;
+    outline-offset: 4px;
+    border-radius: 3px;
+}
+
+.remove-photo-button:disabled {
+    color: #b9a0a0;
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
 .photo-img {
     object-fit: cover;
     width: 100%;

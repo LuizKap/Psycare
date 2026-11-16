@@ -7,6 +7,7 @@ import { useUpdatePatient } from "../../../../hooks/useUpdatePatient"
 import { ErrorState } from "../../../components/Error/Error"
 import { useUpdateProfilePicture } from "../../../../hooks/useUpdateProfilePicture"
 import Skeleton from "react-loading-skeleton"
+import { useRemoveProfilePicture } from "../../../../hooks/useRemoveProfilePicture"
 
 export function PatientProfile() {
 
@@ -18,9 +19,13 @@ export function PatientProfile() {
 
     const { updateProfilePicture, loading: pictureLoading } = useUpdateProfilePicture()
 
+    const { removeProfilePicture, loading: removeLoading } = useRemoveProfilePicture()
+
     const { updatePatient, loading: updateLoading } = useUpdatePatient()
 
     const [updatedPatient, setUpdatedPatient] = useState<{ name?: string, phone?: string | null }>()
+
+    const photoLoading = pictureLoading || removeLoading
 
     useEffect(() => {
 
@@ -29,7 +34,6 @@ export function PatientProfile() {
         setUpdatedPatient({ name: patient.name, phone: patient.phone })
 
     }, [patient])
-
 
 
     if (patientLoading) return <Loading />
@@ -69,7 +73,7 @@ export function PatientProfile() {
                 <div className={styles["profile-form"]}>
                     <section className={styles["photo-section"]}>
                         <div className={styles.avatar}>
-                            {pictureLoading ? (
+                            {photoLoading ? (
                                 <Skeleton
                                     width="100%"
                                     height="100%"
@@ -104,7 +108,10 @@ export function PatientProfile() {
                                 Escolha uma foto para personalizar sua conta.
                             </p>
 
-                            <input type="file" accept="image/*" style={{ display: "none" }} ref={inputFileRef}
+                            <input type="file" accept="image/*"
+                                style={{ display: "none" }}
+                                ref={inputFileRef}
+                                disabled={photoLoading}
 
                                 onChange={async (ev) => {
 
@@ -112,24 +119,36 @@ export function PatientProfile() {
 
                                     if (!file) return
 
-                                    console.log(file)
-
                                     await updateProfilePicture(file)
                                     await refreshPatient()
                                 }}
 
                             />
 
-                            <button
-                                className={styles["photo-button"]}
-                                type="button"
+                            <div className={styles["photo-actions"]}>
+                                <button
+                                    className={styles["photo-button"]}
+                                    type="button"
+                                    disabled={photoLoading}
+                                    onClick={() => inputFileRef.current?.click()}
+                                >
+                                    Alterar foto
+                                </button>
 
-                                onClick={() => {
-                                    inputFileRef.current?.click()
-                                }}
-                            >
-                                Alterar foto
-                            </button>
+                                {patient.profile_image_url && (
+                                    <button
+                                        className={styles["remove-photo-button"]}
+                                        type="button"
+                                        disabled={photoLoading}
+                                        onClick={async () => {
+                                            await removeProfilePicture()
+                                            await refreshPatient()
+                                        }}
+                                    >
+                                        Remover foto
+                                    </button>
+                                )}
+                            </div>
                         </div>
                     </section>
 

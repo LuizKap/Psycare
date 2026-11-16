@@ -88,6 +88,27 @@ export const patient_api = {
 
         const data: { patient: Patient, message: string } = await response.json()
         return data
+    },
+
+    async removeProfilePicture() {
+
+        const response = await fetch("/api/patient/me/profile-picture", {
+            method: 'DELETE'
+        })
+
+        if (!response.ok) {
+
+            const error: ApiErrorResponse = await response.json()
+
+            if (error.errors && error.errors.length > 0) {
+                throw new ApiValidationError(error.message, error.errors)
+            }
+
+            throw new ApiError(error.message)
+        }
+
+        const data: { patient: Patient, message: string } = await response.json()
+        return data
     }
 
 }

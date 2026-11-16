@@ -24,7 +24,7 @@ export function useUpdateProfilePicture() {
 
             error instanceof ApiError ? toast.error(error.message)
                 :
-                toast.error('Não foi possivel atualizar as informações do paciente')
+                toast.error('Não foi possivel atualizar a foto de perfil')
 
         }
         finally {
