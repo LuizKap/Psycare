@@ -27,8 +27,8 @@ export class PsychologistController {
 
     getPublicProfile = async (req: Request, res: Response) => {
 
-        const psychologist = await this.psychologistService.getPublicProfile()
+        const { name, phone } = await this.psychologistService.getPublicProfile()
 
-        res.json(psychologist)
+        res.json({ name, phone })
     }
 }

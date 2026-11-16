@@ -25,5 +25,6 @@ psychologistRouter.patch(
 
 psychologistRouter.get(
     "/about",
+    psychologistController.getPublicProfile,
     requirePatient
 )

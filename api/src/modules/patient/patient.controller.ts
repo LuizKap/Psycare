@@ -29,7 +29,10 @@ export class PatientController {
 
         const updatedPatient = await this.patientService.updatePatient(patient_id, updatedData)
 
-        res.json(updatedPatient)
+        res.json({
+            updatedPatient,
+            message: 'Dados atualizados com sucesso!'
+        })
     }
 
     uploadProfilePicture = async (req: Request, res: Response) => {
@@ -45,7 +48,10 @@ export class PatientController {
             file.buffer
         )
 
-        res.json(patient)
+        res.json({
+            patient,
+            message: 'Foto atualizada com sucesso!'
+        })
     }
 
     removeProfilePicture = async (req: Request, res: Response) => {
@@ -53,7 +59,10 @@ export class PatientController {
 
         const patient = await this.patientService.removeProfilePicture(patient_id)
 
-        res.json({patient, message: 'Foto excluída'})
+        res.json({
+            patient,
+            message: 'Foto excluída'
+        })
     }
 
 }
