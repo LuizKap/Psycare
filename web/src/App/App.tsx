@@ -1,6 +1,6 @@
 import { Routes, Route } from "react-router"
 
-import PatientHome from "./Routes/Patient/PatientHome/PatientHome"
+import Home from "./Routes/Home/Home"
 import { PsychologistHome } from "./Routes/Psychologist/PsychologistHome/Psychologist.home"
 
 import Register from "./Routes/Auth/Register/Register"
@@ -13,7 +13,6 @@ import { LoginPsychologist } from "./Routes/Auth/Login/components/Psychologist"
 
 import { Toaster } from "sonner"
 
-import { PatientLayout } from "./Routes/Patient/PatientLayout/PatientLayout"
 import { PsychologistLayout } from "./Routes/Psychologist/PsychologistLayout/PsychologistLayout"
 import Unauthorized from "./Routes/Unauthorized/Unauthorized"
 import { useAuth } from "../hooks/useAuth"
@@ -25,6 +24,8 @@ import 'react-loading-skeleton/dist/skeleton.css'
 import { PsychologistProfile } from "./Routes/Psychologist/PsychologistProfile/PsychologistProfile"
 import { AboutPsychologist } from "./Routes/Patient/AboutPsychologist/AboutPsychologist"
 import { PatientProfile } from "./Routes/Patient/PatientProfile/PatientProfile"
+import { RequirePatient } from "./Routes/RequirePatient/RequirePatient"
+import { PatientOrGuestLayout } from "./Routes/PatientOrGuestLayout/PatientOrGuestLayout"
 
 
 function App() {
@@ -46,40 +47,47 @@ function App() {
 
       <Routes>
 
-        {/* Área do paciente */}
+        {/* Rotas públicas: Guest e Paciente */}
 
-        <Route element={<PatientLayout />}>
+        <Route element={<PatientOrGuestLayout />}>
 
           <Route
             path="/"
-            element={<PatientHome />}
+            element={<Home />}
           />
 
           <Route
-            path="/patient/appointments"
-            element={<MyAppointments />}
-          />
-
-          <Route
-            path="/appointments/create"
-            element={<CreateAppointment />}
-          />
-
-          <Route
-            path="/about"
+            path="/aboutPsychologist"
             element={<AboutPsychologist />}
           />
 
-          <Route
-            path="/patient/me"
-            element={<PatientProfile />}
-          />
+          {/* Rotas do paciente */}
 
-        </Route>
+          <Route element={<RequirePatient />}>
+
+            <Route
+              path="/patient/appointments"
+              element={<MyAppointments />}
+            />
+
+            <Route
+              path="/appointments/create"
+              element={<CreateAppointment />}
+            />
+
+            <Route
+              path="/patient/me"
+              element={<PatientProfile />}
+            />
+
+          </Route>
+
+        </Route >
 
 
         {/* Área do psicólogo */}
         <Route element={<PsychologistLayout />}>
+
           <Route
             path="/psychologist"
             element={<PsychologistHome />}

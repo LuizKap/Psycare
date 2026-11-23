@@ -1,45 +1,27 @@
-import { Navigate, Outlet } from "react-router"
+import { Outlet } from "react-router"
 import { useState } from "react"
 
 import PatientNavbar from "../../../components/Navbar/PatientNavbar"
 import PatientSidebar from "./PatientSidebar/PatientSidebar"
-import { useAuth } from "../../../../hooks/useAuth"
-import GuestSidebar from "./GuestSidebar/GuestSidebar"
+
 import { ScheduledAppointmentsProvider } from "../../../../contexts/Scheduled.appointments.context"
 import { PatientProvider } from "../../../../contexts/Patient.context"
 
 export function PatientLayout() {
 
-    const { user } = useAuth()
     const [isOpen, setIsOpen] = useState(false)
 
-    if (user?.role === 'PSYCHOLOGIST') {
-        return <Navigate to="/unauthorized" replace />
-    }
-
     const toggleSidebar = () => {
-        setIsOpen(isOpen => !isOpen)
+        setIsOpen(prev => !prev)
     }
 
-    const content = (
-        <>
-            <PatientNavbar toggleSidebar={toggleSidebar} />
-            {user?.role === 'PATIENT' ? <PatientSidebar isOpen={isOpen} /> : <GuestSidebar isOpen={isOpen} />}
-
-            <Outlet />
-        </>
+    return (
+        <PatientProvider>
+            <ScheduledAppointmentsProvider>
+                <PatientNavbar toggleSidebar={toggleSidebar} />
+                <PatientSidebar isOpen={isOpen} />
+                <Outlet />
+            </ScheduledAppointmentsProvider>
+        </PatientProvider>
     )
-
-    if (user?.role === 'PATIENT') {
-        return (
-            <PatientProvider>
-                <ScheduledAppointmentsProvider>
-                    {content}
-                </ScheduledAppointmentsProvider>
-            </PatientProvider>
-        )
-    } else {
-        return content
-    }
-
 }

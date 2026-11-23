@@ -9,7 +9,7 @@ import { toast } from "sonner";
 export function usePsychologistPublicProfile() {
 
     const [psychologist, setPsychologist] = useState<Pick<Psychologist, 'name' | 'phone'> | null>(null)
-    const [loading, setLoading] = useState<boolean>(false)
+    const [loading, setLoading] = useState<boolean>(true)
     const [error, setError] = useState<boolean>(false)
 
 

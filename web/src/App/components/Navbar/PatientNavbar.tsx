@@ -52,7 +52,7 @@ function PatientNavbar({ toggleSidebar }: NavbarProps) {
                     </NavLink>
 
                     <NavLink
-                        to="/about"
+                        to="/aboutPsychologist"
                         className={({ isActive }) =>
                             `${styles['nav-link']} ${isActive ? styles.active : ''}`
                         }
