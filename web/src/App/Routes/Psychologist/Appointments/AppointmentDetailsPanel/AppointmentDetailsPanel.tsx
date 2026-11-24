@@ -20,8 +20,6 @@ export function AppointmentDetailsPanel({
     const [updatedNote, setUpdatedNote] = useState<string>(selectedAppointment?.notes ?? "")
     const saveBtnRef = useRef<HTMLButtonElement>(null)
 
-    console.log(updatedNote)
-
     //preenche updatedNote ao mudar de appointment
     useEffect(() => {
 
@@ -207,8 +205,12 @@ export function AppointmentDetailsPanel({
                                 disabled={updatedNote === selectedAppointment.notes || loading}
                                 onClick={async () => {
                                     const appointment = await handleUpdateNotes(selectedAppointment.id, updatedNote)
-                                    setSelectedAppointment(appointment)
-                                    onNotesSaved()
+
+                                    //catch de handleUpdateNotes retorna undefined quando da erro
+                                    if (appointment) {
+                                        setSelectedAppointment(appointment)
+                                        onNotesSaved()
+                                    }
                                 }}
                             >
                                 Salvar notas
