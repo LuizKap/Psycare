@@ -81,8 +81,35 @@ export const appointment_api = {
         return message
     }
     ,
-    async reschedule() {
+    async rescheduleAppointment(dateUTC: string, id: Appointment['id']) {
 
+        const response = await fetch(
+            `/api/appointments/${id}/reschedule`, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                starts_at: dateUTC
+            })
+        })
+
+        if (!response.ok) {
+            const error: ApiErrorResponse = await response.json()
+
+            if (error.errors && error.errors.length > 0) {
+                throw new ApiValidationError(error.message, error.errors)
+            }
+
+            throw new ApiError(error.message)
+        }
+
+        const { updatedAppointment, message }: {
+            updatedAppointment: Appointment,
+            message: string
+        } = await response.json()
+
+        return { updatedAppointment, message }
     }
     ,
     async getFilteredAppointments(
@@ -161,8 +188,16 @@ export const appointment_api = {
             throw new ApiError(error.message)
         }
 
-        const {updatedAppointment, message}  = await response.json()
-        return {updatedAppointment, message}
+        const { updatedAppointment, message }: {
+            updatedAppointment: Appointment & {
+                patient: {
+                    name: string
+                }
+            },
+            message: string
+        } = await response.json()
+
+        return { updatedAppointment, message }
     }
     ,
     async psychologistCancel() {

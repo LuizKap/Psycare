@@ -140,6 +140,15 @@ export type AppointmentDetailsPanelProps = {
   onClose: () => void
 }
 
+export type RescheduleAppointmentsProps = {
+  isOpen: boolean
+  onClose: () => void
+  appointment: {
+    id: string
+    starts_at: string
+  } | null
+}
+
 
 // ====================
 // Context
@@ -156,7 +165,7 @@ export type ScheduledAppointmentsContextType = {
   appointments: Appointment[]
   loading: boolean,
   error: boolean,
-  refreshScheduledAppointments: () => void
+  refreshScheduledAppointments: () => Promise<void>
 }
 
 export type PatientContextType = {

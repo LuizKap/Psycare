@@ -58,7 +58,9 @@
 }
 
 .side-introduction img {
-    width: 64px;
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
     background: #0fb8717a;
     border-radius: 20px;
 }

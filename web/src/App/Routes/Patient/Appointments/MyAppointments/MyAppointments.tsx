@@ -4,7 +4,9 @@ import styles from "./MyAppointments.module.css"
 import { usePreviousAppointments } from "../../../../../hooks/usePreviousAppointments"
 import { InlineError } from "../../../../components/Error/InlineError"
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton"
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
+import { RescheduleAppointment } from "../RescheduleAppointment/RescheduleAppointment"
+import type { Appointment } from "../../../../../types"
 
 export function MyAppointments() {
 
@@ -22,6 +24,10 @@ export function MyAppointments() {
         error: previousAppointmentsError
     } = usePreviousAppointments()
 
+    const [isRescheduleOpen, setIsRescheduleOpen] = useState<boolean>(false)
+    const [selectedAppointment, setSelectedAppointment] = useState<Appointment | null>(null)
+
+
     useEffect(() => {
         void refreshScheduledAppointments();
         void refreshPreviousAppointments();
@@ -33,6 +39,11 @@ export function MyAppointments() {
             baseColor="#A8C5B4"
             highlightColor="#F0F7F2"
         >
+            {isRescheduleOpen && <RescheduleAppointment
+                appointment={selectedAppointment}
+                isOpen={isRescheduleOpen}
+                onClose={() => setIsRescheduleOpen(false)} />}
+
             <main className={styles["appointments-page"]}>
 
                 <header className={styles["page-header"]}>
@@ -97,7 +108,11 @@ export function MyAppointments() {
                                                     Ver detalhes
                                                 </button>
 
-                                                <button type="button">
+                                                <button type="button"
+                                                    onClick={() => {
+                                                        setSelectedAppointment(appointment)
+                                                        setIsRescheduleOpen(true)
+                                                    }}>
                                                     Reagendar
                                                 </button>
                                             </div>

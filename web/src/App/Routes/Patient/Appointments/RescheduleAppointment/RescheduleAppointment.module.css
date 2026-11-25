@@ -1,0 +1,386 @@
+.overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 20px;
+
+    background: rgba(25, 39, 31, 0.45);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+
+    animation: fade-in 0.2s ease;
+}
+
+.modal {
+    width: 100%;
+    max-width: 560px;
+    max-height: 90vh;
+    overflow-y: auto;
+
+    background: #ffffff;
+    border: 1px solid #ffffff;
+    border-radius: 22px;
+    box-shadow: 0 20px 60px #152a1d30;
+
+    animation: modal-in 0.25s ease;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 20px;
+
+    padding: 26px 28px;
+
+    border-bottom: 1px solid #e7eee8;
+}
+
+.eyebrow {
+    display: block;
+    margin-bottom: 9px;
+
+    color: #38845d;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+}
+
+.modal-header h2 {
+    margin: 0 0 8px;
+    color: #263b31;
+    font-size: 1.45rem;
+}
+
+.modal-header p {
+    margin: 0;
+    color: #718077;
+    font-size: 0.88rem;
+    line-height: 1.5;
+}
+
+.close-button {
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+
+    width: 36px;
+    height: 36px;
+
+    color: #718077;
+    background: #f0f4f1;
+    border: none;
+    border-radius: 10px;
+
+    font-size: 1.5rem;
+    cursor: pointer;
+
+    transition: background 0.2s ease, color 0.2s ease;
+}
+
+.close-button:hover {
+    color: #263b31;
+    background: #e2ebe4;
+}
+
+.modal-content {
+    display: flex;
+    flex-direction: column;
+    gap: 26px;
+
+    padding: 26px 28px;
+}
+
+.current-appointment {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    padding: 17px;
+
+    background: #eff6f0;
+    border: 1px solid #dfede1;
+    border-radius: 13px;
+}
+
+.current-appointment span {
+    color: #718077;
+    font-size: 0.8rem;
+}
+
+.current-appointment strong {
+    color: #276744;
+    font-size: 0.95rem;
+}
+
+.date-section h3,
+.time-section h3 {
+    margin: 0 0 15px;
+    color: #263b31;
+    font-size: 1rem;
+}
+
+.date-field {
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+}
+
+.date-field span {
+    color: #58695e;
+    font-size: 0.88rem;
+    font-weight: 600;
+}
+
+.date-field input {
+    width: 100%;
+    min-height: 45px;
+    padding: 11px 13px;
+    box-sizing: border-box;
+
+    color: #263b31;
+    background: #ffffff;
+    border: 1px solid #dce5de;
+    border-radius: 10px;
+
+    font: inherit;
+    font-size: 0.9rem;
+}
+
+.date-field input:hover {
+    border-color: #b7d9c2;
+}
+
+.date-field input:focus {
+    outline: none;
+    border-color: #70b58b;
+    box-shadow: 0 0 0 3px #8dc9a626;
+}
+
+.time-section p {
+    margin: -7px 0 16px;
+    color: #718077;
+    font-size: 0.85rem;
+}
+
+.time-slots {
+    display: grid;
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+    gap: 10px;
+}
+
+.time-period {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.time-period h4 {
+    margin: 0;
+    color: #58695e;
+    font-size: 0.9rem;
+}
+
+.time-options {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 10px;
+}
+
+.time-button {
+    min-height: 43px;
+    padding: 10px 12px;
+
+    color: #405449;
+    background: #ffffff;
+    border: 1px solid #dce5de;
+    border-radius: 10px;
+
+    font: inherit;
+    font-size: 0.88rem;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease,
+        color 0.2s ease,
+        transform 0.2s ease;
+}
+
+.time-button:hover {
+    color: #276744;
+    background: #f0f6f1;
+    border-color: #a9cfb4;
+}
+
+.time-button:active {
+    transform: translateY(1px);
+}
+
+.time-button:focus-visible {
+    outline: 2px solid #70b58b;
+    outline-offset: 3px;
+}
+
+/* Aparência do horário selecionado futuramente */
+.time-button.selected {
+    color: #ffffff;
+    background: #238653;
+    border-color: #238653;
+}
+
+.time-button.selected:hover {
+    background: #196b40;
+    border-color: #196b40;
+}
+
+.time-button:disabled {
+    color: #a0aaa3;
+    background: #f0f2f0;
+    border-color: #e2e7e3;
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+.modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+
+    padding: 22px 28px;
+
+    border-top: 1px solid #e7eee8;
+}
+
+.cancel-button,
+.confirm-button {
+    min-height: 43px;
+    padding: 11px 17px;
+
+    border-radius: 10px;
+
+    font: inherit;
+    font-size: 0.88rem;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease,
+        transform 0.2s ease;
+}
+
+.cancel-button {
+    color: #405449;
+    background: #ffffff;
+    border: 1px solid #dce5de;
+}
+
+.cancel-button:hover:not(:disabled) {
+    background: #f0f6f1;
+    border-color: #c3d9c9;
+}
+
+.confirm-button {
+    color: #ffffff;
+    background: #238653;
+    border: 1px solid #238653;
+}
+
+.confirm-button:hover:not(:disabled) {
+    background: #196b40;
+    border-color: #196b40;
+}
+
+.cancel-button:active:not(:disabled),
+.confirm-button:active:not(:disabled) {
+    transform: translateY(1px);
+}
+
+.cancel-button:disabled,
+.confirm-button:disabled {
+    color: #8c958e;
+    background: #e5e9e6;
+    border-color: #dce2dd;
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+.close-button:focus-visible,
+.cancel-button:focus-visible,
+.confirm-button:focus-visible {
+    outline: 2px solid #70b58b;
+    outline-offset: 3px;
+}
+
+@keyframes fade-in {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes modal-in {
+    from {
+        opacity: 0;
+        transform: translateY(12px) scale(0.98);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+@media (max-width: 550px) {
+    .overlay {
+        padding: 12px;
+    }
+
+    .modal {
+        max-height: 94vh;
+        border-radius: 18px;
+    }
+
+    .modal-header,
+    .modal-content {
+        padding: 21px;
+    }
+
+    .modal-footer {
+        flex-direction: column-reverse;
+        padding: 18px 21px;
+    }
+
+    .modal-footer button {
+        width: 100%;
+    }
+
+    .time-slots {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .overlay,
+    .modal {
+        animation: none;
+    }
+
+    .close-button,
+    .cancel-button,
+    .confirm-button {
+        transition: none;
+    }
+}
