@@ -251,7 +251,7 @@
 
 .modal-footer {
     display: flex;
-    justify-content: flex-end;
+    justify-content: center;
     gap: 12px;
 
     padding: 22px 28px;
